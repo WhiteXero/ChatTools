@@ -1,0 +1,368 @@
+modmenu.nameTranslation.chattools: Chat Tools [聊天工具箱]
+modmenu.descriptionTranslation.chattools: 一個提供了許多容易上手的好用的聊天功能的工具箱
+key:
+  chattools:
+    texts:
+      RestoreMessagesSplitLine: '§7==== 儲存的聊天記錄 ====§r'
+      filterPlaceholder:
+        .: '§7==== [已過濾] ====§r'
+        '@Tooltip': '此訊息被 Chat Tools 聊天過濾功能過濾'
+      welcomeMessage: 第一次使用 Chat Tools ？點擊這裡查看常見問題解答！
+      toast.title: 來自 Minecraft 的關注資訊
+      actionbar.title: §a§l聊天欄中有您關注的資訊
+      repeat:
+        failure:
+          empty: §6§l復讀失敗：不存在上一條訊息
+          unsupported: §6§l該 Minecraft 子版本不支持此功能，請升級到 1.20.2 或以上
+      download.process: '[Chat Tools] %s 下載進度：%s%% - （%sKB/%sKB）'
+      download.success: '§6[Chat Tools] 已完成下載！'
+      toast.failure: §6Toast 失敗：附件未完整下載 或 模式不支持該平台§r
+      translator.requireApi: 請先配置翻譯API
+      translator.await: '[正在響應……]'
+      copy:
+        launch: 點擊打開複製菜單。
+        title: 複製菜單
+        copyObjectData: 複製對象數據
+        copyRaw: 複製源文字
+        copyWithColorCodeEscaped: 複製顏色代碼轉義後文字
+        copyWithNoColorCode: 複製無顏色代碼文字
+        copyUnixTimestamp: 複製 Unix 時間戳
+        copyTimestamp: 複製時間戳文字
+        cancel: 取消
+      ChatHistoryNavigator:
+        title: 聊天搜尋
+        placeholder: 輸入以搜尋…
+      PreviewClickEvents:
+        overall: §6文字組件互動資訊：
+        insertion: §c- §rShift + 單擊填入文字：%s
+        clickEvent:
+          .: §c- §r點擊事件：
+          openUrl: §c - §r打開網頁連結：%s
+          openFile: §c - §r打開文件：%s
+          runCommand: §c - §r執行指令：%s
+          suggestCommand: §c - §r填入文字：%s
+          changePage: §c - §r翻頁：%s
+          copyToClipboard: §c - §r複製到剪切板：%s
+      'on': 啟用 Chat Tools [聊天工具箱]
+      'off': 停用 Chat Tools [聊天工具箱]
+      requireRestart: 請在更改後重啟 Minecraft 以應用更改
+      defaultValue: 默認：%s
+      variableType: 類型：%s
+    faq:
+      .: '[常見問題解答]'
+      '@Tooltip': 查看常見問題解答
+    gui:
+      title: 配置 Chat Tools [聊天工具箱]
+    category:
+      general: 通用
+      notifier: 聊天提醒
+      formatter: 注入聊天
+      chatkeybindings: 快捷發言
+      bubble: 聊天氣泡
+      responder: 自動響應
+      filter: 聊天過濾
+    general:
+      ChatTools:
+        Enabled:
+          .: 啟用 Chat Tools [聊天工具箱]
+          '@Tooltip': 切換整個模組的開關。
+      Timestamp:
+        .: 時間戳
+        '@Tooltip': 在訊息前插入時間戳。
+        Enabled:
+          .: 啟用時間戳
+          '@Tooltip': 切換是否應插入時間戳。
+        Pattern:
+          .: 格式
+          '@Tooltip': |-
+            時間戳的格式。
+            & -> 顏色代碼前綴
+            \& -> &
+            {hour} -> 小時
+            {minute} -> 分鐘
+            {second} -> 秒
+        CopyToChatBar:
+          Enabled:
+            .: 啟用複製菜單
+            '@Tooltip': 啟用複製之後，點擊時間戳，可以打開複製菜單。
+      RestoreMessages:
+        .: 儲存聊天記錄
+        '@Tooltip': 即使在切換到其他會話後也能恢復之前的會話。
+        Enabled:
+          .: 啟用儲存聊天記錄
+          '@Tooltip': 切換是否應恢復訊息。
+        SplitLineEnabled:
+          .: 啟用分割線
+          '@Tooltip': 如果開啟，切換會話時會在聊天中加入分割線。
+      NickHider:
+        .: 隱藏暱稱
+        '@Tooltip': 在用戶端層面替換你的名字。
+        Enabled:
+          .: 啟用暱稱隱藏
+          '@Tooltip': 切換是否應替換你的暱稱。
+        Nickname:
+          .: 自訂暱稱
+          '@Tooltip': |-
+            用於替換的新暱稱。
+            & -> 顏色代碼前綴
+            \& -> &
+      ChatHistoryNavigator:
+        Enabled:
+          .: 啟用聊天搜尋
+          '@Tooltip': 在聊天欄中按下 Ctrl + F 搜尋聊天歷史記錄。
+      PreviewClickEvents:
+        Enabled:
+          .: §6啟用預覽點擊事件 [實驗性功能]
+          '@Tooltip': |-
+            預覽聊天欄中文字的點擊事件。
+            §6該功能仍在開發中；部分文字可能不能生效。
+      Translator:
+        .: 翻譯器
+        '@Tooltip': |-
+          在聊天欄中輸入一些文字，按下 Shift + Tab 進行翻譯。
+          需要自行配置翻譯API。
+        Enabled:
+          .: 啟用翻譯器
+          '@Tooltip': 切換是否啟用翻譯器。
+        API:
+          .: 翻譯 API
+          '@Tooltip': |-
+            在這裡輸入一個連結，使用{text}替換待翻譯的文字。
+            如果沒有{text}，將會把待翻譯的文字加入到尾部。
+        PostInstead:
+          .: 以 POST 發送請求
+          '@Tooltip': |-
+            如果啟用此項，將以 POST 發送請求，否則使用 GET。
+            請注意在現版本即使以 POST 發送請求，實際上仍是把請求參數附在 URL 後面的，比較雞肋。
+      MaxHistoryLength:
+        .: 最大歷史記錄長度
+        '@Tooltip': |-
+          更改您的最大歷史記錄大小。
+          （Minecraft 默認：100）
+    notifier:
+      Toast:
+        .: 後台通知
+        '@Tooltip': |-
+          當 Minecraft 在後台運行時推送 Toast 通知。
+          只有匹配的訊息才會計入。
+        Enabled:
+          .: 啟用 Toast 通知
+          '@Tooltip': 切換是否推送 Toast 通知。
+        Mode:
+          .: 模式
+          '@Tooltip': |-
+            §6ADDON§r: 透過觸發額外的程序來推送 Toast 通知。 
+                需要下載額外文件，請使用 §o/chattools download§r 手動下載。
+            
+            §6POWERSHELL§r: 透過 PowerShell 指令推送 Toast 通知
+
+            §6AWT§r: 使用 Java AWT 庫 推送 Toast 通知（通常沒用，不建議使用。）
+      Sound:
+        .: 聲音
+        '@Tooltip': |-
+          播放聲音效果。
+          只有匹配的訊息才會計入。
+        Enabled:
+          .: 啟用聲音
+          '@Tooltip': 切換是否應播放聲音效果。
+        Type:
+          .: 類型
+          '@Tooltip': 將要播放的聲音效果的標識符。
+        Volume:
+          .: 音量
+          '@Tooltip': 更改聲音的音量。
+        Pitch:
+          .: 音調
+          '@Tooltip': 更改聲音的音調。
+      Actionbar:
+        .: 動作欄
+        '@Tooltip': |-
+          顯示動作欄訊息。
+          只有匹配的訊息才會計入。
+        Enabled:
+          .: 啟用動作欄
+          '@Tooltip': 切換是否應有動作欄通知。
+      Highlight:
+        .: 高亮
+        '@Tooltip': |-
+          在訊息前插入前綴。
+          只有匹配的訊息才會計入。
+        Enabled:
+          .: 啟用高亮
+          '@Tooltip': 切換是否應在訊息前插入前綴。
+        Prefix:
+          .: 前綴
+          '@Tooltip': 將要插入的前綴。
+        OverwriteEnabled:
+          .: 覆寫原聊天
+          '@Tooltip': |-
+            切換是否應覆寫訊息。 
+            原文字的屬性將會被擦除並覆寫。
+      IgnoreMyMessageEnabled:
+        .: 忽略我自己的訊息
+        '@Tooltip': 切換是否應從匹配中排除我自己的訊息。
+      MatchMyNameEnabled:
+        .: 匹配我的暱稱
+        '@Tooltip': |-
+          切換是否應匹配我的暱稱。
+          你也可以透過在下面的匹配白名單中加入你的暱稱來實現。
+      AllowList:
+        .: 匹配白名單
+        '@Tooltip': |-
+          此列表中的模式將用於匹配。
+          建議使用正則表達式。
+      BanList:
+        .: 匹配黑名單
+        '@Tooltip': |-
+          此列表中的模式將會從匹配中排除。
+          建議使用正則表達式。
+    formatter:
+      Enabled:
+        .: 啟用聊天注入
+        '@Tooltip': |-
+          聊天注入允許你根據自訂規則格式化訊息（加入前後綴等）。
+          切換是否應工作聊天注入。
+      List:
+        .: '規則 §6(目前伺服器地址：%s§6)§r'
+        '@Tooltip': |-
+          定義聊天注入的規則。
+          靠上的內容優先度更高。
+        '@New': 新規則
+        '@Display': §e[ %s§e ]§r %s
+        Address:
+          .: 地址
+          '@Tooltip': |-
+            此規則的伺服器地址。
+            建議使用正則表達式。
+        Formatter:
+          .: 文字
+          '@Tooltip': |-
+            格式化的模式串。
+            {text} -> 原始文字
+            {pos} -> (X,Y,Z)
+      DisableOnMatchList:
+        .: 自動停用聊天注入列表
+        '@Tooltip': |-
+          如果此列表中的任何模式串與你的文字匹配，
+          我們將自動停用該文字的聊天注入。
+          建議使用正則表達式。
+    chatkeybindings:
+      RepeatKey:
+        .: 一鍵復讀
+        '@Tooltip': |-
+          §o人 類 的 本 質 是 __ __ __§r
+          按下此鍵，將重複你的最後一條訊息。
+      RepeatKeyModifier:
+        .: 復讀鍵修飾符
+        '@Tooltip': 你需要同時再按下此修飾鍵才能觸發復讀。
+      Macro:
+        Enabled:
+          .: 啟用宏
+          '@Tooltip': 切換是否應工作以下宏。
+        List:
+          .: 宏
+          '@Tooltip': 定義不同指令的快捷鍵。
+          '@New': 新規則
+          '@Display': §e[ %s§e ]§r %s
+          Key:
+            .: 宏按鍵
+            '@Tooltip': 啟動此宏的鍵。
+          Modifier:
+            .: 修飾鍵
+            '@Tooltip': 你還需要同時啟動此修飾鍵，以啟動宏。
+          Mode:
+            .: 模式
+            '@Tooltip': |-
+              以修飾符為無、宏按鍵為“D”鍵做例子：
+              §6LAZY§r: F3+D -> 無法啟動
+                Ctrl+D -> 無法啟動
+
+              §6GREEDY§r: F3+D -> 啟動
+                Ctrl+D -> 啟動
+          Command:
+            .: 內容
+            '@Tooltip': 啟動此宏時將發送的內容。
+    bubble:
+      Enabled:
+        .: 啟用聊天氣泡
+        '@Tooltip': 切換是否應在說話者頭上渲染氣泡。
+      Lifetime:
+        .: 氣泡持續時間
+        '@Tooltip': 每個氣泡的持續時間（以秒為單位）。
+      YOffset:
+        .: 氣泡Y軸偏移量
+        '@Tooltip': 氣泡的Y軸偏移量。
+      List:
+        .: '規則 §6(目前伺服器地址：%s§6)§r'
+        '@Tooltip': |-
+          定義氣泡的規則。
+          靠上的內容優先度更高。
+        '@New': 新規則
+        '@Display': '§e[ %s§e ] [回退：%s§e]§r %s'
+        Address:
+          .: 地址
+          '@Tooltip': |-
+            此規則的伺服器地址。
+            建議使用正則表達式。
+        Pattern:
+          .: 模式
+          '@Tooltip': |-
+            捕獲訊息中的發送者暱稱和分離的聊天內容。
+            建議使用正則表達式。
+            應包括兩個正則表達式組：
+              §6<name>§r: 暱稱
+              §6<message>§r: 分離的訊息內容
+        Fallback:
+          .: 回退
+          '@Tooltip': |-
+            如果開啟此選項，當我們在訊息中發現暱稱時，
+            我們將無論如何都會在其頭上渲染一個氣泡，
+            即使訊息根本不匹配規則。
+
+            請注意，在這種情況下，氣泡中顯示的訊息將不會被修改。
+    responder:
+      Enabled:
+        .: 啟用自動響應
+        '@Tooltip': |-
+          自動響應特定訊息。
+          切換是否啟用自動響應。
+      List:
+        .: '規則 §6(目前伺服器地址：%s§6)§r'
+        '@Tooltip': |-
+          定義響應器的規則。
+          靠上的內容優先度更高。
+          響應至多一次。
+        '@New': 新規則
+        '@Display': '§e[ %s§e ] [關閉注入：%s§e]§r %s §e→§r %s'
+        Address:
+          .: 地址
+          '@Tooltip': |-
+            此規則的伺服器地址。
+            建議使用正則表達式。
+        Pattern:
+          .: 模式
+          '@Tooltip': |-
+            匹配的模式。
+            建議使用正則表達式。
+            建議使用正則表達式的分組功能。
+        Message:
+          .: 響應訊息
+          '@Tooltip': |-
+            這將是你的自動響應訊息。
+            {pos} -> (X,Y,Z)
+            {$GROUP} -> 匹配組`$GROUP`的內容
+        ForceDisableFormatter:
+          .: 停用聊天注入
+          '@Tooltip': 切換是否在響應時臨時關閉聊天注入的嘗試。
+    filter:
+      Enabled:
+        .: 啟用聊天過濾
+        '@Tooltip': 根據規則過濾聊天資訊
+      FilteredPlaceholderEnabled:
+        .: 啟用已過濾占位符
+        '@Tooltip': 訊息被過濾時發送一條占位訊息來占位
+      List:
+        .: 過濾規則
+        '@Tooltip': |-
+          如果此列表中的任何模式串與接收到的訊息匹配，此訊息將過濾。
+          建議使用正則表達式。
