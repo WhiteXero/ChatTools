@@ -157,6 +157,8 @@ key:
             §6POWERSHELL§r: 通过 PowerShell 命令推送 Toast 通知
 
             §6AWT§r: 使用 Java AWT 库 推送 Toast 通知（通常没用，不建议使用。）
+            
+            §6TWO_SLICES§r: 使用 two-slices 库 推送 Toast 通知（可能在 Linux、Mac OS X 上有效）
       Sound:
         .: 声音
         '@Tooltip': |-

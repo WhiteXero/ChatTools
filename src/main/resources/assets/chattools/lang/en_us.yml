@@ -158,6 +158,8 @@ key:
             §6POWERSHELL§r: Toast by powershell commands.
 
             §6AWT§r: Toast by using Java AWT (It usually not works. Not recommended!)
+            
+            §6TWO_SLICES§r: Toast by using two-slices. (It probably works on Linux and Mac OS X)
       Sound:
         .: Sound
         '@Tooltip': |-

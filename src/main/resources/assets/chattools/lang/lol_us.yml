@@ -139,7 +139,11 @@ key:
           '@Tooltip': Choosy to get pop-up toasts or just keep 'em in da toaster.
         Mode:
           .: How It Do
-          '@Tooltip': "§6ADDON§r: Toasty with extra stuff. Need to grab extra files, yo.\n§6POWERSHELL§r: Toasty with powershell magic\n§6AWT§r: Toasty with Java AWT (Usually no worky, don't bother, yo)"
+          '@Tooltip': |-
+            §6ADDON§r: Toasty with extra stuff. Need to grab extra files, yo.
+            §6POWERSHELL§r: Toasty with powershell magic
+            §6AWT§r: Toasty with Java AWT (Usually no worky, don't bother, yo)
+            §6TWO_SLICES§r: Toasty with two-slices. (may work on Linux and Mac OS X, bro)
       Sound:
         .: Noise Maker
         '@Tooltip': "Plays cool soundz.\nOnly when da right words pop up."

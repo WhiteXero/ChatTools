@@ -1,5 +1,6 @@
 package net.apple70cents.chattools.features.notifier;
 
+import com.sshtools.twoslices.ToastType;
 import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.utils.DownloadUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
@@ -28,6 +29,9 @@ public class Toast {
                 break;
             case "ADDON":
                 toastWithAddon(TITLE, text);
+                break;
+            case "TWO_SLICES":
+                toastWithTwoSlices(TITLE, text);
                 break;
             default:
                 return;
@@ -129,4 +133,9 @@ public class Toast {
         }
     }
 
+    public static void toastWithTwoSlices(String caption, String text) {
+        LoggerUtils.info("[ChatTools] Toast Notified with Two-Slices.");
+        System.setProperty("java.awt.headless", "false");
+        com.sshtools.twoslices.Toast.toast(ToastType.INFO, caption, text);
+    }
 }

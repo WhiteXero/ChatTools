@@ -157,6 +157,8 @@ key:
             §6POWERSHELL§r: 透過 PowerShell 指令推送 Toast 通知
 
             §6AWT§r: 使用 Java AWT 庫 推送 Toast 通知（通常沒用，不建議使用。）
+            
+            §6TWO_SLICES§r: 使用 two-slices 庫 推送 Toast 通知（或許在 Linux、Mac OS X 上奏效）
       Sound:
         .: 聲音
         '@Tooltip': |-
@@ -357,7 +359,7 @@ key:
     filter:
       Enabled:
         .: 啟用聊天過濾
-        '@Tooltip': 根據規則過濾聊天資訊
+        '@Tooltip': 根據規則過濾聊天訊息
       FilteredPlaceholderEnabled:
         .: 啟用已過濾占位符
         '@Tooltip': 訊息被過濾時發送一條占位訊息來占位
