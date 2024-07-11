@@ -9,7 +9,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 
 public class ChatHistoryNavigator {
-    public static ChatHistoryNavigatorScreen navigatorScreen;
     public static boolean shouldWork() {
         if (!(boolean) ChatTools.CONFIG.get("general.ChatHistoryNavigator.Enabled")) {
             return false;
@@ -21,9 +20,6 @@ public class ChatHistoryNavigator {
     }
 
     public static void popupNavigatorScreen() {
-        if (navigatorScreen == null) {
-            navigatorScreen = new ChatHistoryNavigatorScreen(TextUtils.trans("texts.ChatHistoryNavigator.title"), navigatorScreen);
-        }
-        MinecraftClient.getInstance().setScreen(navigatorScreen);
+        MinecraftClient.getInstance().setScreen(new ChatHistoryNavigatorScreen(TextUtils.trans("texts.ChatHistoryNavigator.title")));
     }
 }

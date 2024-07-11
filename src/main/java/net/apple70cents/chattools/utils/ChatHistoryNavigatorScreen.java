@@ -39,23 +39,19 @@ import net.minecraft.client.gui.screen.narration.NarrationPart;
 public class ChatHistoryNavigatorScreen extends Screen {
     @Nullable
     private TextFieldWidget keywordField;
-    private List<String> hashcodeResultList;
     ChatUnitListWidget chatUnitListWidget;
 
-    public ChatHistoryNavigatorScreen(Text title, @Nullable ChatHistoryNavigatorScreen copyFrom) {
+    public ChatHistoryNavigatorScreen(Text title) {
         super(title);
-        this.hashcodeResultList = new ArrayList<>();
-        if (copyFrom != null) {
-            this.hashcodeResultList = copyFrom.hashcodeResultList;
-        }
     }
 
     @Override
     protected void init() {
         super.init();
         this.keywordField = new TextFieldWidget(this.textRenderer, 30, 35, this.width - 60, 20, this.keywordField, TextUtils.trans("texts.ChatHistoryNavigator.placeholder"));
-        this.keywordField.setChangedListener(keyword -> updateResultList(keyword));
-        updateResultList(keywordField.getText());
+        this.keywordField.setChangedListener(keyword -> {
+            this.chatUnitListWidget.setKeyword(keyword);
+        });
 
         //#if MC>=11700
         this.addDrawableChild(this.keywordField);
@@ -64,7 +60,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
         //#endif
         this.setInitialFocus(this.keywordField);
 
-        this.chatUnitListWidget = new ChatUnitListWidget(MinecraftClient.getInstance(), this.width - 60, this.height - 120, 65, textRenderer.fontHeight + 3);
+        this.chatUnitListWidget = new ChatUnitListWidget(MinecraftClient.getInstance(), this.width - 60, this.height - 120, 65, textRenderer.fontHeight + 3, this.keywordField.getText(), this.chatUnitListWidget);
         //#if MC>=12000
         this.chatUnitListWidget.setX(30);
         //#else
@@ -112,23 +108,8 @@ public class ChatHistoryNavigatorScreen extends Screen {
         //$$ drawCenteredTextWithShadow(context,this.textRenderer, this.title, this.width / 2, 15, 16777215);
         //#endif
 
-        if (!hashcodeResultList.isEmpty()) {
+        if (!chatUnitListWidget.hashcodeResultList.isEmpty()) {
             chatUnitListWidget.render(context, mouseX, mouseY, delta);
-        }
-    }
-
-    protected void updateResultList(String keyword) {
-        hashcodeResultList.clear();
-        if (keyword == null || keyword.isBlank()) {
-            return;
-        }
-        hashcodeResultList = TextUtils.messageMap.entrySet().stream().filter(entry -> TextUtils
-                                              .wash(entry.getValue().message.getString().toLowerCase()).contains(keyword.toLowerCase()))
-                                                 .map(Map.Entry::getKey).collect(Collectors.toList());
-
-        this.chatUnitListWidget.clearAllEntries();
-        for (String hashcode : hashcodeResultList) {
-            this.chatUnitListWidget.addChatUnitEntry(new ChatUnitEntry(hashcode));
         }
     }
 
@@ -202,16 +183,49 @@ public class ChatHistoryNavigatorScreen extends Screen {
     }
 
     protected class ChatUnitListWidget extends EntryListWidget<ChatUnitEntry> {
-        public void clearAllEntries() {
-            clearEntries();
+        private List<String> hashcodeResultList;
+
+        protected void updateResultList(String keyword) {
+            if (hashcodeResultList == null) {
+                hashcodeResultList = new ArrayList<>();
+            }
+            hashcodeResultList.clear();
+            if (keyword == null || keyword.isBlank()) {
+                return;
+            }
+            hashcodeResultList = TextUtils.messageMap.entrySet().stream().filter(entry -> TextUtils
+                                                  .wash(entry.getValue().message.getString().toLowerCase()).contains(keyword.toLowerCase()))
+                                                     .map(Map.Entry::getKey).collect(Collectors.toList());
         }
 
-        public ChatUnitListWidget(MinecraftClient client, int width, int height, int y, int itemHeight) {
+        protected void refreshUnitEntries() {
+            if (chatUnitListWidget == null) {
+                return;
+            }
+            this.clearEntries();
+            for (String hashcode : hashcodeResultList) {
+                this.addEntry(new ChatUnitEntry(hashcode));
+            }
+        }
+
+        public void setKeyword(String keyword) {
+            this.updateResultList(keyword);
+            this.refreshUnitEntries();
+        }
+
+        public ChatUnitListWidget(MinecraftClient client, int width, int height, int y, int itemHeight, String keyword, @Nullable ChatUnitListWidget copyFrom) {
             //#if MC>=12000
             super(client, width, height, y, itemHeight);
             //#else
             //$$ super(client, width, height, y, y + height, itemHeight);
             //#endif
+            if (copyFrom != null) {
+                this.hashcodeResultList = copyFrom.hashcodeResultList;
+            } else {
+                this.hashcodeResultList = new ArrayList<>();
+                this.updateResultList(keyword);
+            }
+            this.refreshUnitEntries();
         }
 
         @Override
@@ -234,10 +248,6 @@ public class ChatHistoryNavigatorScreen extends Screen {
         protected void drawMenuListBackground(DrawContext context) {
         }
         //#endif
-
-        public void addChatUnitEntry(ChatUnitEntry entry) {
-            this.addEntry(entry);
-        }
 
         //#if MC>=11900
         @Nullable
