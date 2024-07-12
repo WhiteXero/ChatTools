@@ -55,6 +55,13 @@ public class BasicNotifier {
         MessageUtils.setJustSentMessage(false);
 
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
+
+        // Toast
+        if ((boolean) ChatTools.CONFIG.get("notifier.Toast.Enabled") && !MinecraftClient.getInstance()
+                                                                                        .isWindowFocused()) {
+            Toast.work(TextUtils.wash(text.getString()));
+        }
+
         // Sound
         if ((boolean) ChatTools.CONFIG.get("notifier.Sound.Enabled") && player != null) {
             String identifier = (String) ChatTools.CONFIG.get("notifier.Sound.Type");

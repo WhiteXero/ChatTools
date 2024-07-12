@@ -6,12 +6,9 @@ import net.apple70cents.chattools.features.filter.ChatFilter;
 import net.apple70cents.chattools.features.general.NickHider;
 import net.apple70cents.chattools.features.general.Timestamp;
 import net.apple70cents.chattools.features.notifier.BasicNotifier;
-import net.apple70cents.chattools.features.notifier.Toast;
 import net.apple70cents.chattools.features.responder.Responder;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
-import net.apple70cents.chattools.utils.TextUtils;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
@@ -101,10 +98,6 @@ public abstract class ChatHudMixin {
             message = NickHider.work(message);
         }
         if (BasicNotifier.shouldWork(message)) {
-            if ((boolean) ChatTools.CONFIG.get("notifier.Toast.Enabled") && !MinecraftClient.getInstance()
-                                                                                            .isWindowFocused()) {
-                Toast.work(TextUtils.wash(message.getString()));
-            }
             message = BasicNotifier.work(message);
         }
         if ((boolean) ChatTools.CONFIG.get("general.Timestamp.Enabled")) {

@@ -136,6 +136,10 @@ public class Toast {
     public static void toastWithTwoSlices(String caption, String text) {
         LoggerUtils.info("[ChatTools] Toast Notified with Two-Slices.");
         System.setProperty("java.awt.headless", "false");
-        com.sshtools.twoslices.Toast.toast(ToastType.INFO, caption, text);
+        // starts a new thread for this
+        Thread thread = new Thread(() -> {
+            com.sshtools.twoslices.Toast.toast(ToastType.INFO, caption, text);
+        }, "ChatTools-Toast-Thread");
+        thread.start();
     }
 }
