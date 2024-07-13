@@ -58,15 +58,6 @@ public class ChatHistoryNavigatorScreen extends Screen {
         this.keywordField = new TextFieldWidget(this.textRenderer, 30, 35, this.width - 155, 20, this.keywordField, TextUtils.trans("texts.ChatHistoryNavigator.placeholder"));
         this.keywordField.setChangedListener(keyword -> {
             this.chatUnitListWidget.setKeyword(keyword);
-//            if (this.chatUnitListWidget.searchMode == SearchModes.REGEX) {
-//                try {
-//                    Pattern.compile(keyword);
-//                    this.keywordField.setTooltip(null);
-//                } catch (PatternSyntaxException e) {
-//                    this.keywordField.setTooltip(Tooltip.of(TextUtils.literal(e.getDescription()).copy()
-//                                                                     .setStyle(Style.EMPTY.withFormatting(Formatting.RED))));
-//                }
-//            }
         });
 
         //#if MC>=11700
