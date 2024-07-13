@@ -33,9 +33,10 @@ public class Responder {
         final String groupNamePattern = "(?<!\\\\)\\{(?<group>.*?)(?<!\\\\)}";
         Matcher matcher = Pattern.compile(groupNamePattern).matcher(message);
         Matcher rawMessageMatcher = Pattern.compile(rawPattern).matcher(rawMessageReceived);
-        while (matcher.find()) {
-            String groupName = matcher.group("group");
-            if (rawMessageMatcher.find()) {
+
+        if (rawMessageMatcher.find()) {
+            while (matcher.find()) {
+                String groupName = matcher.group("group");
                 String context = rawMessageMatcher.group(groupName);
                 if (context != null && !context.isBlank()) {
                     // the context caught is not blank
@@ -48,7 +49,7 @@ public class Responder {
 
     public static void work(Text text) {
         String messageReceived = TextUtils.wash(text.getString());
-        boolean canResponse = false;
+        boolean shouldRespond = false;
         String pattern = "";
         String message = "";
         boolean forceDisableInjector = false;
@@ -56,7 +57,7 @@ public class Responder {
             if (mc.getCurrentServerEntry() == null) {
                 if ("*".equals(unit.address)) {
                     if (Pattern.compile(unit.pattern).matcher(messageReceived).matches()) {
-                        canResponse = true;
+                        shouldRespond = true;
                         pattern = unit.pattern;
                         message = unit.message;
                         forceDisableInjector = unit.forceDisableFormatter;
@@ -66,7 +67,7 @@ public class Responder {
             } else if ("*".equals(unit.address) || Pattern.compile(unit.address)
                                                           .matcher(mc.getCurrentServerEntry().address).matches()) {
                 if (Pattern.compile(unit.pattern).matcher(messageReceived).matches()) {
-                    canResponse = true;
+                    shouldRespond = true;
                     pattern = unit.pattern;
                     message = unit.message;
                     forceDisableInjector = unit.forceDisableFormatter;
@@ -74,7 +75,7 @@ public class Responder {
                 }
             }
         }
-        if (canResponse) {
+        if (shouldRespond) {
             message = replaceAllGroupNames(messageReceived, pattern, message);
             if (mc.player != null) {
                 message = message.replace("{pos}", String.format("(%d,%d,%d)", (int) mc.player.getX(), (int) mc.player.getY(), (int) mc.player.getZ()));
