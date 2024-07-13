@@ -33,6 +33,16 @@ key:
       ChatHistoryNavigator:
         title: 聊天搜尋
         placeholder: 輸入以搜尋…
+        modes:
+          CASE_INSENSITIVE:
+            .: 大小寫不敏感
+            '@Tooltip': 不區分大小寫
+          CASE_SENSITIVE:
+            .: 大小寫敏感
+            '@Tooltip': 區分大小寫
+          REGEX:
+            .: 正則表達式
+            '@Tooltip': 使用正則表達式
       PreviewClickEvents:
         overall: §6文字組件互動資訊：
         insertion: §c- §rShift + 單擊填入文字：%s

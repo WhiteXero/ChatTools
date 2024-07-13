@@ -33,6 +33,18 @@ key:
       ChatHistoryNavigator:
         title: Chat History Navigator
         placeholder: Search...
+        modes:
+          CASE_INSENSITIVE:
+            .: Case Insensitive
+            '@Tooltip': e.g. 'A' will match 'A' or 'a'
+          CASE_SENSITIVE:
+            .: Case Sensitive
+            '@Tooltip': e.g. 'A' will only match 'A'
+          REGEX:
+            .: RegEx
+            '@Tooltip': |-
+              Using RegEx(Regular Expressions) to match.
+              e.g. '\d' will match any digit character (0-9)
       PreviewClickEvents:
         overall: "§6Events:"
         insertion: "§c- §rShift + Click Insertion: %s"

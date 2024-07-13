@@ -7,14 +7,20 @@ import net.minecraft.client.gui.widget.ElementListWidget;
 import net.minecraft.client.gui.widget.EntryListWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.screen.ScreenTexts;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 //#if MC>=11900
 import net.minecraft.client.gui.tooltip.Tooltip;
@@ -40,6 +46,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
     @Nullable
     private TextFieldWidget keywordField;
     ChatUnitListWidget chatUnitListWidget;
+    ButtonWidget modeSelectorWidget;
 
     public ChatHistoryNavigatorScreen(Text title) {
         super(title);
@@ -48,9 +55,18 @@ public class ChatHistoryNavigatorScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        this.keywordField = new TextFieldWidget(this.textRenderer, 30, 35, this.width - 60, 20, this.keywordField, TextUtils.trans("texts.ChatHistoryNavigator.placeholder"));
+        this.keywordField = new TextFieldWidget(this.textRenderer, 30, 35, this.width - 155, 20, this.keywordField, TextUtils.trans("texts.ChatHistoryNavigator.placeholder"));
         this.keywordField.setChangedListener(keyword -> {
             this.chatUnitListWidget.setKeyword(keyword);
+//            if (this.chatUnitListWidget.searchMode == SearchModes.REGEX) {
+//                try {
+//                    Pattern.compile(keyword);
+//                    this.keywordField.setTooltip(null);
+//                } catch (PatternSyntaxException e) {
+//                    this.keywordField.setTooltip(Tooltip.of(TextUtils.literal(e.getDescription()).copy()
+//                                                                     .setStyle(Style.EMPTY.withFormatting(Formatting.RED))));
+//                }
+//            }
         });
 
         //#if MC>=11700
@@ -78,6 +94,30 @@ public class ChatHistoryNavigatorScreen extends Screen {
         //$$ this.chatUnitListWidget.method_31323(false);
         //#endif
         this.addSelectableChild(chatUnitListWidget);
+
+        // Mode Selector Button
+        Text modeSelectorButtonText = TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode());
+        ButtonWidget.PressAction pressAction = (button) -> {
+            this.chatUnitListWidget.switchToNextSearchMode();
+            this.modeSelectorWidget.setMessage(TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode()));
+            //#if MC>=11900
+            this.modeSelectorWidget.setTooltip(Tooltip.of(TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode() + ".@Tooltip")));
+            //#endif
+
+            this.chatUnitListWidget.setKeyword(this.keywordField.getText());
+            this.chatUnitListWidget.refreshUnitEntries();
+        };
+        //#if MC>=11900
+        this.modeSelectorWidget = ButtonWidget.builder(modeSelectorButtonText, pressAction)
+                                              .dimensions(this.width - 120, 35, 90, 20).build();
+        this.addDrawableChild(modeSelectorWidget);
+        //#elseif MC>=11700
+        //$$ this.modeSelectorWidget = new ButtonWidget(this.width - 120, 35, 90, 20, modeSelectorButtonText, pressAction, (button, matrices, mouseX, mouseY) -> renderTooltip(matrices, TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode() + ".@Tooltip"), mouseX, mouseY));
+        //$$ addDrawableChild(modeSelectorWidget);
+        //#else
+        //$$ this.modeSelectorWidget = new ButtonWidget(this.width - 120, 35, 90, 20, modeSelectorButtonText, pressAction, (button, matrices, mouseX, mouseY) -> TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode() + ".@Tooltip"));
+        //$$ addButton(modeSelectorWidget);
+        //#endif
 
         // Done button
         //#if MC>=11900
@@ -107,6 +147,22 @@ public class ChatHistoryNavigatorScreen extends Screen {
         //#else
         //$$ drawCenteredTextWithShadow(context,this.textRenderer, this.title, this.width / 2, 15, 16777215);
         //#endif
+
+        if (this.chatUnitListWidget.searchMode == SearchModes.REGEX) {
+            try {
+                if (this.keywordField != null) {
+                    Pattern.compile(this.keywordField.getText());
+                }
+            } catch (PatternSyntaxException e) {
+                Text errorText = TextUtils.literal(e.getDescription()).copy()
+                                          .setStyle(Style.EMPTY.withFormatting(Formatting.RED));
+                //#if MC>=12000
+                context.drawTooltip(textRenderer, errorText, mouseX, mouseY);
+                //#else
+                //$$ renderTooltip(context, errorText, mouseX, mouseY);
+                //#endif
+            }
+        }
 
         if (!chatUnitListWidget.hashcodeResultList.isEmpty()) {
             chatUnitListWidget.render(context, mouseX, mouseY, delta);
@@ -176,14 +232,19 @@ public class ChatHistoryNavigatorScreen extends Screen {
                 //#if MC>=12000
                 context.drawTooltip(textRenderer, timestamps, mouseX, mouseY);
                 //#else
-                //$$ renderTooltip(context,timestamps,mouseX,mouseY);
+                //$$ renderTooltip(context, timestamps, mouseX, mouseY);
                 //#endif
             }
         }
     }
 
+    public enum SearchModes {
+        CASE_INSENSITIVE, CASE_SENSITIVE, REGEX;
+    }
+
     protected class ChatUnitListWidget extends EntryListWidget<ChatUnitEntry> {
         private List<String> hashcodeResultList;
+        private SearchModes searchMode;
 
         protected void updateResultList(String keyword) {
             if (hashcodeResultList == null) {
@@ -193,9 +254,34 @@ public class ChatHistoryNavigatorScreen extends Screen {
             if (keyword == null || keyword.isBlank()) {
                 return;
             }
-            hashcodeResultList = TextUtils.messageMap.entrySet().stream().filter(entry -> TextUtils
-                                                  .wash(entry.getValue().message.getString().toLowerCase()).contains(keyword.toLowerCase()))
-                                                     .map(Map.Entry::getKey).collect(Collectors.toList());
+
+            if (searchMode == SearchModes.REGEX) {
+                try {
+                    Pattern.compile(keyword);
+                } catch (PatternSyntaxException e) {
+                    return;
+                }
+            }
+            Predicate<Map.Entry<String, TextUtils.MessageUnit>> filter = null;
+            switch (searchMode) {
+                case CASE_INSENSITIVE:
+                    filter = entry -> TextUtils.wash(entry.getValue().message.getString().toUpperCase())
+                                               .contains(keyword.toUpperCase());
+                    break;
+                case CASE_SENSITIVE:
+                    filter = entry -> TextUtils.wash(entry.getValue().message.getString()).contains(keyword);
+                    break;
+                case REGEX:
+                    try {
+                        filter = entry -> Pattern.compile(keyword, Pattern.MULTILINE)
+                                                 .matcher(TextUtils.wash(entry.getValue().message.getString())).find();
+                    } catch (PatternSyntaxException e) {
+                        return;
+                    }
+                    break;
+            }
+            Stream<Map.Entry<String, TextUtils.MessageUnit>> stream = TextUtils.messageMap.entrySet().stream();
+            hashcodeResultList = stream.filter(filter).map(Map.Entry::getKey).collect(Collectors.toList());
         }
 
         protected void refreshUnitEntries() {
@@ -213,14 +299,34 @@ public class ChatHistoryNavigatorScreen extends Screen {
             this.refreshUnitEntries();
         }
 
+        public void switchToNextSearchMode() {
+            if (this.searchMode == SearchModes.CASE_INSENSITIVE) {
+                this.searchMode = SearchModes.CASE_SENSITIVE;
+            } else if (this.searchMode == SearchModes.CASE_SENSITIVE) {
+                this.searchMode = SearchModes.REGEX;
+            } else if (this.searchMode == SearchModes.REGEX) {
+                this.searchMode = SearchModes.CASE_INSENSITIVE;
+            }
+        }
+
+        public void setSearchMode(SearchModes searchMode) {
+            this.searchMode = searchMode;
+        }
+
+        public SearchModes getSearchMode() {
+            return this.searchMode;
+        }
+
         public ChatUnitListWidget(MinecraftClient client, int width, int height, int y, int itemHeight, String keyword, @Nullable ChatUnitListWidget copyFrom) {
             //#if MC>=12000
             super(client, width, height, y, itemHeight);
             //#else
             //$$ super(client, width, height, y, y + height, itemHeight);
             //#endif
+            this.searchMode = SearchModes.CASE_INSENSITIVE;
             if (copyFrom != null) {
                 this.hashcodeResultList = copyFrom.hashcodeResultList;
+                this.searchMode = copyFrom.getSearchMode();
             } else {
                 this.hashcodeResultList = new ArrayList<>();
                 this.updateResultList(keyword);
