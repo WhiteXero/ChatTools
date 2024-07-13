@@ -76,7 +76,15 @@ public class Responder {
             }
         }
         if (shouldRespond) {
-            message = replaceAllGroupNames(messageReceived, pattern, message);
+            try {
+                message = replaceAllGroupNames(messageReceived, pattern, message);
+            } catch (Exception e) {
+                LoggerUtils.error("[ChatTools] Failed when auto responding: " + e.getMessage());
+                MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.respond.failure", e.getMessage()));
+                MessageUtils.sendToActionbar(TextUtils.trans("texts.respond.failure", e.getMessage()));
+                e.printStackTrace();
+                return;
+            }
             if (mc.player != null) {
                 message = message.replace("{pos}", String.format("(%d,%d,%d)", (int) mc.player.getX(), (int) mc.player.getY(), (int) mc.player.getZ()));
             }

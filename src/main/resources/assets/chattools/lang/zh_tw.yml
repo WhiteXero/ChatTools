@@ -17,6 +17,7 @@ key:
       download.process: '[Chat Tools] %s 下載進度：%s%% - （%sKB/%sKB）'
       download.success: '§6[Chat Tools] 已完成下載！'
       toast.failure: §6Toast 失敗：附件未完整下載 或 模式不支持該平台§r
+      respond.failure: '§6[Chat Tools] 嘗試自動響應失敗：%s'
       translator.requireApi: 請先配置翻譯API
       translator.await: '[正在響應……]'
       copy:
