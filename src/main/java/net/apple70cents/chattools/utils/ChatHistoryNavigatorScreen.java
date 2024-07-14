@@ -68,15 +68,13 @@ public class ChatHistoryNavigatorScreen extends Screen {
         this.setInitialFocus(this.keywordField);
 
         this.chatUnitListWidget = new ChatUnitListWidget(MinecraftClient.getInstance(), this.width - 60, this.height - 120, 65, textRenderer.fontHeight + 3, this.keywordField.getText(), this.chatUnitListWidget);
-        //#if MC>=12000
+        //#if MC>=12002
         this.chatUnitListWidget.setX(30);
         //#else
         //$$ this.chatUnitListWidget.setLeftPos(30);
         //#endif
 
         //#if MC>=12005
-        //#elseif MC>=12000
-        //$$ this.chatUnitListWidget.setRenderBackground(false);
         //#elseif MC>=11700
         //$$ this.chatUnitListWidget.setRenderBackground(false);
         //$$ this.chatUnitListWidget.setRenderHorizontalShadows(false);
@@ -309,7 +307,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
         }
 
         public ChatUnitListWidget(MinecraftClient client, int width, int height, int y, int itemHeight, String keyword, @Nullable ChatUnitListWidget copyFrom) {
-            //#if MC>=12000
+            //#if MC>=12002
             super(client, width, height, y, itemHeight);
             //#else
             //$$ super(client, width, height, y, y + height, itemHeight);
@@ -332,7 +330,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
 
         @Override
         protected int getScrollbarX() {
-            //#if MC>=12000
+            //#if MC>=12002
             int x = this.getX();
             //#else
             //$$ int x = this.left;
@@ -356,7 +354,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
         }
         //#endif
 
-        //#if MC>=12000
+        //#if MC>=12002
         protected void appendClickableNarrations(NarrationMessageBuilder builder) {
             if (getHoveredEntry() != null) {
                 builder.put(NarrationPart.TITLE, getHoveredEntry().getText());

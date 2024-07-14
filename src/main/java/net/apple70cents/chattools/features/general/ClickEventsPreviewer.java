@@ -101,7 +101,7 @@ public class ClickEventsPreviewer {
             texts.add(TextUtils.trans("texts.PreviewClickEvents.clickEvent"));
             ClickEvent clickEvent = style.getClickEvent();
             Text value = TextUtils.of(clickEvent.getValue()).copy().formatted(Formatting.GREEN);
-            //#if MC>=12000
+            //#if MC>=12002
             String action = clickEvent.getAction().asString();
             //#else
             //$$ String action = clickEvent.getAction().getName();
