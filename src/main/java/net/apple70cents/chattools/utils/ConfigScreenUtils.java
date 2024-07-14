@@ -243,7 +243,8 @@ public class ConfigScreenUtils {
                                         .compile(responderRuleUnit.address)
                                         .matcher(MinecraftClient.getInstance().getCurrentServerEntry().address)
                                         .matches())) ? "§a" : "§6";
-                                Text displayText = trans(key + ".@Display", colorPrefix + responderRuleUnit.address, responderRuleUnit.forceDisableFormatter ? "§a✔" : "§c✘", responderRuleUnit.pattern, responderRuleUnit.message);
+                                Text displayText = trans(key + ".@Display", colorPrefix + responderRuleUnit.address, responderRuleUnit.forceDisableFormatter ? "§a✔" : "§c✘",
+                                        responderRuleUnit.delayInMilliseconds, responderRuleUnit.pattern, responderRuleUnit.message);
                                 return new MultiElementListEntry<>(displayText, responderRuleUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
                                     add(eb.startStrField(trans(key + ".Address"), responderRuleUnit.address)
                                           .setTooltip(getTooltip(key + ".Address", "String", new SpecialUnits.ResponderRuleUnit().address))
