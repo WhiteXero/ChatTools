@@ -1,5 +1,5 @@
 {
-  "config.version": 2.201,
+  "config.version": 2.3,
   "general.ChatTools.Enabled": true,
   "general.ShowWelcomeMessageEnabled": true,
   "general.Timestamp.Enabled": true,
@@ -67,5 +67,14 @@
   "filter.FilteredPlaceholderEnabled": true,
   "filter.List": [
     "<CHANGE ME>"
+  ],
+  "customJoinMessage.Enabled": false,
+  "customJoinMessage.List": [
+    {
+      "address": "*",
+      "message": "/login xxx",
+      "delayInMilliseconds": 1000,
+      "forceDisableFormatter": false
+    }
   ]
 }

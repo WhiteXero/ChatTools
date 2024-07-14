@@ -39,8 +39,7 @@ public class SpecialUnits {
 
         public static BubbleRuleUnit of(Object ele) {
             if (ele instanceof Map) {
-                return new BubbleRuleUnit((String) ((Map) ele).get("address"), (String) ((Map) ele).get("pattern"),
-                        (boolean) ((Map) ele).get("fallback"));
+                return new BubbleRuleUnit((String) ((Map) ele).get("address"), (String) ((Map) ele).get("pattern"), (boolean) ((Map) ele).get("fallback"));
             } else if (ele instanceof BubbleRuleUnit) {
                 return (BubbleRuleUnit) ele;
             } else {
@@ -79,8 +78,7 @@ public class SpecialUnits {
 
         public static ResponderRuleUnit of(Object ele) {
             if (ele instanceof Map) {
-                return new ResponderRuleUnit((String) ((Map) ele).get("address"), (String) ((Map) ele).get("pattern"),
-                        (String) ((Map) ele).get("message"), (boolean) ((Map) ele).get("forceDisableFormatter"));
+                return new ResponderRuleUnit((String) ((Map) ele).get("address"), (String) ((Map) ele).get("pattern"), (String) ((Map) ele).get("message"), (boolean) ((Map) ele).get("forceDisableFormatter"));
             } else if (ele instanceof ResponderRuleUnit) {
                 return (ResponderRuleUnit) ele;
             } else {
@@ -119,8 +117,7 @@ public class SpecialUnits {
 
         public static MacroUnit of(Object ele) {
             if (ele instanceof Map) {
-                return new MacroUnit((String) ((Map) ele).get("key"), KeyModifiers.valueOf((String) ((Map) ele).get("modifier")),
-                        MacroModes.valueOf((String) ((Map) ele).get("mode")), (String) ((Map) ele).get("command"));
+                return new MacroUnit((String) ((Map) ele).get("key"), KeyModifiers.valueOf((String) ((Map) ele).get("modifier")), MacroModes.valueOf((String) ((Map) ele).get("mode")), (String) ((Map) ele).get("command"));
             } else if (ele instanceof MacroUnit) {
                 return (MacroUnit) ele;
             } else {
@@ -187,5 +184,57 @@ public class SpecialUnits {
         }
     }
 
+    public static class CustomJoinMessageRuleUnit {
+        public String address;
+        public String message;
+        public long delayInMilliseconds;
+        public boolean forceDisableFormatter;
+
+        public CustomJoinMessageRuleUnit() {
+            this.address = "*";
+            this.message = "/login xxx";
+            this.delayInMilliseconds = 1000;
+            this.forceDisableFormatter = false;
+        }
+
+        public CustomJoinMessageRuleUnit(String address, String message, long delayInMilliseconds, boolean forceDisableFormatter) {
+            this.address = address;
+            this.message = message;
+            this.delayInMilliseconds = delayInMilliseconds;
+            this.forceDisableFormatter = forceDisableFormatter;
+        }
+
+        public CustomJoinMessageRuleUnit(String address, String message, Number delayInMilliseconds, boolean forceDisableFormatter) {
+            this.address = address;
+            this.message = message;
+            this.delayInMilliseconds = delayInMilliseconds.longValue();
+            this.forceDisableFormatter = forceDisableFormatter;
+        }
+
+        public CustomJoinMessageRuleUnit(String address, String message, Double delayInMilliseconds, boolean forceDisableFormatter) {
+            this.address = address;
+            this.message = message;
+            this.delayInMilliseconds = delayInMilliseconds.longValue();
+            this.forceDisableFormatter = forceDisableFormatter;
+        }
+
+        public static CustomJoinMessageRuleUnit of(Object ele) {
+            if (ele instanceof Map) {
+                return new CustomJoinMessageRuleUnit((String) ((Map) ele).get("address"), (String) ((Map) ele).get("message"), ((Number) ((Map) ele).get("delayInMilliseconds")).longValue(), (boolean) ((Map) ele).get("forceDisableFormatter"));
+            } else if (ele instanceof CustomJoinMessageRuleUnit) {
+                return (CustomJoinMessageRuleUnit) ele;
+            } else {
+                throw new IllegalArgumentException("Unexpected element type of Object: " + ele);
+            }
+        }
+
+        public static List<CustomJoinMessageRuleUnit> fromList(List list) {
+            List<CustomJoinMessageRuleUnit> arr = new ArrayList<>();
+            for (Object ele : list) {
+                arr.add(CustomJoinMessageRuleUnit.of(ele));
+            }
+            return arr;
+        }
+    }
 }
 

@@ -9,7 +9,8 @@
     "ClientPlayNetworkHandlerMixin",
     "DrawContextMixin",
     "EntityRendererMixin",
-    "InGameHudMixin"
+    "InGameHudMixin",
+    "ClientLoginNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

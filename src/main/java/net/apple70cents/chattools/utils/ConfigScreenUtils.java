@@ -408,6 +408,72 @@ public class ConfigScreenUtils {
                             }
                         }
                     );
+            case "customJoinMessageList":
+                return new NestedListListEntry<SpecialUnits.CustomJoinMessageRuleUnit, MultiElementListEntry<SpecialUnits.CustomJoinMessageRuleUnit>>
+                    (SERVER_LABELED_KEY,
+                        SpecialUnits.CustomJoinMessageRuleUnit.fromList((List) CONFIG.get(key)),
+                        true,
+                        () -> Optional.of(new net.minecraft.text.Text[]{tooltip}),
+                        v -> CONFIG.set(key, v),
+                        () -> SpecialUnits.CustomJoinMessageRuleUnit.fromList((List) DEFAULT_CONFIG.get(key)),
+                        eb.getResetButtonKey(),
+                        true,
+                        true,
+                        (customJoinMessageRuleUnit, ignored) -> {
+                            AtomicReference<SpecialUnits.CustomJoinMessageRuleUnit> customJoinMessageRuleUnitRef = new AtomicReference<>(customJoinMessageRuleUnit);
+                            if (customJoinMessageRuleUnit == null) {
+                                Text displayText = trans(key + ".@New");
+                                SpecialUnits.CustomJoinMessageRuleUnit defaultCustomJoinMessageRuleUnit = new SpecialUnits.CustomJoinMessageRuleUnit();
+                                customJoinMessageRuleUnitRef.set(defaultCustomJoinMessageRuleUnit);
+                                return new MultiElementListEntry<>(displayText, defaultCustomJoinMessageRuleUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
+                                    add(eb.startStrField(trans(key + ".Address"), defaultCustomJoinMessageRuleUnit.address)
+                                          .setTooltip(getTooltip(key + ".Address", "String", defaultCustomJoinMessageRuleUnit.address))
+                                          .setDefaultValue(defaultCustomJoinMessageRuleUnit.address)
+                                          .setSaveConsumer(v -> customJoinMessageRuleUnitRef.get().address = v)
+                                          .setErrorSupplier(ErrorSuppliers.REGEX_COMPILE_ERROR_SUPPLIER_ALLOW_STAR).build());
+                                    add(eb.startStrField(trans(key + ".Message"), defaultCustomJoinMessageRuleUnit.message)
+                                          .setTooltip(getTooltip(key + ".Message", "String", defaultCustomJoinMessageRuleUnit.message))
+                                          .setDefaultValue(defaultCustomJoinMessageRuleUnit.message)
+                                          .setSaveConsumer(v -> customJoinMessageRuleUnitRef.get().message = v).build());
+                                    add(eb.startLongField(trans(key + ".DelayInMilliseconds"), defaultCustomJoinMessageRuleUnit.delayInMilliseconds)
+                                          .setTooltip(getTooltip(key + ".DelayInMilliseconds", "longField", defaultCustomJoinMessageRuleUnit.delayInMilliseconds))
+                                          .setDefaultValue(defaultCustomJoinMessageRuleUnit.delayInMilliseconds)
+                                          .setSaveConsumer(v -> customJoinMessageRuleUnitRef.get().delayInMilliseconds = v).build());
+                                    add(eb.startBooleanToggle(trans(key + ".ForceDisableFormatter"), defaultCustomJoinMessageRuleUnit.forceDisableFormatter)
+                                           .setTooltip(getTooltip(key + ".ForceDisableFormatter", "boolean", defaultCustomJoinMessageRuleUnit.forceDisableFormatter))
+                                           .setDefaultValue(defaultCustomJoinMessageRuleUnit.forceDisableFormatter)
+                                           .setSaveConsumer(v -> customJoinMessageRuleUnitRef.get().forceDisableFormatter = v).build());
+                                }},false);
+                            } else {
+                                String colorPrefix = ("*".equals(customJoinMessageRuleUnit.address) || (MinecraftClient.getInstance()
+                                                                                                               .getCurrentServerEntry() != null && Pattern
+                                        .compile(customJoinMessageRuleUnit.address)
+                                        .matcher(MinecraftClient.getInstance().getCurrentServerEntry().address)
+                                        .matches())) ? "§a" : "§6";
+                                Text displayText = trans(key + ".@Display", colorPrefix + customJoinMessageRuleUnit.address, customJoinMessageRuleUnit.forceDisableFormatter ? "§a✔" : "§c✘",
+                                        customJoinMessageRuleUnit.delayInMilliseconds, customJoinMessageRuleUnit.message);
+                                return new MultiElementListEntry<>(displayText, customJoinMessageRuleUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
+                                    add(eb.startStrField(trans(key + ".Address"), customJoinMessageRuleUnit.address)
+                                          .setTooltip(getTooltip(key + ".Address", "String", new SpecialUnits.CustomJoinMessageRuleUnit().address))
+                                          .setDefaultValue(new SpecialUnits.CustomJoinMessageRuleUnit().address)
+                                          .setSaveConsumer(v -> customJoinMessageRuleUnit.address = v)
+                                          .setErrorSupplier(ErrorSuppliers.REGEX_COMPILE_ERROR_SUPPLIER_ALLOW_STAR).build());
+                                    add(eb.startStrField(trans(key + ".Message"), customJoinMessageRuleUnit.message)
+                                          .setTooltip(getTooltip(key + ".Message", "String", new SpecialUnits.CustomJoinMessageRuleUnit().message))
+                                          .setDefaultValue(new SpecialUnits.CustomJoinMessageRuleUnit().message)
+                                          .setSaveConsumer(v -> customJoinMessageRuleUnit.message = v).build());
+                                    add(eb.startLongField(trans(key + ".DelayInMilliseconds"), customJoinMessageRuleUnit.delayInMilliseconds)
+                                          .setTooltip(getTooltip(key + ".DelayInMilliseconds", "longField", new SpecialUnits.CustomJoinMessageRuleUnit().delayInMilliseconds))
+                                          .setDefaultValue(new SpecialUnits.CustomJoinMessageRuleUnit().delayInMilliseconds)
+                                          .setSaveConsumer(v -> customJoinMessageRuleUnit.delayInMilliseconds = v).build());
+                                    add(eb.startBooleanToggle(trans(key + ".ForceDisableFormatter"), customJoinMessageRuleUnit.forceDisableFormatter)
+                                          .setTooltip(getTooltip(key + ".ForceDisableFormatter", "boolean", new SpecialUnits.CustomJoinMessageRuleUnit().forceDisableFormatter))
+                                          .setDefaultValue(new SpecialUnits.CustomJoinMessageRuleUnit().forceDisableFormatter)
+                                          .setSaveConsumer(v -> customJoinMessageRuleUnit.forceDisableFormatter = v).build());
+                                }}, false);
+                            }
+                        }
+                    );
             // @formatter:on
             case "EnumKeyModifiers":
                 return eb

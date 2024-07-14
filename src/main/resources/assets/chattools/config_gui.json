@@ -1,5 +1,5 @@
 {
-  "version": 2.201,
+  "version": 2.3,
   "content": [
     {
       "key": "category.general",
@@ -275,6 +275,19 @@
           "type": "StringList",
           "key": "filter.List",
           "errorSupplier": "RegExNormal"
+        }
+      ]
+    },
+    {
+      "key": "category.customJoinMessage",
+      "content": [
+        {
+          "type": "boolean",
+          "key": "customJoinMessage.Enabled"
+        },
+        {
+          "type": "customJoinMessageList",
+          "key": "customJoinMessage.List"
         }
       ]
     }

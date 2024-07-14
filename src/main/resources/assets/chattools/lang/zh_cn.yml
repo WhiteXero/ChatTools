@@ -72,6 +72,7 @@ key:
       bubble: 聊天气泡
       responder: 自动响应
       filter: 聊天过滤
+      customJoinMessage: 进服消息
     general:
       ChatTools:
         Enabled:
@@ -379,3 +380,26 @@ key:
         '@Tooltip': |-
           如果此列表中的任何模式串与接收到的消息匹配，此消息将过滤。
           建议使用正则表达式。
+    customJoinMessage:
+      Enabled:
+        .: 启用自定义进服消息
+        '@Tooltip': 根据规则在加入服务器时自动发送服务器消息
+      List:
+        .: '规则 §6(当前服务器地址：%s§6)§r'
+        '@Tooltip': 自定义进服消息的规则
+        '@New': 新规则
+        '@Display': '§e[ %s§e ] [关闭注入：%s§e] [%s§ems]§r %s'
+        Address:
+          .: 地址
+          '@Tooltip': |-
+            此规则的服务器地址。
+            建议使用正则表达式。
+        Message:
+          .: 消息
+          '@Tooltip': 匹配规则时发送的自定义消息
+        DelayInMilliseconds:
+          .: 延迟（毫秒）
+          '@Tooltip': 发送自定义消息前的等待时间，单位为毫秒
+        ForceDisableFormatter:
+          .: 禁用聊天注入
+          '@Tooltip': 切换是否在发送此消息时临时关闭聊天注入的尝试。

@@ -74,6 +74,7 @@ key:
       bubble: Bubble
       responder: Responder
       filter: Chat Filter
+      customJoinMessage: Custom Join Message
     general:
       ChatTools:
         Enabled:
@@ -382,3 +383,26 @@ key:
           If any of the patterns in this list matches an incoming message,
           the message will be filtered.
           RegEx is recommended.
+    customJoinMessage:
+      Enabled:
+        .: Enable Custom Join Message
+        '@Tooltip': Send custom join messages based on given rules.
+      List:
+        .: 'Rules §6(Current Server Address: %s §6)§r'
+        '@Tooltip': Rules for sending custom join messages.
+        '@New': New Rule
+        '@Display': '§e[ %s§e ] [ Override: %s§e ] [%s§ems]§r %s'
+        Address:
+          .: Address
+          '@Tooltip': |-
+            The server address for this rule.
+            RegEx is recommended.
+        Message:
+          .: Message
+          '@Tooltip': This message will be sent when this rule is matched.
+        DelayInMilliseconds:
+          .: Delay (in milliseconds)
+          '@Tooltip': Awaiting time (in milliseconds) before sending the actual message.
+        ForceDisableFormatter:
+          .: Disable Formatter (Override)
+          '@Tooltip': Toggles whether Formatter should be off when sending this message.
