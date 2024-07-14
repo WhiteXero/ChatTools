@@ -39,7 +39,10 @@ public class SpecialUnits {
 
         public static BubbleRuleUnit of(Object ele) {
             if (ele instanceof Map) {
-                return new BubbleRuleUnit((String) ((Map) ele).get("address"), (String) ((Map) ele).get("pattern"), (boolean) ((Map) ele).get("fallback"));
+                String address = (String) ((Map) ele).getOrDefault("address", "*");
+                String pattern = (String) ((Map) ele).getOrDefault("pattern", "<(?<name>.*)> (?<message>.*)");
+                boolean fallback = (boolean) ((Map) ele).getOrDefault("fallback", false);
+                return new BubbleRuleUnit(address, pattern, fallback);
             } else if (ele instanceof BubbleRuleUnit) {
                 return (BubbleRuleUnit) ele;
             } else {
@@ -60,25 +63,33 @@ public class SpecialUnits {
         public String address;
         public String pattern;
         public String message;
+        public long delayInMilliseconds;
         public boolean forceDisableFormatter;
 
         public ResponderRuleUnit() {
             this.address = "*";
             this.pattern = "Repeat my words:(?<word>.*)";
             this.message = "You said {word}.";
+            this.delayInMilliseconds = 50;
             this.forceDisableFormatter = false;
         }
 
-        public ResponderRuleUnit(String address, String pattern, String message, boolean forceDisableFormatter) {
+        public ResponderRuleUnit(String address, String pattern, String message, long delayInMilliseconds, boolean forceDisableFormatter) {
             this.address = address;
             this.pattern = pattern;
             this.message = message;
+            this.delayInMilliseconds = delayInMilliseconds;
             this.forceDisableFormatter = forceDisableFormatter;
         }
 
         public static ResponderRuleUnit of(Object ele) {
             if (ele instanceof Map) {
-                return new ResponderRuleUnit((String) ((Map) ele).get("address"), (String) ((Map) ele).get("pattern"), (String) ((Map) ele).get("message"), (boolean) ((Map) ele).get("forceDisableFormatter"));
+                String address = (String) ((Map) ele).getOrDefault("address", "*");
+                String pattern = (String) ((Map) ele).getOrDefault("pattern", "Repeat my words:(?<word>.*)");
+                String message = (String) ((Map) ele).getOrDefault("message", "You said {word}.");
+                long delayInMilliseconds = ((Number) ((Map) ele).getOrDefault("delayInMilliseconds", 50)).longValue();
+                boolean forceDisableFormatter = (boolean) ((Map) ele).getOrDefault("forceDisableFormatter", false);
+                return new ResponderRuleUnit(address, pattern, message, delayInMilliseconds, forceDisableFormatter);
             } else if (ele instanceof ResponderRuleUnit) {
                 return (ResponderRuleUnit) ele;
             } else {
@@ -117,7 +128,11 @@ public class SpecialUnits {
 
         public static MacroUnit of(Object ele) {
             if (ele instanceof Map) {
-                return new MacroUnit((String) ((Map) ele).get("key"), KeyModifiers.valueOf((String) ((Map) ele).get("modifier")), MacroModes.valueOf((String) ((Map) ele).get("mode")), (String) ((Map) ele).get("command"));
+                String key = (String) ((Map) ele).getOrDefault("key", InputUtil.UNKNOWN_KEY.getTranslationKey());
+                KeyModifiers modifier = KeyModifiers.valueOf((String) ((Map) ele).getOrDefault("modifier", KeyModifiers.NONE));
+                MacroModes mode = MacroModes.valueOf((String) ((Map) ele).getOrDefault("mode", MacroModes.LAZY));
+                String command = (String) ((Map) ele).getOrDefault("command", "");
+                return new MacroUnit(key, modifier, mode, command);
             } else if (ele instanceof MacroUnit) {
                 return (MacroUnit) ele;
             } else {
@@ -167,7 +182,9 @@ public class SpecialUnits {
 
         public static FormatterUnit of(Object ele) {
             if (ele instanceof Map) {
-                return new FormatterUnit((String) ((Map) ele).get("address"), (String) ((Map) ele).get("formatter"));
+                String address = (String) ((Map) ele).getOrDefault("address", "*");
+                String formatter = (String) ((Map) ele).getOrDefault("formatter", "{text}");
+                return new FormatterUnit(address, formatter);
             } else if (ele instanceof FormatterUnit) {
                 return (FormatterUnit) ele;
             } else {
@@ -204,23 +221,13 @@ public class SpecialUnits {
             this.forceDisableFormatter = forceDisableFormatter;
         }
 
-        public CustomJoinMessageRuleUnit(String address, String message, Number delayInMilliseconds, boolean forceDisableFormatter) {
-            this.address = address;
-            this.message = message;
-            this.delayInMilliseconds = delayInMilliseconds.longValue();
-            this.forceDisableFormatter = forceDisableFormatter;
-        }
-
-        public CustomJoinMessageRuleUnit(String address, String message, Double delayInMilliseconds, boolean forceDisableFormatter) {
-            this.address = address;
-            this.message = message;
-            this.delayInMilliseconds = delayInMilliseconds.longValue();
-            this.forceDisableFormatter = forceDisableFormatter;
-        }
-
         public static CustomJoinMessageRuleUnit of(Object ele) {
             if (ele instanceof Map) {
-                return new CustomJoinMessageRuleUnit((String) ((Map) ele).get("address"), (String) ((Map) ele).get("message"), ((Number) ((Map) ele).get("delayInMilliseconds")).longValue(), (boolean) ((Map) ele).get("forceDisableFormatter"));
+                String address = (String) ((Map) ele).getOrDefault("address", "*");
+                String message = (String) ((Map) ele).getOrDefault("message", "/login xxx");
+                long delayInMilliseconds = ((Number) ((Map) ele).getOrDefault("delayInMilliseconds", 1000)).longValue();
+                boolean forceDisableFormatter = (boolean) ((Map) ele).getOrDefault("forceDisableFormatter", false);
+                return new CustomJoinMessageRuleUnit(address, message, delayInMilliseconds, forceDisableFormatter);
             } else if (ele instanceof CustomJoinMessageRuleUnit) {
                 return (CustomJoinMessageRuleUnit) ele;
             } else {

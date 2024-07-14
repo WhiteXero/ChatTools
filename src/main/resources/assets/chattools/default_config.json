@@ -60,6 +60,7 @@
       "address": "*",
       "pattern": "Repeat my words:(?\u003cword\u003e.*)",
       "message": "You said {word}.",
+      "delayInMilliseconds": 50,
       "forceDisableFormatter": false
     }
   ],

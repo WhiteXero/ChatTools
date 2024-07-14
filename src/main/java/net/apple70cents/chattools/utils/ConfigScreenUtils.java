@@ -228,11 +228,14 @@ public class ConfigScreenUtils {
                                           .setTooltip(getTooltip(key + ".Message", "String", defaultRule.message))
                                           .setDefaultValue(defaultRule.message)
                                           .setSaveConsumer(v -> responderUnitRef.get().message = v).build());
-                                    add(eb
-                                            .startBooleanToggle(trans(key + ".ForceDisableFormatter"), defaultRule.forceDisableFormatter)
-                                            .setTooltip(getTooltip(key + ".ForceDisableFormatter", "boolean", defaultRule.forceDisableFormatter))
-                                            .setDefaultValue(defaultRule.forceDisableFormatter)
-                                            .setSaveConsumer(v -> responderUnitRef.get().forceDisableFormatter = v).build());
+                                    add(eb.startLongField(trans(key + ".DelayInMilliseconds"), defaultRule.delayInMilliseconds)
+                                          .setTooltip(getTooltip(key + ".DelayInMilliseconds", "longField", defaultRule.delayInMilliseconds))
+                                          .setDefaultValue(defaultRule.delayInMilliseconds)
+                                          .setSaveConsumer(v -> responderUnitRef.get().delayInMilliseconds = v).build());
+                                    add(eb.startBooleanToggle(trans(key + ".ForceDisableFormatter"), defaultRule.forceDisableFormatter)
+                                          .setTooltip(getTooltip(key + ".ForceDisableFormatter", "boolean", defaultRule.forceDisableFormatter))
+                                          .setDefaultValue(defaultRule.forceDisableFormatter)
+                                          .setSaveConsumer(v -> responderUnitRef.get().forceDisableFormatter = v).build());
                                 }}, false);
                             } else {
                                 String colorPrefix = ("*".equals(responderRuleUnit.address) || (MinecraftClient.getInstance()
@@ -256,11 +259,14 @@ public class ConfigScreenUtils {
                                           .setTooltip(getTooltip(key + ".Message", "String", new SpecialUnits.ResponderRuleUnit().message))
                                           .setDefaultValue(new SpecialUnits.ResponderRuleUnit().message)
                                           .setSaveConsumer(v -> responderRuleUnit.message = v).build());
-                                    add(eb
-                                            .startBooleanToggle(trans(key + ".ForceDisableFormatter"), responderRuleUnit.forceDisableFormatter)
-                                            .setTooltip(getTooltip(key + ".ForceDisableFormatter", "boolean", new SpecialUnits.ResponderRuleUnit().forceDisableFormatter))
-                                            .setDefaultValue(new SpecialUnits.ResponderRuleUnit().forceDisableFormatter)
-                                            .setSaveConsumer(v -> responderRuleUnit.forceDisableFormatter = v).build());
+                                    add(eb.startLongField(trans(key + ".DelayInMilliseconds"), responderRuleUnit.delayInMilliseconds)
+                                          .setTooltip(getTooltip(key + ".DelayInMilliseconds", "longField", new SpecialUnits.ResponderRuleUnit().delayInMilliseconds))
+                                          .setDefaultValue(new SpecialUnits.ResponderRuleUnit().delayInMilliseconds)
+                                          .setSaveConsumer(v -> responderRuleUnit.delayInMilliseconds = v).build());
+                                    add(eb.startBooleanToggle(trans(key + ".ForceDisableFormatter"), responderRuleUnit.forceDisableFormatter)
+                                          .setTooltip(getTooltip(key + ".ForceDisableFormatter", "boolean", new SpecialUnits.ResponderRuleUnit().forceDisableFormatter))
+                                          .setDefaultValue(new SpecialUnits.ResponderRuleUnit().forceDisableFormatter)
+                                          .setSaveConsumer(v -> responderRuleUnit.forceDisableFormatter = v).build());
                                 }}, false);
                             }
                         }

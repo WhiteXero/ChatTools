@@ -349,7 +349,7 @@ key:
           The upper content has higher priority.
           It will only respond once.
         '@New': New Rule
-        '@Display': '§e[ %s§e ] [ Override: %s§e ]§r %s §e→§r %s'
+        '@Display': '§e[ %s§e ] [ Override: %s§e ] [%sms§e]§r %s §e→§r %s'
         Address:
           .: Address
           '@Tooltip': |-
@@ -367,6 +367,9 @@ key:
             An automatic response of a message.
             {pos} -> (X,Y,Z)
             {$GROUP} -> The Content of the matched group `$GROUP`
+        DelayInMilliseconds:
+          .: Delay (in milliseconds)
+          '@Tooltip': Awaiting time (in milliseconds) before responding.
         ForceDisableFormatter:
           .: Disable Formatter (Override)
           '@Tooltip': Toggles whether Formatter should be off when responding.
@@ -402,7 +405,7 @@ key:
           '@Tooltip': This message will be sent when this rule is matched.
         DelayInMilliseconds:
           .: Delay (in milliseconds)
-          '@Tooltip': Awaiting time (in milliseconds) before sending the actual message.
+          '@Tooltip': Awaiting time (in milliseconds) before actually sending the message.
         ForceDisableFormatter:
           .: Disable Formatter (Override)
           '@Tooltip': Toggles whether Formatter should be off when sending this message.

@@ -52,7 +52,8 @@ public class Responder {
         boolean shouldRespond = false;
         String pattern = "";
         String message = "";
-        boolean forceDisableInjector = false;
+        long delayInMilliseconds = 0;
+        boolean forceDisableFormatter = false;
         for (SpecialUnits.ResponderRuleUnit unit : SpecialUnits.ResponderRuleUnit.fromList((List) ChatTools.CONFIG.get("responder.List"))) {
             if (mc.getCurrentServerEntry() == null) {
                 if ("*".equals(unit.address)) {
@@ -60,7 +61,8 @@ public class Responder {
                         shouldRespond = true;
                         pattern = unit.pattern;
                         message = unit.message;
-                        forceDisableInjector = unit.forceDisableFormatter;
+                        delayInMilliseconds = unit.delayInMilliseconds;
+                        forceDisableFormatter = unit.forceDisableFormatter;
                         break;
                     }
                 }
@@ -70,12 +72,29 @@ public class Responder {
                     shouldRespond = true;
                     pattern = unit.pattern;
                     message = unit.message;
-                    forceDisableInjector = unit.forceDisableFormatter;
+                    delayInMilliseconds = unit.delayInMilliseconds;
+                    forceDisableFormatter = unit.forceDisableFormatter;
                     break;
                 }
             }
         }
         if (shouldRespond) {
+            makeMessageSchedule(messageReceived, pattern, message, delayInMilliseconds, forceDisableFormatter);
+        }
+    }
+
+    public static void makeMessageSchedule(String messageReceived, String pattern, String msg, long delayInMilliseconds, boolean forceDisableFormatter) {
+        LoggerUtils.info("[ChatTools] Will respond within " + delayInMilliseconds + "ms");
+        new Thread(() -> {
+            // delay
+            try {
+                Thread.sleep(delayInMilliseconds);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // work
+            String message = msg;
             try {
                 message = replaceAllGroupNames(messageReceived, pattern, message);
             } catch (Exception e) {
@@ -90,11 +109,11 @@ public class Responder {
             }
             LoggerUtils.info("[ChatTools] Respond to `" + pattern + "`, with message `" + message + "`");
             message = message.replace("\\{", "{").replace("\\}", "}");
-            MessageUtils.sendToPublicChat(message, forceDisableInjector);
+            MessageUtils.sendToPublicChat(message, forceDisableFormatter);
             // setting `justSentMessage` to false immediately can fix the issue of the order of dealing with messages
             // however it might lead to notifying the response text sent by the user, even with the option `IgnoreMyMessage` enabled
             // FIXME but it's actually not a big problem, gonna delay fixing this.
             MessageUtils.setJustSentMessage(false);
-        }
+        }).start();
     }
 }
