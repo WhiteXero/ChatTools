@@ -137,11 +137,22 @@ public class TextUtils {
         return Pattern.compile("§.").matcher(str).replaceAll("");
     }
 
-    public static String escapeColorCodes(String str) {
+    /**
+     * turn '&' into REAL color codes in the string
+     * it will not modify '\&'
+     * @param str the string
+     * @return string with color codes
+     */
+    public static String encodeColorCodes(String str) {
         return str.replace('&', '§').replace("\\§", "&");
     }
 
-    public static String backEscapeColorCodes(String str) {
+    /**
+     * turn REAL color codes into '&' in the string
+     * @param str the string
+     * @return a string, in which color codes are turned into '&'
+     */
+    public static String decodeColorCodes(String str) {
         return str.replace('§', '&');
     }
 

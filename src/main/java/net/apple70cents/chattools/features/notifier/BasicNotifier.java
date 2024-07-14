@@ -89,7 +89,7 @@ public class BasicNotifier {
 
         // Highlight
         if ((boolean) ChatTools.CONFIG.get("notifier.Highlight.Enabled")) {
-            String prefix = TextUtils.escapeColorCodes((String) ChatTools.CONFIG.get("notifier.Highlight.Prefix"));
+            String prefix = TextUtils.encodeColorCodes((String) ChatTools.CONFIG.get("notifier.Highlight.Prefix"));
             if ((boolean) ChatTools.CONFIG.get("notifier.Highlight.OverwriteEnabled")) {
                 return TextUtils.of(prefix + text.getString());
             } else {

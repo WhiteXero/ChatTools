@@ -16,7 +16,7 @@ public class NickHider {
         if (player != null) {
             if (TextUtils.wash(message.getString()).contains(player.getName().getString())) {
                 return TextUtils.replaceText((MutableText) message, player.getName().getString(),
-                        TextUtils.escapeColorCodes((String) ChatTools.CONFIG.get("general.NickHider.Nickname")));
+                        TextUtils.encodeColorCodes((String) ChatTools.CONFIG.get("general.NickHider.Nickname")));
             }
         }
         return message;

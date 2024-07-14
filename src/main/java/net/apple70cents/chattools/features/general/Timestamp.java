@@ -38,7 +38,7 @@ public class Timestamp {
     }
 
     private static String timeInFormat(String formatter) {
-        formatter = TextUtils.escapeColorCodes(formatter);
+        formatter = TextUtils.encodeColorCodes(formatter);
         LocalDateTime time = LocalDateTime.now();
         formatter = formatter.replace("{hour}", String.format("%d", time.getHour()))
                              .replace("{minute}", String.format("%02d", time.getMinute()))

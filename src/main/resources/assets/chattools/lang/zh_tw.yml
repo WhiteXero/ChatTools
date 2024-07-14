@@ -345,7 +345,7 @@ key:
           靠上的內容優先度更高。
           響應至多一次。
         '@New': 新規則
-        '@Display': '§e[ %s§e ] [關閉注入：%s§e] [%sms§e]§r %s §e→§r %s'
+        '@Display': '§e[ %s§e ] [關閉注入：%s§e] [%s§rms§e]§r %s §e→§r %s'
         Address:
           .: 地址
           '@Tooltip': |-

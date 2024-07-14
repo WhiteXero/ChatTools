@@ -273,7 +273,7 @@ key:
         .: 'Rules §6(Current Server: %s §6)§r'
         '@Tooltip': "Sets da rules for auto-meowing.\nTop stuff is boss, meows once only."
         '@New': New Meow
-        '@Display': '§e[ %s§e ] [ Override: %s§e ] [%sms§e]§r %s §e→§r %s'
+        '@Display': '§e[ %s§e ] [ Override: %s§e ] [%s§rms§e]§r %s §e→§r %s'
         Address:
           .: Where It's At
           '@Tooltip': "Server address for this rule, yo.\nRegEx makes it cooler."

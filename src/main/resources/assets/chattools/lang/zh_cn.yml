@@ -346,7 +346,7 @@ key:
           靠上的内容优先级更高。
           响应至多一次。
         '@New': 新规则
-        '@Display': '§e[ %s§e ] [关闭注入：%s§e] [%sms§e]§r %s §e→§r %s'
+        '@Display': '§e[ %s§e ] [关闭注入：%s§e] [%s§rms§e]§r %s §e→§r %s'
         Address:
           .: 地址
           '@Tooltip': |-
@@ -390,7 +390,7 @@ key:
         .: '规则 §6(当前服务器地址：%s§6)§r'
         '@Tooltip': 自定义进服消息的规则
         '@New': 新规则
-        '@Display': '§e[ %s§e ] [关闭注入：%s§e] [%s§ems]§r %s'
+        '@Display': '§e[ %s§e ] [关闭注入：%s§e] [%s§rms§e]§r %s'
         Address:
           .: 地址
           '@Tooltip': |-

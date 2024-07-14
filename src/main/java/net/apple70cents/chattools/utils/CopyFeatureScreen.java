@@ -46,7 +46,7 @@ public class CopyFeatureScreen extends Screen {
             kb.setClipboard(unit.message.getString());
         }));
         addCenterButton("copyWithColorCodeEscaped", midH - 21, (button -> {
-            kb.setClipboard(TextUtils.backEscapeColorCodes(unit.message.getString()));
+            kb.setClipboard(TextUtils.decodeColorCodes(unit.message.getString()));
         }));
         addCenterButton("copyWithNoColorCode", midH, (button -> {
             kb.setClipboard(TextUtils.wash(unit.message.getString()));
