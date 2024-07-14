@@ -13,7 +13,6 @@ key:
       repeat:
         failure:
           empty: §6§l復讀失敗：不存在上一條訊息
-          unsupported: §6§l該 Minecraft 子版本不支持此功能，請升級到 1.20.2 或以上
       download.process: '[Chat Tools] %s 下載進度：%s%% - （%sKB/%sKB）'
       download.success: '§6[Chat Tools] 已完成下載！'
       toast.failure: §6Toast 失敗：附件未完整下載 或 模式不支持該平台§r
