@@ -75,6 +75,8 @@ public class ChatHistoryNavigatorScreen extends Screen {
         //#endif
 
         //#if MC>=12005
+        //#elseif MC>=12003
+        //$$ this.chatUnitListWidget.setRenderBackground(false);
         //#elseif MC>=11700
         //$$ this.chatUnitListWidget.setRenderBackground(false);
         //$$ this.chatUnitListWidget.setRenderHorizontalShadows(false);
