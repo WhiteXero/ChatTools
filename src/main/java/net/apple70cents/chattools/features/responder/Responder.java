@@ -57,7 +57,7 @@ public class Responder {
         for (SpecialUnits.ResponderRuleUnit unit : SpecialUnits.ResponderRuleUnit.fromList((List) ChatTools.CONFIG.get("responder.List"))) {
             if (mc.getCurrentServerEntry() == null) {
                 if ("*".equals(unit.address)) {
-                    if (Pattern.compile(unit.pattern).matcher(messageReceived).matches()) {
+                    if (Pattern.compile(unit.pattern, Pattern.MULTILINE).matcher(messageReceived).matches()) {
                         shouldRespond = true;
                         pattern = unit.pattern;
                         message = unit.message;
@@ -68,7 +68,7 @@ public class Responder {
                 }
             } else if ("*".equals(unit.address) || Pattern.compile(unit.address)
                                                           .matcher(mc.getCurrentServerEntry().address).matches()) {
-                if (Pattern.compile(unit.pattern).matcher(messageReceived).matches()) {
+                if (Pattern.compile(unit.pattern, Pattern.MULTILINE).matcher(messageReceived).matches()) {
                     shouldRespond = true;
                     pattern = unit.pattern;
                     message = unit.message;

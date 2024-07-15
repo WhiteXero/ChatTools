@@ -16,7 +16,8 @@ public class Formatter {
     public static String work(String message) {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         for (String s : (List<String>) ChatTools.CONFIG.get("formatter.DisableOnMatchList")) {
-            if (Pattern.compile(s).matcher(message).matches()) {
+            if (Pattern.compile(s, Pattern.MULTILINE).matcher(message).matches()) {
+                // return in advance, and don't work with it.
                 return message;
             }
         }
@@ -26,7 +27,7 @@ public class Formatter {
             if ("*".equals(unit.address)) {
                 matched = true;
                 formatter = unit.formatter;
-                // we just need the first match result, break instantly.
+                // we just need the first match result, break immediately.
                 break;
             } else if (MinecraftClient.getInstance().getCurrentServerEntry() == null) {
                 // It is in a single player world
@@ -35,7 +36,7 @@ public class Formatter {
                               .matcher(MinecraftClient.getInstance().getCurrentServerEntry().address).matches()) {
                 matched = true;
                 formatter = unit.formatter;
-                // we just need the first match result, break instantly.
+                // we just need the first match result, break immediately.
                 break;
             }
         }
