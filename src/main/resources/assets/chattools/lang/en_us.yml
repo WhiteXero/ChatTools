@@ -153,6 +153,14 @@ key:
         '@Tooltip': |-
           Changes your maximum chat history length.
           (Minecraft Default: 100)
+      IncreaseChatFieldMaxLength:
+        .: Increase Chat Field Max Length
+        '@Tooltip': |-
+          Changes the maximum length of the chat field.
+          (Minecraft Default: 256)
+          
+          Please note that if the message is too long, it may lead to unexpected results.
+          Use it at your own risk.
     notifier:
       Toast:
         .: System Toast

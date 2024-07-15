@@ -150,6 +150,13 @@ key:
         '@Tooltip': |-
           更改您的最大历史记录大小。
           （Minecraft 默认：100）
+      IncreaseChatFieldMaxLength:
+        .: 去除聊天栏最大字符数限制
+        '@Tooltip': |-
+          更改聊天栏的最大字符数限制。
+          （Minecraft 默认：256）
+
+          请注意如果聊天长度大于256，可能会导致不可预料的后果。
     notifier:
       Toast:
         .: 后台通知
