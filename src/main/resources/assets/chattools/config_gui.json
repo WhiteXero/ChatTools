@@ -255,6 +255,10 @@
           "key": "responder.Enabled"
         },
         {
+          "type": "boolean",
+          "key": "responder.RespondToFilteredMessages"
+        },
+        {
           "type": "ResponderList",
           "key": "responder.List"
         }

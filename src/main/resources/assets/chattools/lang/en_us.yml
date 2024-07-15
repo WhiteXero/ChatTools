@@ -339,8 +339,11 @@ key:
       Enabled:
         .: Enable Responder
         '@Tooltip': |-
-          Responder allows you to response automatically to specific messages.
+          Responder allows you to respond automatically to specific messages, based on custom rules.
           Toggles whether Responder should work.
+      RespondToFilteredMessages:
+        .: Respond To Filtered Messages
+        '@Tooltip': Always try to respond, even if they are going to be filtered.
       List:
         .: 'Rules §6(Current Server Address: %s §6)§r'
         '@Tooltip': |-

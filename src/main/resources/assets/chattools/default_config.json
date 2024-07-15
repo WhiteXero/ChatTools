@@ -55,6 +55,7 @@
     }
   ],
   "responder.Enabled": false,
+  "responder.RespondToFilteredMessages": false,
   "responder.List": [
     {
       "address": "*",

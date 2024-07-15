@@ -60,6 +60,9 @@ public abstract class ChatHudMixin {
         }
         if (ChatFilter.shouldFilter(message)) {
             LoggerUtils.info("[ChatTools] Filtered message: " + message.getString());
+            if ((boolean) ChatTools.CONFIG.get("responder.respondToFilteredMessages")) {
+                Responder.work(message);
+            }
             ChatFilter.sendPlaceholderIfActive();
             ci.cancel();
         }
@@ -90,6 +93,8 @@ public abstract class ChatHudMixin {
             // it must be done before NickHider began to work
             BubbleRenderer.addChatBubble(message);
         }
+        // This is not the only attempt that we try to activate the responder.
+        // When filtering a message with `responder.respondToFilteredMessages` option on, responder will also try to work.
         if ((boolean) ChatTools.CONFIG.get("responder.Enabled") && !MessageUtils.hadJustSentMessage()) {
             // obviously, we don't respond to our own messages
             Responder.work(message);

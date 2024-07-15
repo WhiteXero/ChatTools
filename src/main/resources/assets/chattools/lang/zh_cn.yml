@@ -339,6 +339,9 @@ key:
         '@Tooltip': |-
           自动响应特定消息。
           切换是否启用自动响应。
+      RespondToFilteredMessages:
+        .: 响应被过滤的消息
+        '@Tooltip': 总是尝试响应消息，即使这条消息可能将被过滤。
       List:
         .: '规则 §6(当前服务器地址：%s§6)§r'
         '@Tooltip': |-
