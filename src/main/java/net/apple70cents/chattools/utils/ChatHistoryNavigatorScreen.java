@@ -42,6 +42,9 @@ import net.minecraft.client.gui.screen.narration.NarrationPart;
 //$$ import net.minecraft.client.gui.Element;
 //#endif
 
+/**
+ * @author 70CentsApple
+ */
 public class ChatHistoryNavigatorScreen extends Screen {
     @Nullable
     private TextFieldWidget keywordField;
@@ -56,6 +59,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
     protected void init() {
         super.init();
         this.keywordField = new TextFieldWidget(this.textRenderer, 30, 35, this.width - 155, 20, this.keywordField, TextUtils.trans("texts.ChatHistoryNavigator.placeholder"));
+        this.keywordField.setMaxLength(Integer.MAX_VALUE);
         this.keywordField.setChangedListener(keyword -> {
             this.chatUnitListWidget.setKeyword(keyword);
         });
