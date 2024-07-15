@@ -39,6 +39,9 @@ public class ClickEventsPreviewer {
     ]
      */
     public static Style work(Style style) {
+        if (style == null) {
+            return null;
+        }
         HoverEvent hoverEvent = style.getHoverEvent();
         Text textToAppend = getTextToAppend(style);
 
