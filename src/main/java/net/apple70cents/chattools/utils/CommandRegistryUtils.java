@@ -7,17 +7,22 @@ import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.config.ConfigScreenGenerator;
 import net.apple70cents.chattools.config.ConfigStorage;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.command.argument.TextArgumentType;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.text.Texts;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
 import net.minecraft.util.Util;
+
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 //#if MC>=11900
+import net.minecraft.command.CommandRegistryAccess;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 //#else
@@ -31,16 +36,43 @@ public class CommandRegistryUtils {
     public static void register() {
         //#if MC>=11900
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register((LiteralArgumentBuilder<FabricClientCommandSource>) CommandRegistryUtils.getBuilder());
+            dispatcher.register((LiteralArgumentBuilder<FabricClientCommandSource>) CommandRegistryUtils.getBuilder(registryAccess));
         });
         //#else
         //$$ ClientCommandManager.DISPATCHER.register((LiteralArgumentBuilder<FabricClientCommandSource>) CommandRegistryUtils.getBuilder());
         //#endif
     }
 
-    public static LiteralArgumentBuilder<?> getBuilder() {
+    public static LiteralArgumentBuilder<?> getBuilder(
+            //#if MC>=11900
+            CommandRegistryAccess registryAccess
+            //#endif
+    ) {
         // @formatter:off
         return literal("chattools")
+            // chattools send_to_client
+            .then(literal("send_to_client")
+                // chattools send_to_client text
+                .then(literal("text").then(argument("message", TextArgumentType.text(
+                        //#if MC>=12006
+                        registryAccess
+                        //#endif
+                    )).executes(t -> {
+                    Text text = Texts.parse(null, TextArgumentType.getTextArgument(t, "message"), MinecraftClient.getInstance().player, 0);
+                    MessageUtils.sendToNonPublicChat(text);
+                    return Command.SINGLE_SUCCESS;
+                })))
+                // chattools send_to_client actionbar
+                .then(literal("actionbar").then(argument("message", TextArgumentType.text(
+                        //#if MC>=12006
+                        registryAccess
+                        //#endif
+                    )).executes(t -> {
+                    Text text = Texts.parse(null, TextArgumentType.getTextArgument(t, "message"), MinecraftClient.getInstance().player, 0);
+                    MessageUtils.sendToActionbar(text);
+                    return Command.SINGLE_SUCCESS;
+                })
+            )))
             // chattools download
             .then(literal("download").executes(t -> {
                 LoggerUtils.info("[ChatTools] Command Executed: Trying to download Addon Toast dependencies");

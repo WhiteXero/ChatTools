@@ -53,7 +53,7 @@ public class MessageUtils {
         setJustSentMessage(true);
 
         //#if MC>=11900
-        String text2 = StringHelper.truncateChat(StringUtils.normalizeSpace(text.trim()));
+        String text2 = StringUtils.normalizeSpace(text.trim());
         if (!text2.isEmpty()) {
             MinecraftClient.getInstance().inGameHud.getChatHud().addToMessageHistory(text);
             if (text2.startsWith("/")) {
