@@ -6,7 +6,18 @@
   "name": "Chat Tools",
   "description": "A toolkit that provides great chat-related features.",
   "authors": [
-    "70CentsApple"
+    {
+      "name": "70CentsApple",
+      "contact": {
+        "email": "70centsapple@gmail.com",
+        "homepage": "https://70centsapple.top/"
+      }
+    }
+  ],
+  "contributors": [
+    "en_us translation: UltimatChamp, 70CentsApple",
+    "zh_cn translation: 70CentsApple",
+    "zh_tw translation: yichifauzi"
   ],
   "contact": {
     "homepage": "https://modrinth.com/mod/chat-tools",
@@ -42,7 +53,8 @@
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.modrinth": "https://modrinth.com/mod/chat-tools"
+        "modmenu.modrinth": "https://modrinth.com/mod/chat-tools",
+        "modmenu.github_releases": "https://github.com/70CentsApple/ChatTools/releases"
       }
     }
   }
