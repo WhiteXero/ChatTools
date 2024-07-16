@@ -16,6 +16,9 @@ import java.util.regex.Pattern;
 //$$ import net.minecraft.sound.SoundCategory;
 //#endif
 
+/**
+ * @author 70CentsApple
+ */
 public class BasicNotifier {
     public static boolean shouldWork(Text text) {
         boolean shouldMatch = false;
@@ -64,27 +67,27 @@ public class BasicNotifier {
 
         // Sound
         if ((boolean) ChatTools.CONFIG.get("notifier.Sound.Enabled") && player != null) {
-            String identifier = (String) ChatTools.CONFIG.get("notifier.Sound.Type");
-            int volume = ((Number) ChatTools.CONFIG.get("notifier.Sound.Volume")).intValue();
-            int pitch = ((Number) ChatTools.CONFIG.get("notifier.Sound.Pitch")).intValue();
-            //#if MC>=12100
-            player.playSound(SoundEvent.of(Identifier.of(identifier)), volume * 0.01F, pitch * 0.1F);
-            //#elseif MC>=12005
-            //$$ player.playSound(SoundEvent.of(new Identifier(identifier)), volume * 0.01F, pitch * 0.1F);
-            //#else
-            //$$ player.playSound(
-            //$$    //#if MC>=11900
-            //$$    SoundEvent.of(new Identifier(identifier))
-            //$$    //#else
-            //$$    //$$ new SoundEvent(new Identifier(identifier))
-            //$$    //#endif
-            //$$    , SoundCategory.PLAYERS, volume * 0.01F, pitch * 0.1F);
-            //#endif
+            new Thread(() -> {
+                String identifier = (String) ChatTools.CONFIG.get("notifier.Sound.Type");
+                int volume = ((Number) ChatTools.CONFIG.get("notifier.Sound.Volume")).intValue();
+                int pitch = ((Number) ChatTools.CONFIG.get("notifier.Sound.Pitch")).intValue();
+                //#if MC>=12100
+                player.playSound(SoundEvent.of(Identifier.of(identifier)), volume * 0.01F, pitch * 0.1F);
+                //#elseif MC>=12005
+                //$$ player.playSound(SoundEvent.of(new Identifier(identifier)), volume * 0.01F, pitch * 0.1F);
+                //#elseif MC>=11900
+                //$$ player.playSound(SoundEvent.of(new Identifier(identifier)), SoundCategory.PLAYERS, volume * 0.01F, pitch * 0.1F);
+                //#else
+                //$$ player.playSound(new SoundEvent(new Identifier(identifier)), SoundCategory.PLAYERS, volume * 0.01F, pitch * 0.1F);
+                //#endif
+            }).start();
         }
 
         // Actionbar notifications
         if ((boolean) ChatTools.CONFIG.get("notifier.Actionbar.Enabled")) {
-            MessageUtils.sendToActionbar(TextUtils.trans("texts.actionbar.title"));
+            new Thread(() -> {
+                MessageUtils.sendToActionbar(TextUtils.trans("texts.actionbar.title"));
+            }).start();
         }
 
         // Highlight
