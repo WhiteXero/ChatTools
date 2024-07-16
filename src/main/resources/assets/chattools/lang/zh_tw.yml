@@ -122,10 +122,8 @@ key:
           '@Tooltip': 在聊天欄中按下 Ctrl + F 搜尋聊天歷史記錄。
       PreviewClickEvents:
         Enabled:
-          .: §6啟用預覽點擊事件 [實驗性功能]
-          '@Tooltip': |-
-            預覽聊天欄中文字的點擊事件。
-            §6該功能仍在開發中；部分文字可能不能生效。
+          .: 啟用預覽點擊事件
+          '@Tooltip': 預覽聊天欄中文字的點擊事件。
       Translator:
         .: 翻譯器
         '@Tooltip': |-

@@ -13,6 +13,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/**
+ * @author 70CentsApple
+ */
 @Mixin(ChatScreen.class)
 public class ChatScreenMixin {
     @Shadow
@@ -31,7 +34,7 @@ public class ChatScreenMixin {
 
     //#if MC>=11900
     @Inject(method = "normalize", at = @At("HEAD"), cancellable = true)
-    private void doNotNormalize(String text, CallbackInfoReturnable<String> cir) {
+    private void doNotTruncate(String text, CallbackInfoReturnable<String> cir) {
         if (!(boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
             return;
         }

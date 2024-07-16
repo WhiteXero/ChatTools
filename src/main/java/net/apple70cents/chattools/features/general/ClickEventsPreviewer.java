@@ -15,29 +15,10 @@ import java.util.List;
 //$$ import net.minecraft.client.gui.screen.Screen;
 //#endif
 
+/**
+ * @author 70CentsApple
+ */
 public class ClickEventsPreviewer {
-    /* FIXME 某些情况会工作不了 例如输入错误指令（如/undefined）后的 empty parent（想办法把parent的style拿到？）类似结构如下：
-        或许也可以换个方法或类（？）注入？比如类似Text的get tooltip或者visit（？）
-      empty[
-        style={color=red},
-        siblings=[
-            empty[
-                style={color=gray, clickEvent=ClickEvent{action=SUGGEST_COMMAND, value='/undefined'}},
-                siblings=[
-                    literal{plg}[
-                        style={color=red, underlined}
-                    ],
-                    translation{
-                        key='command.context.here',
-                        args=[]
-                    }[
-                        style={color=red, italic}
-                    ]
-                ]
-            ]
-        ]
-    ]
-     */
     public static Style work(Style style) {
         if (style == null) {
             return null;
@@ -50,14 +31,14 @@ public class ClickEventsPreviewer {
             return style;
         }
         // Add two empty lines before it (Also works as a Style Spacer)
-        textToAppend = ((MutableText) TextUtils.literal("\n\n")).append(textToAppend);
+        Text textToAppendWithTwoEmptyLinesInFront = ((MutableText) TextUtils.literal("\n\n")).append(textToAppend);
         if (hoverEvent == null) {
             style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, textToAppend));
         } else {
             Text oldHoverText = hoverEvent.getValue(HoverEvent.Action.SHOW_TEXT);
             // Has Actions.SHOW_TEXT
             if (oldHoverText != null) {
-                Text newHoverText = (TextUtils.SPACER.copy().append(oldHoverText)).append(textToAppend);
+                Text newHoverText = (TextUtils.SPACER.copy().append(oldHoverText)).append(textToAppendWithTwoEmptyLinesInFront);
                 style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newHoverText));
             } else {
                 HoverEvent.EntityContent entityContent = hoverEvent.getValue(HoverEvent.Action.SHOW_ENTITY);
@@ -78,10 +59,10 @@ public class ClickEventsPreviewer {
                     );
                 }
                 if (oldHoverText != null) {
-                    Text newHoverText = (TextUtils.SPACER.copy().append(oldHoverText)).append(textToAppend);
+                    Text newHoverText = (TextUtils.SPACER.copy().append(oldHoverText)).append(textToAppendWithTwoEmptyLinesInFront);
                     style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newHoverText));
                 } else {
-                    style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, textToAppend));
+                    style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, textToAppendWithTwoEmptyLinesInFront));
                 }
             }
         }
@@ -120,7 +101,7 @@ public class ClickEventsPreviewer {
                     if (value.getString().contains("/chattools get_message")) {
                         // skip it
                         texts.remove(texts.size() - 1);
-                        // only the overall text is left
+                        // the overall text is the only remained text
                         if (texts.size() <= 1) {
                             return null;
                         }

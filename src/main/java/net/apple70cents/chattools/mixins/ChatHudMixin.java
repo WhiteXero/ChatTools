@@ -3,6 +3,7 @@ package net.apple70cents.chattools.mixins;
 import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.features.bubble.BubbleRenderer;
 import net.apple70cents.chattools.features.filter.ChatFilter;
+import net.apple70cents.chattools.features.general.ClickEventsPreviewer;
 import net.apple70cents.chattools.features.general.NickHider;
 import net.apple70cents.chattools.features.general.Timestamp;
 import net.apple70cents.chattools.features.notifier.BasicNotifier;
@@ -10,16 +11,21 @@ import net.apple70cents.chattools.features.responder.Responder;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
 import net.minecraft.client.gui.hud.ChatHud;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 //#if MC>=11900
 import net.minecraft.client.gui.hud.MessageIndicator;
 import net.minecraft.network.message.MessageSignatureData;
 //#endif
 
+/**
+ * @author 70CentsApple
+ */
 @Mixin(ChatHud.class)
 public abstract class ChatHudMixin {
     @ModifyConstant(method =
@@ -112,4 +118,17 @@ public abstract class ChatHudMixin {
         MessageUtils.setJustSentMessage(false);
         args.set(MESSAGE_IDX, message);
     }
+
+    @Inject(method = "getTextStyleAt", at = @At(value = "RETURN"), cancellable = true)
+    public void modifyHoverEvent(double x, double y, CallbackInfoReturnable<Style> cir) {
+        Style style = cir.getReturnValue();
+        if (!(boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
+            cir.setReturnValue(style);
+        }
+        if (!(boolean) ChatTools.CONFIG.get("general.PreviewClickEvents.Enabled")) {
+            cir.setReturnValue(style);
+        }
+        cir.setReturnValue(ClickEventsPreviewer.work(style));
+    }
+
 }

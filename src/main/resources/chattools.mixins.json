@@ -9,7 +9,6 @@
     "ChatScreenMixin",
     "ClientLoginNetworkHandlerMixin",
     "ClientPlayNetworkHandlerMixin",
-    "DrawContextMixin",
     "EntityRendererMixin",
     "InGameHudMixin"
   ],

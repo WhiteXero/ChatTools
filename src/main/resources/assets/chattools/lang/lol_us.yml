@@ -115,10 +115,8 @@ key:
           '@Tooltip': "Ctrl + F -> look 4 somethin' in chat"
       PreviewClickEvents:
         Enabled:
-          .: §6peek click events [Experimental]
-          '@Tooltip': |-
-            see what will happen if you click on the text
-            §6Still under devel0pment, so it is n0t perfect.
+          .: peek click events
+          '@Tooltip': see what will happen if you click on the text
       Translator:
         .: Transl8shun
         '@Tooltip': |-
