@@ -28,7 +28,7 @@ public abstract class EntityRendererMixin {
             return;
         }
         if ((boolean) ChatTools.CONFIG.get("bubble.Enabled")) {
-            BubbleRenderer.render(entity, matrices, vertexConsumers);
+            BubbleRenderer.render(entity, matrices, vertexConsumers, tickDelta);
         }
     }
 

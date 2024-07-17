@@ -19,12 +19,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+//#if MC>=12100
+import net.minecraft.entity.EntityAttachmentType;
+import net.minecraft.util.math.Vec3d;
+//#endif
 //#if MC>=11900
 import org.joml.Matrix4f;
 //#else
 //$$ import net.minecraft.util.math.Matrix4f;
 //#endif
 
+/**
+ * @author 70CentsApple
+ */
 public class BubbleRenderer {
     static MinecraftClient mc = MinecraftClient.getInstance();
     static TextRenderer textRenderer = mc.textRenderer;
@@ -56,7 +63,7 @@ public class BubbleRenderer {
             return "BubbleUnit{" + "text=" + text + ", startTime=" + startTime + '}';
         }
 
-        public void render(Entity entity, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers) {
+        public void render(Entity entity, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, float tickDelta) {
             if (mc.player == null) {
                 return;
             }
@@ -68,9 +75,23 @@ public class BubbleRenderer {
             EntityRenderDispatcher renderDispatcher = mc.getEntityRenderDispatcher();
             matrixStack.push();
             // getNameLabelHeight() -> getHeight() + 0.5F
-            matrixStack.translate(0.0F, entity.getHeight() + 0.5F + yOffset / 10.0F, 0.0F);
+
+            //#if MC>=12100
+            Vec3d vec3d = entity.getAttachments().getPointNullable(EntityAttachmentType.NAME_TAG, 0, entity.getYaw(tickDelta));
+            if (vec3d != null) {
+                matrixStack.translate(vec3d.x, vec3d.y + 0.5F + yOffset / 10.0F, vec3d.z);
+            }
+            //#else
+            //$$ matrixStack.translate(0.0F, entity.getHeight() + 0.5F + yOffset / 10.0F, 0.0F);
+            //#endif
             matrixStack.multiply(renderDispatcher.getRotation());
-            matrixStack.scale(-0.025F, -0.025F, 0.025F);
+            matrixStack.scale(
+                    //#if MC>=12100
+                    0.025F
+                    //#else
+                    //$$ -0.025F
+                    //#endif
+                    , -0.025F, 0.025F);
             Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
             float xOffset = -textRenderer.getWidth(renderText) / 2.0F;
             textRenderer.draw(renderText, xOffset, 0, 553648127, false, matrix4f, vertexConsumers,
@@ -93,28 +114,33 @@ public class BubbleRenderer {
 
     private static Map<String, BubbleUnit> bubbleMap = new HashMap<>();
 
-    public static void render(Entity entity, MatrixStack matrices, VertexConsumerProvider vertex) {
+    public static void render(Entity entity, MatrixStack matrices, VertexConsumerProvider vertex, float tickDelta) {
         if (bubbleMap.isEmpty()) {
             return;
         } else if (mc.world == null) {
             return;
         }
-        for (AbstractClientPlayerEntity sender : mc.world.getPlayers()) {
-            String name = sender.getDisplayName().getString();
-            if (!bubbleMap.containsKey(name)) {
+        for (AbstractClientPlayerEntity potentialSender : mc.world.getPlayers()) {
+            Text senderDisplayName = potentialSender.getDisplayName();
+            Text entityDisplayName = entity.getDisplayName();
+            if (senderDisplayName == null || entityDisplayName == null) {
+                return;
+            }
+            String senderName = senderDisplayName.getString();
+            if (!bubbleMap.containsKey(senderName)) {
                 continue;
-            } else if (!TextUtils.wash(entity.getDisplayName().getString()).equals(name)) {
+            } else if (!TextUtils.wash(entityDisplayName.getString()).equals(senderName)) {
                 // not the entity being selected
                 continue;
-            } else if (bubbleMap.get(name)
+            } else if (bubbleMap.get(senderName)
                                 .getLifetime() >= ((Number) ChatTools.CONFIG.get("bubble.Lifetime")).intValue() * 1000L) {
                 // the bubble's lifetime is over, let's remove it
-                bubbleMap.remove(name);
+                bubbleMap.remove(senderName);
                 continue;
             }
-            double d = mc.getEntityRenderDispatcher().getSquaredDistanceToCamera(sender);
+            double d = mc.getEntityRenderDispatcher().getSquaredDistanceToCamera(potentialSender);
             if (d <= 4096.0) {
-                bubbleMap.get(name).render(entity, matrices, vertex);
+                bubbleMap.get(senderName).render(entity, matrices, vertex, tickDelta);
             }
         }
     }
