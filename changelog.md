@@ -1,23 +1,21 @@
 ## Chinese (Simplified)
-- 优化 只在 Toast 通知启用且模式为 Addon 时，启动游戏才会检测下载
-- 优化 当消息将被过滤时，不再尝试对此消息的提醒
-- 新增 繁体中文翻译
-- 优化 聊天记录搜索窗口的表现
-- 新增 Two-Slices Toast 通知模式（Linux 和 Mac OS _可能_ 有救了）
-- 优化 Toast 通知和普通的通知行为上更一致
-- 优化 自动响应规则编写错误不再导致闪退
-- 新增 更多聊天记录搜索模式
-- 新增 自定义进服消息
-- 优化 自动响应自定义延迟
+- 优化 移除了聊天记录搜索框字符限制
+- 新增 调试用指令`/chattools send_to_client`，用途是往当前客户端发送一条客户端消息
+- 优化 注入聊天自动禁用聊天注入列表、自动响应规则正则表达式字段现在使用多行匹配模式
+- 新增 响应被过滤的消息选项
+- 新增 移除聊天长度限制选项
+- 更改 在描述里新增了模组贡献者昵称
+- 修复 预览点击事件功能（现在不再是实验性功能了）
+- 优化 部分基本聊天提醒功能单独调用线程
+- 修复 聊天气泡在 Minecraft 1.21 没有正确渲染的问题
 
 ## English
-- Optimization: Only when Toast notifications are enabled and the mode is set to Addon, the game will check for downloads upon startup.
-- Optimization: When a message is about to be filtered, no longer attempts will be made to notify for that message.
-- Added: Traditional Chinese translation.
-- Optimization: Improved the performance of the Chat History Navigator screen.
-- Added: Two-Slices Toast notification mode (Linux and Mac OS _might_ be saved).
-- Optimization: Toast notifications now behave more consistently with the ones of basic notifiers.
-- Optimization: Errors in writing Responder rules no longer crashes the game.
-- Added: More Chat History Navigator modes.
-- Added: Custom Join Message.
-- Optimization: Custom delay for Responder.
+- Optimization: Raised Chat History Navigator search box character limit
+- Added: New `/chattools send_to_client` command is used to send a client-side message to the current instance.
+- Optimization: `formatter.DisableOnMatchList` and `responder.List.Pattern` RegEx patterns now use Multiline mode to match.
+- Added: Option `responder.RespondToFilteredMessages`.
+- Added: Option `general.IncreaseChatFieldMaxLength`.
+- Changed: Add new contributor nicknames in the description. Thanks to you all!
+- Fixed: Preview Click Events is now functioning well and no longer an experimental feature.
+- Optimization: Start new threads for several basic notifiers.
+- Fixed: Bubbles didn't render correctly in Minecraft 1.21

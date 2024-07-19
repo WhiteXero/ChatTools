@@ -1,5 +1,5 @@
 {
-  "config.version": 2.3,
+  "config.version": 2.301,
   "general.ChatTools.Enabled": true,
   "general.ShowWelcomeMessageEnabled": true,
   "general.Timestamp.Enabled": true,
