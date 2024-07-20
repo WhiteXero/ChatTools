@@ -1,5 +1,6 @@
 package net.apple70cents.chattools.mixins;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.features.bubble.BubbleRenderer;
 import net.apple70cents.chattools.features.filter.ChatFilter;
@@ -28,15 +29,18 @@ import net.minecraft.network.message.MessageSignatureData;
  */
 @Mixin(ChatHud.class)
 public abstract class ChatHudMixin {
-    @ModifyConstant(method =
+
+    @ModifyExpressionValue(
+        method =
             //#if MC>=12005
-            "addVisibleMessage(Lnet/minecraft/client/gui/hud/ChatHudLine;)V"
+            {"addVisibleMessage(Lnet/minecraft/client/gui/hud/ChatHudLine;)V", "addMessage*", "addToMessageHistory"}
             //#elseif MC>=11900
             //$$ "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V"
             //#else
             //$$ "addMessage(Lnet/minecraft/text/Text;IIZ)V"
             //#endif
-            , constant = @Constant(intValue = 100), require = 0)
+        , at = @At(value = "CONSTANT", args = "intValue=100")
+    )
     public int modifyMaxHistorySize(int originalMaxSize) {
         if ((boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
             return ((Number) ChatTools.CONFIG.get("general.MaxHistoryLength")).intValue();

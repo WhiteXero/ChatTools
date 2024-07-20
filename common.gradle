@@ -38,6 +38,8 @@ dependencies {
     // https://github.com/sshtools/two-slices
     modImplementation 'com.sshtools:two-slices:0.9.4'
     include 'com.sshtools:two-slices:0.9.4'
+
+    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.4.0")))
 }
 
 loom {
