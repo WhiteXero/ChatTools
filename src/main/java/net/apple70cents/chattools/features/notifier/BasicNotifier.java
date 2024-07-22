@@ -67,7 +67,7 @@ public class BasicNotifier {
 
         // Sound
         if ((boolean) ChatTools.CONFIG.get("notifier.Sound.Enabled") && player != null) {
-            new Thread(() -> {
+            MinecraftClient.getInstance().execute(() -> {
                 String identifier = (String) ChatTools.CONFIG.get("notifier.Sound.Type");
                 int volume = ((Number) ChatTools.CONFIG.get("notifier.Sound.Volume")).intValue();
                 int pitch = ((Number) ChatTools.CONFIG.get("notifier.Sound.Pitch")).intValue();
@@ -80,14 +80,14 @@ public class BasicNotifier {
                 //#else
                 //$$ player.playSound(new SoundEvent(new Identifier(identifier)), SoundCategory.PLAYERS, volume * 0.01F, pitch * 0.1F);
                 //#endif
-            }).start();
+            });
         }
 
         // Actionbar notifications
         if ((boolean) ChatTools.CONFIG.get("notifier.Actionbar.Enabled")) {
-            new Thread(() -> {
+            MinecraftClient.getInstance().execute(() -> {
                 MessageUtils.sendToActionbar(TextUtils.trans("texts.actionbar.title"));
-            }).start();
+            });
         }
 
         // Highlight

@@ -73,9 +73,7 @@ public abstract class ChatHudMixin {
             if ((boolean) ChatTools.CONFIG.get("responder.respondToFilteredMessages")) {
                 Responder.work(message);
             }
-            new Thread(() -> {
-                ChatFilter.sendPlaceholderIfActive();
-            }).start();
+            ChatFilter.sendPlaceholderIfActive();
             ci.cancel();
         }
     }
