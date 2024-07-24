@@ -4,6 +4,7 @@
   "package": "net.apple70cents.chattools.mixins",
   "compatibilityLevel": "{{COMPATIBILITY_LEVEL}}",
   "mixins": [
+    "BookScreenMixin",
     "ChatHudMixin",
     "ChatMessageC2SPacketMixin",
     "ChatScreenMixin",
