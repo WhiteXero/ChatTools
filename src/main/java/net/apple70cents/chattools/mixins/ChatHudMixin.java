@@ -70,7 +70,7 @@ public abstract class ChatHudMixin {
         }
         if (ChatFilter.shouldFilter(message)) {
             LoggerUtils.info("[ChatTools] Filtered message: " + message.getString());
-            if ((boolean) ChatTools.CONFIG.get("responder.respondToFilteredMessages")) {
+            if ((boolean) ChatTools.CONFIG.get("responder.RespondToFilteredMessages")) {
                 Responder.work(message);
             }
             ChatFilter.sendPlaceholderIfActive();
