@@ -269,7 +269,6 @@ public class CommandRegistryUtils {
                         MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set.unsupported", key));
                         // ignore it, so return in advance
                         return;
-                    case null:
                     case "":
                     default:
                         ChatTools.CONFIG.set(key, String.valueOf(value));
