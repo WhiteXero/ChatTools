@@ -14,6 +14,7 @@ import net.minecraft.util.Identifier;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,10 +26,17 @@ import static net.apple70cents.chattools.utils.TextUtils.trans;
 public class ConfigScreenGenerator {
     private static Map<String, Object> configGuiMap;
     private static int GUI_VERSION = -1;
-    private static boolean configGuiMapInitialized = false;
+    public static boolean configGuiMapInitialized = false;
     private static final Gson GSON = new GsonBuilder().create();
 
-    private static void loadConfigGuiMap() {
+    private static final Map<String, String> key2TypeMappings = new HashMap<>();
+
+    public static Map<String, String> getKey2TypeMappings() {
+        return key2TypeMappings;
+    }
+
+
+    public static void loadConfigGuiMap() {
         try {
             InputStream inputStream = MinecraftClient.getInstance().getClass().getClassLoader()
                                                      .getResourceAsStream("assets/chattools/config_gui.json");
@@ -60,6 +68,7 @@ public class ConfigScreenGenerator {
             for (Object element : (List) ((Map) categoryInfo).get("content")) {
                 String type = (String) ((Map) element).get("type");
                 String key = (String) ((Map) element).get("key");
+                key2TypeMappings.put(key, type);
                 String errorSupplier = (String) ((Map) element).getOrDefault("errorSupplier", "null");
                 if ("intSlider".equals(type)) {
                     category.addEntry(ConfigScreenUtils.getEntryBuilder(eb, type, key, errorSupplier, ((Number) ((Map) element).get("min")).intValue(), ((Number) ((Map) element).get("max")).intValue()));
@@ -69,6 +78,7 @@ public class ConfigScreenGenerator {
                     for (Object elementInner : (List) ((Map) element).get("content")) {
                         String typeInner = (String) ((Map) elementInner).get("type");
                         String keyInner = (String) ((Map) elementInner).get("key");
+                        key2TypeMappings.put(keyInner, typeInner);
                         // we are assuming no sub nested in subs, therefore two layers are enough,
                         // and we are not going to deal with sub in sub
                         if ("intSlider".equals(typeInner)) {

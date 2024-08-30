@@ -294,7 +294,7 @@
           "key": "customJoinMessage.Enabled"
         },
         {
-          "type": "customJoinMessageList",
+          "type": "CustomJoinMessageList",
           "key": "customJoinMessage.List"
         }
       ]

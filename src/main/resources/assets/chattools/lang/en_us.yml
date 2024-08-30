@@ -3,6 +3,15 @@ modmenu.descriptionTranslation.chattools: A toolkit that provides great chat-rel
 key:
   chattools:
     texts:
+      config:
+        get: '§6[Chat Tools] Got value of "%s§6" as %s'
+        set:
+          .: '§a[Chat Tools] Set value of "%s§a" to %s'
+          warning: '§6[Chat Tools] Warning: The key "%s§6" has not been defined by Chat Tools.'
+          unsupported: '§4[Chat Tools] Error: Modification to the key "%s§4" is unsupported.'
+          saved: '§a[Chat Tools] Config saved.'
+        toggle:
+          error: '§4[Chat Tools] Error: The key "%s§4" has not been defined by Chat Tools.'
       RestoreMessagesSplitLine: '§7==== Restored Messages ====§r'
       filterPlaceholder:
         .: '§7==== [Filtered] ====§r'
@@ -15,7 +24,7 @@ key:
           empty: §6§lNo messages!
       download.process: '[Chat Tools] Downloading %s: %s%% - (%sKB/%sKB)'
       download.success: '§6[Chat Tools] All addon files were downloaded successfully!'
-      toast.failure: '§6Toast failed: Files are not ready or unsupported platform.§r'
+      toast.failure: '§6Toast failed: Files are not ready or you are on an unsupported platform.§r'
       respond.failure: '§6[Chat Tools] Responder failed: %s'
       translator.requireApi: Please configure the translation API first.
       translator.await: '[awaiting...]'

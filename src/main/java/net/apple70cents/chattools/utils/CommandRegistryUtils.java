@@ -1,14 +1,20 @@
 package net.apple70cents.chattools.utils;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.config.ConfigScreenGenerator;
 import net.apple70cents.chattools.config.ConfigStorage;
+import net.apple70cents.chattools.config.SpecialUnits;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.TextArgumentType;
 import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
 import net.minecraft.util.Formatting;
@@ -20,11 +26,6 @@ import java.util.regex.PatternSyntaxException;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
-
-//#if MC>=11900
-import net.minecraft.command.CommandRegistryAccess;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 //#else
 // fabric v2 begin to work since 1.19
 //$$ import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
@@ -130,7 +131,57 @@ public class CommandRegistryUtils {
                     Util.getOperatingSystem().open(ConfigStorage.FILE);
                     MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.requireRestart"));
                     return Command.SINGLE_SUCCESS;
-                }))).then(literal("regex_checker")
+                }))
+                // chattools config get
+                .then(literal("get")
+                    // one arg
+                    .then(argument("key", StringArgumentType.string()).executes(t -> {
+                        String key = StringArgumentType.getString(t, "key");
+                        MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.get", key, ChatTools.CONFIG.get(key)));
+                        return Command.SINGLE_SUCCESS;
+                    }))
+                )
+                // chattools config set
+                .then(literal("set")
+                    .then(argument("key", StringArgumentType.string())
+                        .then(argument("value", StringArgumentType.string()).executes(t -> {
+                            String key = StringArgumentType.getString(t, "key");
+                            String value = StringArgumentType.getString(t, "value");
+                            updateConfig(key, value);
+                            return Command.SINGLE_SUCCESS;
+                        }).then(argument("save", BoolArgumentType.bool()).executes(t -> {
+                                String key = StringArgumentType.getString(t, "key");
+                                String value = StringArgumentType.getString(t, "value");
+                                updateConfig(key, value);
+                                if (BoolArgumentType.getBool(t, "save")) {
+                                    ChatTools.CONFIG.save();
+                                    MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set.saved"));
+                                }
+                                return Command.SINGLE_SUCCESS;
+                        })))
+                    )
+                )
+                // chattools config toggle
+                .then(literal("toggle")
+                        .then(argument("key", StringArgumentType.string())
+                                .executes(t -> {
+                                    String key = StringArgumentType.getString(t, "key");
+                                    toggleBooleanConfig(key);
+                                    return Command.SINGLE_SUCCESS;
+                                }).then(argument("save", BoolArgumentType.bool()).executes(t -> {
+                                    String key = StringArgumentType.getString(t, "key");
+                                    toggleBooleanConfig(key);
+                                    if (BoolArgumentType.getBool(t, "save")) {
+                                        ChatTools.CONFIG.save();
+                                        MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set.saved"));
+                                    }
+                                    return Command.SINGLE_SUCCESS;
+                                }))
+                        )
+                )
+            )
+            // chattools regex_checker
+            .then(literal("regex_checker")
                 // one arg
                 .then(argument("regex", StringArgumentType.string()).executes(t -> {
                         Pair<Boolean, String> result = checkRegex(StringArgumentType.getString(t, "regex"));
@@ -153,7 +204,7 @@ public class CommandRegistryUtils {
                         }
                         return Command.SINGLE_SUCCESS;
                     }))));
-            // @formatter:on
+        // @formatter:on
     }
 
     public static Pair<Boolean, String> checkRegex(String pattern) {
@@ -163,5 +214,70 @@ public class CommandRegistryUtils {
             return new Pair<>(false, e.getMessage().replace("\r", ""));
         }
         return new Pair<>(true, "There's nothing wrong with the RegEx pattern.");
+    }
+
+    public static void toggleBooleanConfig(String key) {
+        if (!ConfigScreenGenerator.configGuiMapInitialized || ConfigScreenGenerator.getKey2TypeMappings().isEmpty()) {
+            ConfigScreenGenerator.getConfigBuilder(); // let Key2TypeMappings initialize
+        }
+        if (ChatTools.CONFIG.get(key) == null) {
+            MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.toggle.error", key));
+            return;
+        }
+        boolean now = (boolean) ChatTools.CONFIG.get(key);
+        updateConfig(key, String.valueOf(!now));
+    }
+
+    public static void updateConfig(String key, String value) {
+        if (!ConfigScreenGenerator.configGuiMapInitialized || ConfigScreenGenerator.getKey2TypeMappings().isEmpty()) {
+            ConfigScreenGenerator.getConfigBuilder(); // let Key2TypeMappings initialize
+        }
+        try {
+            if (!ConfigScreenGenerator.getKey2TypeMappings().containsKey(key)) {
+                // if we don't have that key, we consider it as a string
+                ChatTools.CONFIG.set(key, value);
+                MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set.warning", key));
+                MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set", key, ChatTools.CONFIG.get(key)));
+            } else {
+                switch (String.valueOf(ConfigScreenGenerator.getKey2TypeMappings().get(key))) {
+                    case "boolean":
+                        ChatTools.CONFIG.set(key, Boolean.parseBoolean(value));
+                        break;
+                    case "String":
+                        ChatTools.CONFIG.set(key, String.valueOf(value));
+                        break;
+                    case "intSlider":
+                        ChatTools.CONFIG.set(key, Integer.parseInt(value));
+                        break;
+                    case "EnumToastModes":
+                        ChatTools.CONFIG.set(key, SpecialUnits.ToastModes.valueOf(value));
+                        break;
+                    case "EnumKeyModifiers":
+                        ChatTools.CONFIG.set(key, SpecialUnits.KeyModifiers.valueOf(value));
+                        break;
+                    case "FAQ":
+                    case "sub":
+                    case "StringList":
+                    case "FormatterList":
+                    case "MacroList":
+                    case "BubbleList":
+                    case "ResponderList":
+                    case "CustomJoinMessageList":
+                        MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set.unsupported", key));
+                        // ignore it, so return in advance
+                        return;
+                    case null:
+                    case "":
+                    default:
+                        ChatTools.CONFIG.set(key, String.valueOf(value));
+                        MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set.warning", key));
+                }
+            }
+            MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set", key, ChatTools.CONFIG.get(key)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            MessageUtils.sendToNonPublicChat(TextUtils.literal(e.toString()).copy()
+                                                      .setStyle(Style.EMPTY.withFormatting(Formatting.RED)));
+        }
     }
 }

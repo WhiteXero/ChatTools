@@ -415,7 +415,7 @@ public class ConfigScreenUtils {
                             }
                         }
                     );
-            case "customJoinMessageList":
+            case "CustomJoinMessageList":
                 return new NestedListListEntry<SpecialUnits.CustomJoinMessageRuleUnit, MultiElementListEntry<SpecialUnits.CustomJoinMessageRuleUnit>>
                     (SERVER_LABELED_KEY,
                         SpecialUnits.CustomJoinMessageRuleUnit.fromList((List) CONFIG.get(key)),
