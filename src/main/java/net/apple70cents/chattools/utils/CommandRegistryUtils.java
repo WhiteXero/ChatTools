@@ -8,10 +8,7 @@ import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.config.ConfigScreenGenerator;
 import net.apple70cents.chattools.config.ConfigStorage;
 import net.apple70cents.chattools.config.SpecialUnits;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.TextArgumentType;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
@@ -26,6 +23,11 @@ import java.util.regex.PatternSyntaxException;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
+
+//#if MC>=11900
+import net.minecraft.command.CommandRegistryAccess;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 //#else
 // fabric v2 begin to work since 1.19
 //$$ import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
