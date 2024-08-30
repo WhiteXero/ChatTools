@@ -8,10 +8,10 @@ key:
         set:
           .: '§a[Chat Tools] Set value of "%s§a" to %s'
           warning: '§6[Chat Tools] Warning: The key "%s§6" has not been defined by Chat Tools.'
-          unsupported: '§4[Chat Tools] Error: Modification to the key "%s§4" is unsupported.'
+          unsupported: '§c[Chat Tools] Error: Modification to the key "%s§c" is unsupported.'
           saved: '§a[Chat Tools] Config saved.'
         toggle:
-          error: '§4[Chat Tools] Error: The key "%s§4" has not been defined by Chat Tools.'
+          error: '§c[Chat Tools] Error: The key "%s§c" has not been defined by Chat Tools.'
       RestoreMessagesSplitLine: '§7==== Restored Messages ====§r'
       filterPlaceholder:
         .: '§7==== [Filtered] ====§r'
@@ -128,6 +128,9 @@ key:
             Your new nickname:
             & -> Color Code Prefix
             \& -> &
+        CacheSize:
+          .: Cache Size
+          '@Tooltip': The maximum size for the cache of the results.
       ChatHistoryNavigator:
         Enabled:
           .: Enable Chat History Navigator

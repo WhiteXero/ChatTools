@@ -6,16 +6,19 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * @author 70CentsApple
  */
 public class NickHider {
-    private static final Map<String, Text> cache = new HashMap<>();
+    private static final Map<String, Text> cache = new LinkedHashMap<>();
 
     public static Text work(Text message) {
+        while (cache.size() > ((Number) ChatTools.CONFIG.get("general.NickHider.CacheSize")).intValue()) {
+            cache.remove(cache.keySet().iterator().next());
+        }
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
         String nickname = TextUtils.encodeColorCodes((String) ChatTools.CONFIG.get("general.NickHider.Nickname"));
         if (player != null) {

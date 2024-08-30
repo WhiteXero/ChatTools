@@ -8,10 +8,10 @@ key:
         set:
           .: '§a[Chat Tools] 已设置 "%s§a" 的值为 %s'
           warning: '§6[Chat Tools] 警告：键 "%s§6" 未被 Chat Tools 定义'
-          unsupported: '§4[Chat Tools] 错误：不支持对键 "%s§4" 的修改'
+          unsupported: '§c[Chat Tools] 错误：不支持对键 "%s§c" 的修改'
           saved: '§a[Chat Tools] 已保存配置'
         toggle:
-          error: '§4[Chat Tools] 错误：键 "%s§4" 未被 Chat Tools 定义'
+          error: '§c[Chat Tools] 错误：键 "%s§c" 未被 Chat Tools 定义'
       RestoreMessagesSplitLine: '§7==== 储存的聊天记录 ====§r'
       filterPlaceholder:
         .: '§7==== [已过滤] ====§r'
@@ -126,6 +126,9 @@ key:
             用于替换的新昵称。
             & -> 颜色代码前缀
             \& -> &
+        CacheSize:
+          .: 缓存数量上限
+          '@Tooltip': 最多缓存的替换结果数量
       ChatHistoryNavigator:
         Enabled:
           .: 启用聊天搜索

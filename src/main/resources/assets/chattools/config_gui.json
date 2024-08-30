@@ -55,6 +55,12 @@
             {
               "type": "String",
               "key": "general.NickHider.Nickname"
+            },
+            {
+              "type": "intSlider",
+              "key": "general.NickHider.CacheSize",
+              "min": 10,
+              "max": 5000
             }
           ]
         },

@@ -257,6 +257,7 @@ public class CommandRegistryUtils {
                         break;
                     case "FAQ":
                     case "sub":
+                    case "keycode":
                     case "StringList":
                     case "FormatterList":
                     case "MacroList":
