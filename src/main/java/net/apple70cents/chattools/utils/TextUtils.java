@@ -29,10 +29,12 @@ public class TextUtils {
     public static class MessageUnit {
         public Text message;
         public long unixTimestamp;
+        public int occurrenceCount;
 
-        public MessageUnit(Text message, long unixTimestamp) {
+        public MessageUnit(Text message, long unixTimestamp, int occurrenceCount) {
             this.message = message;
             this.unixTimestamp = unixTimestamp;
+            this.occurrenceCount = occurrenceCount;
         }
     }
 
@@ -56,10 +58,15 @@ public class TextUtils {
         return stringBuilder.toString();
     }
 
-    public static String putMessageMap(Text text, long unixTimestamp) {
+    public static MessageUnit getLatestMessage() {
+        // the last element of messageMap
+        return messageMap.values().stream().reduce((first, second) -> second).orElse(null);
+    }
+
+    public static String putMessageMap(Text text, long unixTimestamp, int occurrenceCount) {
         int maxSize = ((Number) ChatTools.CONFIG.get("general.MaxHistoryLength")).intValue();
         while (messageMap.size() > maxSize) {
-            // pop the first element
+            // pops the first element
             messageMap.remove(messageMap.keySet().iterator().next());
         }
 
@@ -70,7 +77,7 @@ public class TextUtils {
             hashcode = generateRandomString(6);
             retries++;
         }
-        messageMap.put(hashcode, new MessageUnit(text, unixTimestamp));
+        messageMap.put(hashcode, new MessageUnit(text, unixTimestamp, occurrenceCount));
         return hashcode;
     }
 

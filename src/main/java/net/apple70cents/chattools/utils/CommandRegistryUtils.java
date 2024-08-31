@@ -239,7 +239,6 @@ public class CommandRegistryUtils {
                 // if we don't have that key, we consider it as a string
                 ChatTools.CONFIG.set(key, value);
                 MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set.warning", key));
-                MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set", key, ChatTools.CONFIG.get(key)));
             } else {
                 switch (String.valueOf(ConfigScreenGenerator.getKey2TypeMappings().get(key))) {
                     case "boolean":

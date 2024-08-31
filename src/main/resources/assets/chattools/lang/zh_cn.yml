@@ -128,7 +128,21 @@ key:
             \& -> &
         CacheSize:
           .: 缓存数量上限
-          '@Tooltip': 最多缓存的替换结果数量
+          '@Tooltip': 最多缓存的替换结果数量。
+      ChatCompactor:
+        .: 聊天压缩
+        '@Tooltip': 压缩重复聊天使得聊天更紧凑。
+        Enabled:
+          .: 启用聊天压缩
+          '@Tooltip': 切换是否压缩重复聊天。
+        UseStrict:
+          .: 启用严格模式
+          '@Tooltip': 切换是否只有文本原始数据完全一致时才会被压缩。
+        MaxOccurrence:
+          .: 计数上限
+          '@Tooltip': |-
+            每次压缩信息时，会使消息的计数器自增1。
+            若计数器超出此计数上限则不再自增。
       ChatHistoryNavigator:
         Enabled:
           .: 启用聊天搜索

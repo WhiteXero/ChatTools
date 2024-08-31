@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.features.bubble.BubbleRenderer;
 import net.apple70cents.chattools.features.filter.ChatFilter;
+import net.apple70cents.chattools.features.general.ChatCompactor;
 import net.apple70cents.chattools.features.general.ClickEventsPreviewer;
 import net.apple70cents.chattools.features.general.NickHider;
 import net.apple70cents.chattools.features.general.Timestamp;
@@ -11,14 +12,22 @@ import net.apple70cents.chattools.features.notifier.BasicNotifier;
 import net.apple70cents.chattools.features.responder.Responder;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
+import net.apple70cents.chattools.utils.TextUtils;
 import net.minecraft.client.gui.hud.ChatHud;
+import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
+
+import java.time.Instant;
+import java.util.List;
+
 //#if MC>=11900
 import net.minecraft.client.gui.hud.MessageIndicator;
 import net.minecraft.network.message.MessageSignatureData;
@@ -30,8 +39,13 @@ import net.minecraft.network.message.MessageSignatureData;
 @Mixin(ChatHud.class)
 public abstract class ChatHudMixin {
 
-    @ModifyExpressionValue(
-        method =
+    @Shadow
+    public abstract void reset();
+
+
+    @Shadow @Final private List<ChatHudLine> messages;
+
+    @ModifyExpressionValue(method =
             //#if MC>=12005
             {"addVisibleMessage(Lnet/minecraft/client/gui/hud/ChatHudLine;)V", "addMessage*", "addToMessageHistory"}
             //#elseif MC>=11900
@@ -39,8 +53,7 @@ public abstract class ChatHudMixin {
             //#else
             //$$ "addMessage(Lnet/minecraft/text/Text;IIZ)V"
             //#endif
-        , at = @At(value = "CONSTANT", args = "intValue=100")
-    )
+            , at = @At(value = "CONSTANT", args = "intValue=100"))
     public int modifyMaxHistorySize(int originalMaxSize) {
         if ((boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
             return ((Number) ChatTools.CONFIG.get("general.MaxHistoryLength")).intValue();
@@ -115,8 +128,23 @@ public abstract class ChatHudMixin {
         if (BasicNotifier.shouldWork(message)) {
             message = BasicNotifier.work(message);
         }
+
+        int occurrenceCount = 1;
+        if ((boolean) ChatTools.CONFIG.get("general.ChatCompactor.Enabled")) {
+            occurrenceCount = ChatCompactor.calculateOccurrenceCount(message);
+            if (occurrenceCount > 1 && !this.messages.isEmpty()) {
+                this.messages.remove(0);
+                this.reset();
+            }
+        }
+        String hashcode = TextUtils.putMessageMap(message, Instant.now().getEpochSecond(), occurrenceCount);
+
         if ((boolean) ChatTools.CONFIG.get("general.Timestamp.Enabled")) {
-            message = Timestamp.work(message);
+            message = Timestamp.work(message, hashcode);
+        }
+
+        if ((boolean) ChatTools.CONFIG.get("general.ChatCompactor.Enabled")) {
+            message = ChatCompactor.appendTrailing(message, occurrenceCount);
         }
         // we need to reset `justSentMessage` status, since it might be that this message received was sent by us
         MessageUtils.setJustSentMessage(false);

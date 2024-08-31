@@ -1,6 +1,7 @@
 package net.apple70cents.chattools.features.general;
 
 import net.apple70cents.chattools.ChatTools;
+import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
 import net.minecraft.text.*;
 
@@ -9,7 +10,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 public class Timestamp {
-    public static Text work(Text message) {
+    public static Text work(Text message, String hashcode) {
         Instant instant = Instant.now();
         long currentUnixTimestamp = instant.getEpochSecond();
         LocalDateTime currentTime = LocalDateTime.ofEpochSecond(currentUnixTimestamp, 0, ZoneId.systemDefault()
@@ -23,7 +24,6 @@ public class Timestamp {
                 .getMonth()
                 .getValue(), currentTime.getDayOfMonth(), currentTime.getHour(), currentTime.getMinute(), currentTime.getSecond(), offsetString));
         if ((boolean) ChatTools.CONFIG.get("general.Timestamp.CopyToChatBar.Enabled")) {
-            String hashcode = TextUtils.putMessageMap(message, currentUnixTimestamp);
             HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, ((MutableText) longTimeDisplay)
                     .append("\n\n").append(TextUtils.trans("texts.copy.launch")));
             ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/chattools get_message " + hashcode);

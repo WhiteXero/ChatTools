@@ -65,6 +65,26 @@
           ]
         },
         {
+          "type": "sub",
+          "key": "general.ChatCompactor",
+          "content": [
+            {
+              "type": "boolean",
+              "key": "general.ChatCompactor.Enabled"
+            },
+            {
+              "type": "boolean",
+              "key": "general.ChatCompactor.UseStrict"
+            },
+            {
+              "type": "intSlider",
+              "key": "general.ChatCompactor.MaxOccurrence",
+              "min": 10,
+              "max": 50000
+            }
+          ]
+        },
+        {
           "type": "boolean",
           "key": "general.ChatHistoryNavigator.Enabled"
         },

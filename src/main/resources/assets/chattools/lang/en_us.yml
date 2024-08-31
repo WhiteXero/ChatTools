@@ -118,7 +118,7 @@ key:
           '@Tooltip': If enabled, a split-line will be added to chat when switching sessions.
       NickHider:
         .: Nickname Hider
-        '@Tooltip': It replaces your name, on the client-side only.
+        '@Tooltip': It replaces your name, but only on your client-side.
         Enabled:
           .: Enable Nickname Hider
           '@Tooltip': Toggles whether your nickname should be replaced.
@@ -131,6 +131,22 @@ key:
         CacheSize:
           .: Cache Size
           '@Tooltip': The maximum size for the cache of the results.
+      ChatCompactor:
+        .: Chat Compactor
+        '@Tooltip': Compacts chat, so that it will be more readable.
+        Enabled:
+          .: Enable Chat Compactor
+          '@Tooltip': Toggles whether we should attempt to compact your chat.
+        UseStrict:
+          .: Use Strict Mode
+          '@Tooltip': |-
+            Toggles whether two chats are compacted only when
+            its object data are strictly the same.
+        MaxOccurrence:
+          .: Maximum Occurrences
+          '@Tooltip': |-
+            Each time a chat is compacted, it's counter will increase by 1.
+            This controls the maximum number of the counter.
       ChatHistoryNavigator:
         Enabled:
           .: Enable Chat History Navigator

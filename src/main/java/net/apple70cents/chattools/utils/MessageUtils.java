@@ -5,11 +5,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.StringHelper;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author 70CentsApple
@@ -80,14 +76,14 @@ public class MessageUtils {
         int minIndex = str.length();
         String firstPlayerName = null;
         for (AbstractClientPlayerEntity player : MinecraftClient.getInstance().world.getPlayers()) {
+            if (player.getDisplayName() == null) {
+                continue;
+            }
             String playerName = player.getDisplayName().getString();
-            String regex = "\\b" + Pattern.quote(playerName) + "\\b";
-            Pattern pattern = Pattern.compile(regex);
-            Matcher matcher = pattern.matcher(str);
 
-            if (matcher.find() && matcher.start() < minIndex) {
-                minIndex = matcher.start();
-                firstPlayerName = matcher.group();
+            if (str.contains(playerName) && str.indexOf(playerName) < minIndex) {
+                minIndex = str.indexOf(playerName);
+                firstPlayerName = playerName;
             }
         }
         return firstPlayerName;
