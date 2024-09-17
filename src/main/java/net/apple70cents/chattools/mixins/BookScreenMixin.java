@@ -16,9 +16,11 @@ public abstract class BookScreenMixin {
         Style style = cir.getReturnValue();
         if (!(boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
             cir.setReturnValue(style);
+            return;
         }
         if (!(boolean) ChatTools.CONFIG.get("general.PreviewClickEvents.Enabled")) {
             cir.setReturnValue(style);
+            return;
         }
         cir.setReturnValue(ClickEventsPreviewer.work(style));
     }
