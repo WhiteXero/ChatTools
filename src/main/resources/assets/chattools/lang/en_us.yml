@@ -273,7 +273,7 @@ key:
           Formatter allows you to format your message according to your rules.
           Toggles whether Formatter should work.
       List:
-        .: 'Rules §6(Current Server Address: %s §6)§r'
+        .: 'Rules §6(Current Session Identifier: %s §6)§r'
         '@Tooltip': |-
           Defines the rules for Formatter.
           The upper content has higher priority.
@@ -341,7 +341,7 @@ key:
         .: Y Offset
         '@Tooltip': Y offset of the bubble.
       List:
-        .: 'Rules §6(Current Server Address: %s §6)§r'
+        .: 'Rules §6(Current Session Identifier: %s §6)§r'
         '@Tooltip': |-
           Defines the rules for bubbles.
           The upper content has higher priority.
@@ -379,7 +379,7 @@ key:
         .: Respond To Filtered Messages
         '@Tooltip': Always try to respond, even if they are going to be filtered.
       List:
-        .: 'Rules §6(Current Server Address: %s §6)§r'
+        .: 'Rules §6(Current Session Identifier: %s §6)§r'
         '@Tooltip': |-
           Defines the rules for Responder.
           The upper content has higher priority.
@@ -427,7 +427,7 @@ key:
         .: Enable Custom Join Message
         '@Tooltip': Send custom join messages based on given rules.
       List:
-        .: 'Rules §6(Current Server Address: %s §6)§r'
+        .: 'Rules §6(Current Session Identifier: %s §6)§r'
         '@Tooltip': Rules for sending custom join messages.
         '@New': New Rule
         '@Display': '§e[ %s§e ] [ Override: %s§e ] [%s§rms§e]§r %s'

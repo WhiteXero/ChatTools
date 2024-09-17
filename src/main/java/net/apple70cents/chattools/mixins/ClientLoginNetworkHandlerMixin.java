@@ -2,6 +2,7 @@ package net.apple70cents.chattools.mixins;
 
 import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.features.customjoinmessage.CustomJoinMessageSender;
+import net.apple70cents.chattools.utils.ContextUtils;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.client.network.ServerInfo;
 import net.minecraft.network.packet.s2c.login.LoginSuccessS2CPacket;
@@ -41,9 +42,11 @@ public abstract class ClientLoginNetworkHandlerMixin {
         //#if MC>=11900
         if (this.serverInfo != null) {
             CustomJoinMessageSender.work(this.serverInfo.address);
+        } else {
+            CustomJoinMessageSender.work(ContextUtils.getSessionIdentifier());
         }
         //#else
-        //$$ if (MinecraftClient.getInstance().getCurrentServerEntry() != null) {CustomJoinMessageSender.work(MinecraftClient.getInstance().getCurrentServerEntry().address);}
+        //$$ if (MinecraftClient.getInstance().getCurrentServerEntry() != null) {CustomJoinMessageSender.work(ContextUtils.getSessionIdentifier());}
         //#endif
     }
 

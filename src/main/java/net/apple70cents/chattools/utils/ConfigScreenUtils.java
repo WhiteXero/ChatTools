@@ -89,9 +89,7 @@ public class ConfigScreenUtils {
         // `errorSuppliers` will only apply to `StringList`s
         Text tooltip = getTooltip(key, type);
         // display current server (if it can be used)
-        final Text SERVER_LABELED_KEY = trans(key, "§f" + ((MinecraftClient.getInstance()
-                                                                           .getCurrentServerEntry() == null) ? "-" : MinecraftClient
-                .getInstance().getCurrentServerEntry().address));
+        final Text SERVER_LABELED_KEY = trans(key, "§f" + ContextUtils.getSessionIdentifier());
         switch (type) {
             case "boolean":
                 return eb.startBooleanToggle(trans(key), (boolean) CONFIG.get(key))
@@ -175,7 +173,7 @@ public class ConfigScreenUtils {
                             String colorPrefix = ("*".equals(bubbleRuleUnit.address) || (MinecraftClient.getInstance()
                                                                                                         .getCurrentServerEntry() != null && Pattern
                                     .compile(bubbleRuleUnit.address)
-                                    .matcher(MinecraftClient.getInstance().getCurrentServerEntry().address)
+                                    .matcher(ContextUtils.getSessionIdentifier())
                                     .matches())) ? "§a" : "§6";
                             Text displayText = trans(key + ".@Display", colorPrefix + bubbleRuleUnit.address, bubbleRuleUnit.fallback ? "§a✔" : "§c✘", bubbleRuleUnit.pattern);
                             return new MultiElementListEntry<>(displayText, bubbleRuleUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
@@ -241,7 +239,7 @@ public class ConfigScreenUtils {
                                 String colorPrefix = ("*".equals(responderRuleUnit.address) || (MinecraftClient.getInstance()
                                                                                                                .getCurrentServerEntry() != null && Pattern
                                         .compile(responderRuleUnit.address)
-                                        .matcher(MinecraftClient.getInstance().getCurrentServerEntry().address)
+                                        .matcher(ContextUtils.getSessionIdentifier())
                                         .matches())) ? "§a" : "§6";
                                 Text displayText = trans(key + ".@Display", colorPrefix + responderRuleUnit.address, responderRuleUnit.forceDisableFormatter ? "§a✔" : "§c✘",
                                         responderRuleUnit.delayInMilliseconds, responderRuleUnit.pattern, responderRuleUnit.message);
@@ -398,7 +396,7 @@ public class ConfigScreenUtils {
                                 String colorPrefix = ("*".equals(formatterUnit.address) || (MinecraftClient.getInstance()
                                                                                                           .getCurrentServerEntry() != null && Pattern
                                         .compile(formatterUnit.address)
-                                        .matcher(MinecraftClient.getInstance().getCurrentServerEntry().address)
+                                        .matcher(ContextUtils.getSessionIdentifier())
                                         .matches())) ? "§a" : "§6";
                                 Text displayText = trans(key + ".@Display", colorPrefix + formatterUnit.address, formatterUnit.formatter);
                                 return new MultiElementListEntry<>(displayText, formatterUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
@@ -455,7 +453,7 @@ public class ConfigScreenUtils {
                                 String colorPrefix = ("*".equals(customJoinMessageRuleUnit.address) || (MinecraftClient.getInstance()
                                                                                                                .getCurrentServerEntry() != null && Pattern
                                         .compile(customJoinMessageRuleUnit.address)
-                                        .matcher(MinecraftClient.getInstance().getCurrentServerEntry().address)
+                                        .matcher(ContextUtils.getSessionIdentifier())
                                         .matches())) ? "§a" : "§6";
                                 Text displayText = trans(key + ".@Display", colorPrefix + customJoinMessageRuleUnit.address, customJoinMessageRuleUnit.forceDisableFormatter ? "§a✔" : "§c✘",
                                         customJoinMessageRuleUnit.delayInMilliseconds, customJoinMessageRuleUnit.message);

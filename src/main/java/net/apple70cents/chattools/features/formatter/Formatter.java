@@ -2,6 +2,7 @@ package net.apple70cents.chattools.features.formatter;
 
 import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.config.SpecialUnits;
+import net.apple70cents.chattools.utils.ContextUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -32,8 +33,7 @@ public class Formatter {
             } else if (MinecraftClient.getInstance().getCurrentServerEntry() == null) {
                 // It is in a single player world
                 continue;
-            } else if (Pattern.compile(unit.address)
-                              .matcher(MinecraftClient.getInstance().getCurrentServerEntry().address).matches()) {
+            } else if (Pattern.compile(unit.address).matcher(ContextUtils.getSessionIdentifier()).matches()) {
                 matched = true;
                 formatter = unit.formatter;
                 // we just need the first match result, break immediately.

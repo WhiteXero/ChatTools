@@ -2,6 +2,7 @@ package net.apple70cents.chattools.features.responder;
 
 import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.config.SpecialUnits;
+import net.apple70cents.chattools.utils.ContextUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
@@ -67,7 +68,7 @@ public class Responder {
                     }
                 }
             } else if ("*".equals(unit.address) || Pattern.compile(unit.address)
-                                                          .matcher(mc.getCurrentServerEntry().address).matches()) {
+                                                          .matcher(ContextUtils.getSessionIdentifier()).matches()) {
                 if (Pattern.compile(unit.pattern, Pattern.MULTILINE).matcher(messageReceived).matches()) {
                     shouldRespond = true;
                     pattern = unit.pattern;

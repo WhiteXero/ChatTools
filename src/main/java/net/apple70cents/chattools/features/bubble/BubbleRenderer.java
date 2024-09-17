@@ -3,6 +3,7 @@ package net.apple70cents.chattools.features.bubble;
 import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.config.SpecialUnits;
 import net.apple70cents.chattools.features.general.NickHider;
+import net.apple70cents.chattools.utils.ContextUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
 import net.minecraft.client.MinecraftClient;
@@ -77,7 +78,8 @@ public class BubbleRenderer {
             // getNameLabelHeight() -> getHeight() + 0.5F
 
             //#if MC>=12100
-            Vec3d vec3d = entity.getAttachments().getPointNullable(EntityAttachmentType.NAME_TAG, 0, entity.getYaw(tickDelta));
+            Vec3d vec3d = entity.getAttachments()
+                                .getPointNullable(EntityAttachmentType.NAME_TAG, 0, entity.getYaw(tickDelta));
             if (vec3d != null) {
                 matrixStack.translate(vec3d.x, vec3d.y + 0.5F + yOffset / 10.0F, vec3d.z);
             }
@@ -163,7 +165,7 @@ public class BubbleRenderer {
                     break;
                 }
             } else if ("*".equals(unit.address) || Pattern.compile(unit.address)
-                                                          .matcher(mc.getCurrentServerEntry().address).matches()) {
+                                                          .matcher(ContextUtils.getSessionIdentifier()).matches()) {
                 serverAddressPass = true;
                 pattern = unit.pattern;
                 fallback = unit.fallback;

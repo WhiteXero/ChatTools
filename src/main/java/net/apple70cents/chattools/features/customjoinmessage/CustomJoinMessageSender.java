@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 public class CustomJoinMessageSender {
     public static void work(String currentAddress) {
+        LoggerUtils.info("[ChatTools] Trying to send join message as session identifier: " + currentAddress);
         for (SpecialUnits.CustomJoinMessageRuleUnit unit : SpecialUnits.CustomJoinMessageRuleUnit.fromList((List) ChatTools.CONFIG.get("customJoinMessage.List"))) {
             if ("*".equals(unit.address) || Pattern.compile(unit.address).matcher(currentAddress).matches()) {
                 makeMessageSchedule(unit.delayInMilliseconds, unit.message, unit.forceDisableFormatter);
