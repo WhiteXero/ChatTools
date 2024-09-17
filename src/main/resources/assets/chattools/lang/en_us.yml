@@ -280,9 +280,9 @@ key:
         '@New': New Rule
         '@Display': §e[ %s§e ]§r %s
         Address:
-          .: Address
+          .: Session Identifier
           '@Tooltip': |-
-            The server address for this rule.
+            The Session Identifier for this rule.
             RegEx is recommended.
         Formatter:
           .: Formatter
@@ -348,9 +348,9 @@ key:
         '@New': New Rule
         '@Display': '§e[ %s§e ] [ Fallback: %s§e ]§r %s'
         Address:
-          .: Address
+          .: Session Identifier
           '@Tooltip': |-
-            The server address for this rule.
+            The Session Identifier for this rule.
             RegEx is recommended.
         Pattern:
           .: Pattern
@@ -387,9 +387,9 @@ key:
         '@New': New Rule
         '@Display': '§e[ %s§e ] [ Override: %s§e ] [%s§rms§e]§r %s §e→§r %s'
         Address:
-          .: Address
+          .: Session Identifier
           '@Tooltip': |-
-            The server address for this rule.
+            The Session Identifier for this rule.
             RegEx is recommended.
         Pattern:
           .: Pattern
@@ -432,9 +432,9 @@ key:
         '@New': New Rule
         '@Display': '§e[ %s§e ] [ Override: %s§e ] [%s§rms§e]§r %s'
         Address:
-          .: Address
+          .: Session Identifier
           '@Tooltip': |-
-            The server address for this rule.
+            The Session Identifier for this rule.
             RegEx is recommended.
         Message:
           .: Message
