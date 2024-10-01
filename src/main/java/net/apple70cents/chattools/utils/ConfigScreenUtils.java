@@ -118,8 +118,8 @@ public class ConfigScreenUtils {
                                 (keybind -> CONFIG.set(key, keybind.getTranslationKey())).build();
             case "StringList":
                 StringListBuilder builder = eb.startStrList(trans(key), (List<String>) CONFIG.get(key))
-                            .setDefaultValue((List<String>) DEFAULT_CONFIG.get(key)).setTooltip(tooltip)
-                            .setSaveConsumer(v -> CONFIG.set(key, v));
+                                              .setDefaultValue((List<String>) DEFAULT_CONFIG.get(key))
+                                              .setTooltip(tooltip).setSaveConsumer(v -> CONFIG.set(key, v));
                 switch (errorSupplier) {
                     case "RegExNormal":
                         builder.setErrorSupplier(ErrorSuppliers.REGEX_COMPILE_ERROR_SUPPLIER_FOR_LIST);
@@ -170,11 +170,10 @@ public class ConfigScreenUtils {
                                       .setSaveConsumer(v -> bubbleRuleUnitRef.get().fallback = v).build());
                             }}, false);
                         } else {
-                            String colorPrefix = ("*".equals(bubbleRuleUnit.address) || (MinecraftClient.getInstance()
-                                                                                                        .getCurrentServerEntry() != null && Pattern
-                                    .compile(bubbleRuleUnit.address)
-                                    .matcher(ContextUtils.getSessionIdentifier())
-                                    .matches())) ? "§a" : "§6";
+                            String colorPrefix = ("*".equals(bubbleRuleUnit.address) ||
+                                    Pattern.compile(bubbleRuleUnit.address)
+                                            .matcher(ContextUtils.getSessionIdentifier())
+                                            .matches()) ? "§a" : "§6";
                             Text displayText = trans(key + ".@Display", colorPrefix + bubbleRuleUnit.address, bubbleRuleUnit.fallback ? "§a✔" : "§c✘", bubbleRuleUnit.pattern);
                             return new MultiElementListEntry<>(displayText, bubbleRuleUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
                                 add(eb.startStrField(trans(key + ".Address"), bubbleRuleUnit.address)
@@ -236,11 +235,10 @@ public class ConfigScreenUtils {
                                           .setSaveConsumer(v -> responderUnitRef.get().forceDisableFormatter = v).build());
                                 }}, false);
                             } else {
-                                String colorPrefix = ("*".equals(responderRuleUnit.address) || (MinecraftClient.getInstance()
-                                                                                                               .getCurrentServerEntry() != null && Pattern
-                                        .compile(responderRuleUnit.address)
-                                        .matcher(ContextUtils.getSessionIdentifier())
-                                        .matches())) ? "§a" : "§6";
+                                String colorPrefix = ("*".equals(responderRuleUnit.address) ||
+                                        Pattern.compile(responderRuleUnit.address)
+                                                .matcher(ContextUtils.getSessionIdentifier())
+                                                .matches()) ? "§a" : "§6";
                                 Text displayText = trans(key + ".@Display", colorPrefix + responderRuleUnit.address, responderRuleUnit.forceDisableFormatter ? "§a✔" : "§c✘",
                                         responderRuleUnit.delayInMilliseconds, responderRuleUnit.pattern, responderRuleUnit.message);
                                 return new MultiElementListEntry<>(displayText, responderRuleUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
@@ -393,11 +391,10 @@ public class ConfigScreenUtils {
                                           .setSaveConsumer(v -> formatterUnitRef.get().formatter = v).build());
                                 }}, false);
                             } else {
-                                String colorPrefix = ("*".equals(formatterUnit.address) || (MinecraftClient.getInstance()
-                                                                                                          .getCurrentServerEntry() != null && Pattern
-                                        .compile(formatterUnit.address)
-                                        .matcher(ContextUtils.getSessionIdentifier())
-                                        .matches())) ? "§a" : "§6";
+                                String colorPrefix = ("*".equals(formatterUnit.address) ||
+                                        Pattern.compile(formatterUnit.address)
+                                                .matcher(ContextUtils.getSessionIdentifier())
+                                                .matches()) ? "§a" : "§6";
                                 Text displayText = trans(key + ".@Display", colorPrefix + formatterUnit.address, formatterUnit.formatter);
                                 return new MultiElementListEntry<>(displayText, formatterUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
                                     add(eb.startStrField(trans(key + ".Address"), formatterUnit.address)
@@ -450,11 +447,10 @@ public class ConfigScreenUtils {
                                            .setSaveConsumer(v -> customJoinMessageRuleUnitRef.get().forceDisableFormatter = v).build());
                                 }},false);
                             } else {
-                                String colorPrefix = ("*".equals(customJoinMessageRuleUnit.address) || (MinecraftClient.getInstance()
-                                                                                                               .getCurrentServerEntry() != null && Pattern
-                                        .compile(customJoinMessageRuleUnit.address)
-                                        .matcher(ContextUtils.getSessionIdentifier())
-                                        .matches())) ? "§a" : "§6";
+                                String colorPrefix = ("*".equals(customJoinMessageRuleUnit.address) ||
+                                        Pattern.compile(customJoinMessageRuleUnit.address)
+                                                .matcher(ContextUtils.getSessionIdentifier())
+                                                .matches()) ? "§a" : "§6";
                                 Text displayText = trans(key + ".@Display", colorPrefix + customJoinMessageRuleUnit.address, customJoinMessageRuleUnit.forceDisableFormatter ? "§a✔" : "§c✘",
                                         customJoinMessageRuleUnit.delayInMilliseconds, customJoinMessageRuleUnit.message);
                                 return new MultiElementListEntry<>(displayText, customJoinMessageRuleUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
