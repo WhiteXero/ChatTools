@@ -5,6 +5,10 @@ runs:
   steps:
     - uses: actions/checkout@v4
 
+    - name: Minify JSON files
+      run: python3 .github/workflows/scripts/minify_json_files.py
+      shell: bash
+
     - name: Set up JDK ${{ matrix.java-version }}
       uses: actions/setup-java@v4
       with:
