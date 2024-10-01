@@ -156,16 +156,8 @@ public class BubbleRenderer {
         boolean serverAddressPass = false;
         boolean fallback = false;
         for (SpecialUnits.BubbleRuleUnit unit : SpecialUnits.BubbleRuleUnit.fromList((List) ChatTools.CONFIG.get("bubble.List"))) {
-            if (mc.getCurrentServerEntry() == null) {
-                // single player world
-                if ("*".equals(unit.address)) {
-                    serverAddressPass = true;
-                    pattern = unit.pattern;
-                    fallback = unit.fallback;
-                    break;
-                }
-            } else if ("*".equals(unit.address) || Pattern.compile(unit.address)
-                                                          .matcher(ContextUtils.getSessionIdentifier()).matches()) {
+            if ("*".equals(unit.address) || Pattern.compile(unit.address).matcher(ContextUtils.getSessionIdentifier())
+                                                   .matches()) {
                 serverAddressPass = true;
                 pattern = unit.pattern;
                 fallback = unit.fallback;

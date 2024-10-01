@@ -25,15 +25,7 @@ public class Formatter {
         boolean matched = false;
         String formatter = "{text}";
         for (SpecialUnits.FormatterUnit unit : SpecialUnits.FormatterUnit.fromList((List) ChatTools.CONFIG.get("formatter.List"))) {
-            if ("*".equals(unit.address)) {
-                matched = true;
-                formatter = unit.formatter;
-                // we just need the first match result, break immediately.
-                break;
-            } else if (MinecraftClient.getInstance().getCurrentServerEntry() == null) {
-                // It is in a single player world
-                continue;
-            } else if (Pattern.compile(unit.address).matcher(ContextUtils.getSessionIdentifier()).matches()) {
+            if (Pattern.compile(unit.address).matcher(ContextUtils.getSessionIdentifier()).matches()) {
                 matched = true;
                 formatter = unit.formatter;
                 // we just need the first match result, break immediately.

@@ -56,19 +56,7 @@ public class Responder {
         long delayInMilliseconds = 0;
         boolean forceDisableFormatter = false;
         for (SpecialUnits.ResponderRuleUnit unit : SpecialUnits.ResponderRuleUnit.fromList((List) ChatTools.CONFIG.get("responder.List"))) {
-            if (mc.getCurrentServerEntry() == null) {
-                if ("*".equals(unit.address)) {
-                    if (Pattern.compile(unit.pattern, Pattern.MULTILINE).matcher(messageReceived).matches()) {
-                        shouldRespond = true;
-                        pattern = unit.pattern;
-                        message = unit.message;
-                        delayInMilliseconds = unit.delayInMilliseconds;
-                        forceDisableFormatter = unit.forceDisableFormatter;
-                        break;
-                    }
-                }
-            } else if ("*".equals(unit.address) || Pattern.compile(unit.address)
-                                                          .matcher(ContextUtils.getSessionIdentifier()).matches()) {
+            if ("*".equals(unit.address) || Pattern.compile(unit.address).matcher(ContextUtils.getSessionIdentifier()).matches()) {
                 if (Pattern.compile(unit.pattern, Pattern.MULTILINE).matcher(messageReceived).matches()) {
                     shouldRespond = true;
                     pattern = unit.pattern;
