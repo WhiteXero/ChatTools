@@ -136,7 +136,7 @@ public class CopyFeatureScreen extends Screen {
                                                                                     .getOffset(instant));
         String offsetString = ZoneId.systemDefault().getRules().getOffset(instant).getId();
         // yyyy/MM/dd HH:mm:ss UTC±XX:XX
-        String longTimeDisplay = String.format("%4d/%d/%d %d:%02d:%02d\nUTC%s", currentTime.getYear(), currentTime
+        String longTimeDisplay = String.format("%4d/%d/%d %02d:%02d:%02d\nUTC%s", currentTime.getYear(), currentTime
                 .getMonth()
                 .getValue(), currentTime.getDayOfMonth(), currentTime.getHour(), currentTime.getMinute(), currentTime.getSecond(), offsetString);
         return longTimeDisplay;

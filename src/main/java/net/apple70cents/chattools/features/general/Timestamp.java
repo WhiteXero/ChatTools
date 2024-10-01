@@ -20,7 +20,7 @@ public class Timestamp {
         String offsetString = ZoneId.systemDefault().getRules().getOffset(instant).getId();
         Text shortTimeDisplay = TextUtils.of(timeInFormat((String) ChatTools.CONFIG.get("general.Timestamp.Pattern")));
         // yyyy/MM/dd HH:mm:ss UTC±XX:XX
-        Text longTimeDisplay = TextUtils.of(String.format("%4d/%d/%d %d:%02d:%02d\nUTC%s", currentTime.getYear(), currentTime
+        Text longTimeDisplay = TextUtils.of(String.format("%4d/%d/%d %02d:%02d:%02d\nUTC%s", currentTime.getYear(), currentTime
                 .getMonth()
                 .getValue(), currentTime.getDayOfMonth(), currentTime.getHour(), currentTime.getMinute(), currentTime.getSecond(), offsetString));
         if ((boolean) ChatTools.CONFIG.get("general.Timestamp.CopyToChatBar.Enabled")) {
@@ -40,7 +40,7 @@ public class Timestamp {
     private static String timeInFormat(String formatter) {
         formatter = TextUtils.encodeColorCodes(formatter);
         LocalDateTime time = LocalDateTime.now();
-        formatter = formatter.replace("{hour}", String.format("%d", time.getHour()))
+        formatter = formatter.replace("{hour}", String.format("%02d", time.getHour()))
                              .replace("{minute}", String.format("%02d", time.getMinute()))
                              .replace("{second}", String.format("%02d", time.getSecond()));
         return formatter;

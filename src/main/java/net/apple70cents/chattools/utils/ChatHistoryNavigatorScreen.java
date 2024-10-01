@@ -192,7 +192,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
                                                                                                       .getOffset(Instant.now()));
             String offsetString = ZoneId.systemDefault().getRules().getOffset(Instant.now()).getId();
             // yyyy/MM/dd HH:mm:ss UTC±XX:XX
-            Text longTimeDisplay = TextUtils.of(String.format("%4d/%d/%d %d:%02d:%02d\nUTC%s", time.getYear(), time
+            Text longTimeDisplay = TextUtils.of(String.format("%4d/%d/%d %02d:%02d:%02d\nUTC%s", time.getYear(), time
                     .getMonth()
                     .getValue(), time.getDayOfMonth(), time.getHour(), time.getMinute(), time.getSecond(), offsetString));
             return longTimeDisplay;
