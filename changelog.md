@@ -1,7 +1,9 @@
 ## Chinese (Simplified)
-- 修复 无法禁用预览点击事件
-- 优化 将所有服务器地址字段替换为单人模式也适用的会话标识符
+- 优化 复制菜单现在可以预览复制的内容
+- 更改 小时现在占两个数位
+- 优化 单人模式下会话标识符匹配表现
 
 ## English
-- Fixed: Unable to disable PreviewClickEvents properly
-- Optimization: Use Session Identifiers instead of just Server Address
+- Optimization: Previews in Copy Screen
+- Changed: Hours now take up two digits
+- Optimization: Improved Session Identifiers matching performance in Single Player sessions
