@@ -25,7 +25,7 @@ public class Formatter {
         boolean matched = false;
         String formatter = "{text}";
         for (SpecialUnits.FormatterUnit unit : SpecialUnits.FormatterUnit.fromList((List) ChatTools.CONFIG.get("formatter.List"))) {
-            if (Pattern.compile(unit.address).matcher(ContextUtils.getSessionIdentifier()).matches()) {
+            if ("*".equals(unit.address) || Pattern.compile(unit.address).matcher(ContextUtils.getSessionIdentifier()).matches()) {
                 matched = true;
                 formatter = unit.formatter;
                 // we just need the first match result, break immediately.
