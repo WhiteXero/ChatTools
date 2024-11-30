@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-//#if MC>=12002
+//#if MC>=12102
 import net.minecraft.client.render.entity.state.EntityRenderState;
 //#endif
 /**
@@ -22,7 +22,7 @@ import net.minecraft.client.render.entity.state.EntityRenderState;
  */
 @Mixin(EntityRenderer.class)
 public abstract class EntityRendererMixin {
-    //#if MC>=12002
+    //#if MC>=12102
     Entity entity;
     float tickDelta;
     @Inject(method = "updateRenderState", at = @At(value = "HEAD"))
