@@ -5,7 +5,6 @@ import net.apple70cents.chattools.features.bubble.BubbleRenderer;
 import net.apple70cents.chattools.features.general.NickHider;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.state.EntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.text.Text;
@@ -15,6 +14,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+//#if MC>=12002
+import net.minecraft.client.render.entity.state.EntityRenderState;
+//#endif
 /**
  * @author 70CentsApple
  */
@@ -31,7 +33,6 @@ public abstract class EntityRendererMixin {
 
     @Inject(method = "render", at = @At(value = "HEAD"))
     private void render(EntityRenderState state, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
-        //TODO FIX chat bubbles
     //#else
     //$$ @Inject(method = "render", at = @At(value = "HEAD"))
     //$$ private void render(Entity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
