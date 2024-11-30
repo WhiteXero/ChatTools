@@ -27,7 +27,7 @@ public class SpecialUnits {
 
         public BubbleRuleUnit() {
             this.address = "*";
-            this.pattern = "<(?<name>.*)> (?<message>.*)";
+            this.pattern = "<(?<name>.*?)> (?<message>.*)";
             this.fallback = false;
         }
 
@@ -40,7 +40,7 @@ public class SpecialUnits {
         public static BubbleRuleUnit of(Object ele) {
             if (ele instanceof Map) {
                 String address = (String) ((Map) ele).getOrDefault("address", "*");
-                String pattern = (String) ((Map) ele).getOrDefault("pattern", "<(?<name>.*)> (?<message>.*)");
+                String pattern = (String) ((Map) ele).getOrDefault("pattern", "<(?<name>.*?)> (?<message>.*)");
                 boolean fallback = (boolean) ((Map) ele).getOrDefault("fallback", false);
                 return new BubbleRuleUnit(address, pattern, fallback);
             } else if (ele instanceof BubbleRuleUnit) {
