@@ -57,7 +57,7 @@ public class Responder {
         boolean forceDisableFormatter = false;
         for (SpecialUnits.ResponderRuleUnit unit : SpecialUnits.ResponderRuleUnit.fromList((List) ChatTools.CONFIG.get("responder.List"))) {
             if ("*".equals(unit.address) || Pattern.compile(unit.address).matcher(ContextUtils.getSessionIdentifier()).matches()) {
-                if (Pattern.compile(unit.pattern, Pattern.MULTILINE).matcher(messageReceived).matches()) {
+                if (Pattern.compile(unit.pattern, Pattern.MULTILINE).matcher(messageReceived).find()) {
                     shouldRespond = true;
                     pattern = unit.pattern;
                     message = unit.message;
