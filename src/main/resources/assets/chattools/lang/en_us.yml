@@ -116,6 +116,21 @@ key:
         SplitLineEnabled:
           .: Enable Split-line
           '@Tooltip': If enabled, a split-line will be added to chat when switching sessions.
+      ExclusiveActionbar:
+        .: Exclusive Actionbar
+        '@Tooltip': To render the info texts of Chat Tools exclusively.
+        Enabled:
+          .: Enable Exclusive Actionbar
+          '@Tooltip': Toggles whether Chat Tools should render its info texts exclusively.
+        XOffset:
+          .: X Offset
+          '@Tooltip': Shifts the exclusive actionbar by a particular X value.
+        YOffset:
+          .: Y Offset
+          '@Tooltip': Shifts the exclusive actionbar by a particular Y value.
+        Size:
+          .: Size
+          '@Tooltip': The size of the text.
       NickHider:
         .: Nickname Hider
         '@Tooltip': It replaces your name, but only on your client-side.

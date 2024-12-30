@@ -46,6 +46,28 @@
         },
         {
           "type": "sub",
+          "key": "general.ExclusiveActionbar",
+          "content": [
+            {
+              "type": "boolean",
+              "key": "general.ExclusiveActionbar.Enabled"
+            },
+            {
+              "type": "intField",
+              "key": "general.ExclusiveActionbar.XOffset"
+            },
+            {
+              "type": "intField",
+              "key": "general.ExclusiveActionbar.YOffset"
+            },
+            {
+              "type": "doubleField",
+              "key": "general.ExclusiveActionbar.Size"
+            }
+          ]
+        },
+        {
+          "type": "sub",
           "key": "general.NickHider",
           "content": [
             {

@@ -103,6 +103,14 @@ public class ConfigScreenUtils {
                 return eb.startIntSlider(trans(key), ((Number) CONFIG.get(key)).intValue(), args[0], args[1])
                          .setDefaultValue(((Number) DEFAULT_CONFIG.get(key)).intValue()).setTooltip(tooltip)
                          .setSaveConsumer(v -> CONFIG.set(key, (Number) v)).build();
+            case "intField":
+                return eb.startIntField(trans(key), ((Number) CONFIG.get(key)).intValue())
+                         .setDefaultValue(((Number) DEFAULT_CONFIG.get(key)).intValue()).setTooltip(tooltip)
+                         .setSaveConsumer(v -> CONFIG.set(key, (Number) v)).build();
+            case "doubleField":
+                return eb.startDoubleField(trans(key), ((Number) CONFIG.get(key)).doubleValue())
+                         .setDefaultValue(((Number) DEFAULT_CONFIG.get(key)).doubleValue()).setTooltip(tooltip)
+                         .setSaveConsumer(v -> CONFIG.set(key, (Number) v)).build();
             case "keycode":
                 return eb.startKeyCodeField(trans(key), InputUtil.fromTranslationKey((String) CONFIG.get(key)))
                          .setDefaultValue(InputUtil.fromTranslationKey((String) DEFAULT_CONFIG.get(key)))
@@ -487,6 +495,7 @@ public class ConfigScreenUtils {
                         .setDefaultValue(SpecialUnits.ToastModes.valueOf((String) DEFAULT_CONFIG.get(key)))
                         .setTooltip(tooltip).setSaveConsumer(v -> CONFIG.set(key, v.toString())).build();
             default:
+                LoggerUtils.error("[ChatTools] Unknown config type: " + type);
                 return null;
         }
     }

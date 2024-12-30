@@ -248,7 +248,11 @@ public class CommandRegistryUtils {
                         ChatTools.CONFIG.set(key, String.valueOf(value));
                         break;
                     case "intSlider":
+                    case "intField":
                         ChatTools.CONFIG.set(key, Integer.parseInt(value));
+                        break;
+                    case "doubleField":
+                        ChatTools.CONFIG.set(key, Double.parseDouble(value));
                         break;
                     case "EnumToastModes":
                         ChatTools.CONFIG.set(key, SpecialUnits.ToastModes.valueOf(value));

@@ -1,9 +1,12 @@
 package net.apple70cents.chattools.mixins;
 
 import net.apple70cents.chattools.ChatTools;
+import net.apple70cents.chattools.features.general.ExclusiveActionbarHandler;
 import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.render.RenderTickCounter;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -46,5 +49,17 @@ public abstract class InGameHudMixin {
         //#if MC<11700
         //$$ }
         //#endif
+    }
+
+    @Inject(method = "renderOverlayMessage", at = @At(value = "HEAD"))
+    public void renderExclusiveActionbar(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
+        if (!((boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled"))) {
+            return;
+        }
+        if (!((boolean) ChatTools.CONFIG.get("general.ExclusiveActionbar.Enabled"))) {
+            return;
+        }
+        ExclusiveActionbarHandler.tick();
+        ExclusiveActionbarHandler.render(context);
     }
 }

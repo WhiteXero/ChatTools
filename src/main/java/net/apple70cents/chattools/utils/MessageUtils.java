@@ -1,6 +1,7 @@
 package net.apple70cents.chattools.utils;
 
 import net.apple70cents.chattools.ChatTools;
+import net.apple70cents.chattools.features.general.ExclusiveActionbarHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -23,8 +24,13 @@ public class MessageUtils {
     }
 
     public static void sendToActionbar(Text text) {
-        if (MinecraftClient.getInstance().player != null) {
+        if (MinecraftClient.getInstance().player == null) {
+            return;
+        }
+        if (!(boolean) ChatTools.CONFIG.get("general.ExclusiveActionbar.Enabled")) {
             MinecraftClient.getInstance().player.sendMessage(text, true);
+        } else {
+            ExclusiveActionbarHandler.addToRenderQueue(text, 3000);
         }
     }
 

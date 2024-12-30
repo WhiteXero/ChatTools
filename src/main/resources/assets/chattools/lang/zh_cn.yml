@@ -114,6 +114,21 @@ key:
         SplitLineEnabled:
           .: 启用分割线
           '@Tooltip': 如果开启，切换会话时会在聊天中添加分割线。
+      ExclusiveActionbar:
+        .: 独占动作栏（Actionbar）
+        '@Tooltip': Chat Tools [聊天工具箱] 的动作栏文本将不会以原版动作栏方式呈现，而是以独占的文本渲染。
+        Enabled:
+          .: 启用独占动作栏
+          '@Tooltip': 切换是否独占渲染动作栏文本。
+        XOffset:
+          .: X轴偏移量
+          '@Tooltip': 按指定的值移动独占动作栏的 X 坐标。
+        YOffset:
+          .: Y轴偏移量
+          '@Tooltip': 按指定的值移动独占动作栏的 Y 坐标。
+        Size:
+          .: 大小
+          '@Tooltip': 独占动作栏的文本大小。
       NickHider:
         .: 隐藏昵称
         '@Tooltip': 在客户端层面替换你的名字。
