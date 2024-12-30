@@ -1,7 +1,7 @@
 ## Chinese (Simplified)
-- 优化 默认气泡匹配规则
-- 更新 1.21.2 和 1.21.3
+- 优化 自动响应现在使用正则表达式 `find()` 而不是 `matches()`
+- 更新 1.21.4
 
 ## English
-- Optimization: Better default bubble rules
-- Update: Bumped to 1.21.2 and 1.21.3
+- Optimization: Responder now uses `find()` instead of `matches()`
+- Update: Bumped to 1.21.4
