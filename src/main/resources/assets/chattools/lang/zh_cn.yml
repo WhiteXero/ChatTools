@@ -196,6 +196,11 @@ key:
           （Minecraft 默认：256）
 
           请注意如果聊天长度大于256，可能会导致不可预料的后果。
+      HideChatHistoryInF1Mode:
+        .: 在 F1 模式下打开聊天屏幕时隐藏聊天历史
+        '@Tooltip': |-
+          重新引入 MC-130244。
+          §6（需要 Minecraft 版本≥1.20.5）§r
     notifier:
       Toast:
         .: 后台通知

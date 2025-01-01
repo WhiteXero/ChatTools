@@ -24,6 +24,7 @@
   "general.Translator.PostInstead": false,
   "general.MaxHistoryLength": 500,
   "general.IncreaseChatFieldMaxLength": false,
+  "general.HideChatHistoryInF1Mode": false,
   "notifier.Toast.Enabled": false,
   "notifier.Toast.Mode": "ADDON",
   "notifier.Sound.Enabled": true,

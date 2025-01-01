@@ -141,6 +141,10 @@
         {
           "type": "boolean",
           "key": "general.IncreaseChatFieldMaxLength"
+        },
+        {
+          "type": "boolean",
+          "key": "general.HideChatHistoryInF1Mode"
         }
       ]
     },
