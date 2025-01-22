@@ -29,6 +29,14 @@ import static net.apple70cents.chattools.utils.TextUtils.trans;
  * @author 70CentsApple
  */
 public class ConfigScreenUtils {
+    final static boolean SHOULD_EXPAND_ALL_RULES =
+            //#if MC>=12104
+            true
+            //#else
+            //$$ false
+            //#endif
+            ;
+
     public static Text getTooltip(String key, String variableType) {
         return getTooltip(key, variableType, DEFAULT_CONFIG.get(key));
     }
@@ -176,7 +184,7 @@ public class ConfigScreenUtils {
                                       .setTooltip(getTooltip(key + ".Fallback", "boolean", defaultRule.fallback))
                                       .setDefaultValue(defaultRule.fallback)
                                       .setSaveConsumer(v -> bubbleRuleUnitRef.get().fallback = v).build());
-                            }}, false);
+                            }}, SHOULD_EXPAND_ALL_RULES);
                         } else {
                             String colorPrefix = ("*".equals(bubbleRuleUnit.address) ||
                                     Pattern.compile(bubbleRuleUnit.address)
@@ -198,7 +206,7 @@ public class ConfigScreenUtils {
                                       .setTooltip(getTooltip(key + ".Fallback", "boolean", new SpecialUnits.BubbleRuleUnit().fallback))
                                       .setDefaultValue(new SpecialUnits.BubbleRuleUnit().fallback)
                                       .setSaveConsumer(v -> bubbleRuleUnit.fallback = v).build());
-                            }}, false);
+                            }}, SHOULD_EXPAND_ALL_RULES);
                         }
                     }
                 );
@@ -241,7 +249,7 @@ public class ConfigScreenUtils {
                                           .setTooltip(getTooltip(key + ".ForceDisableFormatter", "boolean", defaultRule.forceDisableFormatter))
                                           .setDefaultValue(defaultRule.forceDisableFormatter)
                                           .setSaveConsumer(v -> responderUnitRef.get().forceDisableFormatter = v).build());
-                                }}, false);
+                                }}, SHOULD_EXPAND_ALL_RULES);
                             } else {
                                 String colorPrefix = ("*".equals(responderRuleUnit.address) ||
                                         Pattern.compile(responderRuleUnit.address)
@@ -272,7 +280,7 @@ public class ConfigScreenUtils {
                                           .setTooltip(getTooltip(key + ".ForceDisableFormatter", "boolean", new SpecialUnits.ResponderRuleUnit().forceDisableFormatter))
                                           .setDefaultValue(new SpecialUnits.ResponderRuleUnit().forceDisableFormatter)
                                           .setSaveConsumer(v -> responderRuleUnit.forceDisableFormatter = v).build());
-                                }}, false);
+                                }}, SHOULD_EXPAND_ALL_RULES);
                             }
                         }
                     );
@@ -321,7 +329,7 @@ public class ConfigScreenUtils {
                                           .setTooltip(getTooltip(key + ".Command", "String", defaultMacro.command))
                                           .setDefaultValue(defaultMacro.command)
                                           .setSaveConsumer(v -> macroUnitRef.get().command = v).build());
-                                }}, false);
+                                }}, SHOULD_EXPAND_ALL_RULES);
                             } else {
                                 Text displayText;
                                 if (macroUnit.key.equals(InputUtil.UNKNOWN_KEY.getTranslationKey())) {
@@ -366,7 +374,7 @@ public class ConfigScreenUtils {
                                             .setTooltip(getTooltip(key + ".Command", "String", new SpecialUnits.MacroUnit().command))
                                             .setDefaultValue(new SpecialUnits.MacroUnit().command)
                                             .setSaveConsumer(v -> macroUnit.command = v).build());
-                                }}, false);
+                                }}, SHOULD_EXPAND_ALL_RULES);
                             }
                         }
                     );
@@ -397,7 +405,7 @@ public class ConfigScreenUtils {
                                           .setTooltip(getTooltip(key + ".Formatter", "String", defaultFormatterRule.formatter))
                                           .setDefaultValue(defaultFormatterRule.formatter)
                                           .setSaveConsumer(v -> formatterUnitRef.get().formatter = v).build());
-                                }}, false);
+                                }}, SHOULD_EXPAND_ALL_RULES);
                             } else {
                                 String colorPrefix = ("*".equals(formatterUnit.address) ||
                                         Pattern.compile(formatterUnit.address)
@@ -414,7 +422,7 @@ public class ConfigScreenUtils {
                                           .setTooltip(getTooltip(key + ".Formatter", "String", new SpecialUnits.FormatterUnit().formatter))
                                           .setDefaultValue(new SpecialUnits.FormatterUnit().formatter)
                                           .setSaveConsumer(v -> formatterUnit.formatter = v).build());
-                                }}, false);
+                                }}, SHOULD_EXPAND_ALL_RULES);
                             }
                         }
                     );
@@ -453,7 +461,7 @@ public class ConfigScreenUtils {
                                            .setTooltip(getTooltip(key + ".ForceDisableFormatter", "boolean", defaultCustomJoinMessageRuleUnit.forceDisableFormatter))
                                            .setDefaultValue(defaultCustomJoinMessageRuleUnit.forceDisableFormatter)
                                            .setSaveConsumer(v -> customJoinMessageRuleUnitRef.get().forceDisableFormatter = v).build());
-                                }},false);
+                                }},SHOULD_EXPAND_ALL_RULES);
                             } else {
                                 String colorPrefix = ("*".equals(customJoinMessageRuleUnit.address) ||
                                         Pattern.compile(customJoinMessageRuleUnit.address)
@@ -479,7 +487,7 @@ public class ConfigScreenUtils {
                                           .setTooltip(getTooltip(key + ".ForceDisableFormatter", "boolean", new SpecialUnits.CustomJoinMessageRuleUnit().forceDisableFormatter))
                                           .setDefaultValue(new SpecialUnits.CustomJoinMessageRuleUnit().forceDisableFormatter)
                                           .setSaveConsumer(v -> customJoinMessageRuleUnit.forceDisableFormatter = v).build());
-                                }}, false);
+                                }}, SHOULD_EXPAND_ALL_RULES);
                             }
                         }
                     );
