@@ -57,6 +57,7 @@ public class ExclusiveActionbarHandler {
         int index = 0;
         for (ExclusiveActionbarMessageUnit ele : messageUnitList) {
             int opacity = calculateOpacity(ele.startTime, ele.lifeTimeInMillis);
+            yOffset += calculateOffset(ele.startTime, ele.lifeTimeInMillis);
             if (opacity > 2) {
                 //#if MC>=12000
                 context.getMatrices().push();
@@ -80,6 +81,11 @@ public class ExclusiveActionbarHandler {
         }
     }
 
+    /**
+     * Calculate opacity for fade in & fade outs.
+     *
+     * @return opacity between 0 and 255
+     */
     private static int calculateOpacity(long startTime, long lifeTime) {
         long currentTime = System.currentTimeMillis();
         long elapsedTime = currentTime - startTime;
@@ -97,6 +103,27 @@ public class ExclusiveActionbarHandler {
         } else {
             return (int) ((lifeTime - elapsedTime) * 255.0 / fadeDuration);
         }
+    }
+
+    /**
+     * Calculate offset for fade in.
+     *
+     * @return opacity between 0 and 10
+     */
+    private static int calculateOffset(long startTime, long lifeTime) {
+        long currentTime = System.currentTimeMillis();
+        long elapsedTime = currentTime - startTime;
+
+        if (elapsedTime <= 0 || elapsedTime >= lifeTime) {
+            return 10;
+        }
+
+        long fadeDuration = 200;
+        if (elapsedTime <= fadeDuration) {
+            double progress = Math.sin(((double) elapsedTime / fadeDuration * Math.PI / 2));
+            return (int) (10 - progress * 10);
+        }
+        return 0;
     }
 
 }

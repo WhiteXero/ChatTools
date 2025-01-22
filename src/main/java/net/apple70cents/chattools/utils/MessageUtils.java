@@ -30,7 +30,7 @@ public class MessageUtils {
         if (!(boolean) ChatTools.CONFIG.get("general.ExclusiveActionbar.Enabled")) {
             MinecraftClient.getInstance().player.sendMessage(text, true);
         } else {
-            ExclusiveActionbarHandler.addToRenderQueue(text, 3000);
+            ExclusiveActionbarHandler.addToRenderQueue(text, 4000);
         }
     }
 
