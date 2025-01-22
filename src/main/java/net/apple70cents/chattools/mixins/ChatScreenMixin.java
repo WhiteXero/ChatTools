@@ -73,33 +73,35 @@ public class ChatScreenMixin {
 
     //#if MC>=12005
     @Unique
-    boolean shouldHideChatHistory = MinecraftClient.getInstance().options.hudHidden &&
-            (boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled") &&
-            (MinecraftClient.getInstance().currentScreen instanceof ChatScreen) &&
-            (boolean) ChatTools.CONFIG.get("general.HideChatHistoryInF1Mode");
+    private boolean shouldHideChatHistory() {
+        return MinecraftClient.getInstance().options.hudHidden &&
+                (boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled") &&
+                (MinecraftClient.getInstance().currentScreen instanceof ChatScreen) &&
+                (boolean) ChatTools.CONFIG.get("general.HideChatHistoryInF1Mode");
+    }
 
     @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;render(Lnet/minecraft/client/gui/DrawContext;IIIZ)V"))
     private boolean hideChatHistoryInF1Mode_1(ChatHud instance, DrawContext context, int i1, int i2, int i3, boolean b) {
         // if addition conditions are satisfied, don't make it render
-        return !shouldHideChatHistory;
+        return !shouldHideChatHistory();
     }
 
     @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawHoverEvent(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Style;II)V"))
     private boolean hideChatHistoryInF1Mode_2(DrawContext instance, TextRenderer textRenderer, Style style, int x, int y) {
         // if addition conditions are satisfied, don't make it render
-        return !shouldHideChatHistory;
+        return !shouldHideChatHistory();
     }
 
     @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawOrderedTooltip(Lnet/minecraft/client/font/TextRenderer;Ljava/util/List;II)V"))
     private boolean hideChatHistoryInF1Mode_3(DrawContext instance, TextRenderer textRenderer, List<? extends OrderedText> text, int x, int y) {
         // if addition conditions are satisfied, don't make it render
-        return !shouldHideChatHistory;
+        return !shouldHideChatHistory();
     }
 
     @Inject(method = "getTextStyleAt", at = @At(value = "HEAD"), cancellable = true)
     private void hideChatHistoryInF1Mode_4(double x, double y, CallbackInfoReturnable<Style> cir) {
         // if addition conditions are satisfied, don't consume its click
-        if (shouldHideChatHistory) {
+        if (shouldHideChatHistory()) {
             cir.setReturnValue(null);
         }
     }
