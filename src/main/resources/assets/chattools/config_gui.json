@@ -298,6 +298,12 @@
           "max": 20
         },
         {
+          "type": "intSlider",
+          "key": "bubble.MaxLineWidth",
+          "min": 20,
+          "max": 400
+        },
+        {
           "type": "BubbleList",
           "key": "bubble.List"
         }

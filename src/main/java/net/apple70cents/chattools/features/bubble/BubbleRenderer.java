@@ -13,6 +13,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 
 import java.util.HashMap;
@@ -95,21 +96,28 @@ public class BubbleRenderer {
                     //#endif
                     , -0.025F, 0.025F);
             Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
-            float xOffset = -textRenderer.getWidth(renderText) / 2.0F;
-            textRenderer.draw(renderText, xOffset, 0, 553648127, false, matrix4f, vertexConsumers,
-                    //#if MC>=11900
-                    TextRenderer.TextLayerType.SEE_THROUGH
-                    //#else
-                    //$$ true
-                    //#endif
-                    , 1056964608, 15728640);
-            textRenderer.draw(renderText, xOffset, 0, -1, false, matrix4f, vertexConsumers,
-                    //#if MC>=11900
-                    TextRenderer.TextLayerType.NORMAL
-                    //#else
-                    //$$ false
-                    //#endif
-                    , 0, 15728640);
+            int maxLineWidth = ((Number) ChatTools.CONFIG.get("bubble.MaxLineWidth")).intValue();
+            List<OrderedText> lines = textRenderer.wrapLines(renderText, maxLineWidth);
+            int lines_amount = lines.size();
+            for (int i = 0; i < lines_amount; i++) {
+                int y = 9 * (i - lines_amount);
+                OrderedText line = lines.get(i);
+                float xOffset = -textRenderer.getWidth(line) / 2.0F;
+                textRenderer.draw(line, xOffset, y, 553648127, false, matrix4f, vertexConsumers,
+                        //#if MC>=11900
+                        TextRenderer.TextLayerType.SEE_THROUGH
+                        //#else
+                        //$$ true
+                        //#endif
+                        , 1056964608, 15728640);
+                textRenderer.draw(line, xOffset, y, -1, false, matrix4f, vertexConsumers,
+                        //#if MC>=11900
+                        TextRenderer.TextLayerType.NORMAL
+                        //#else
+                        //$$ false
+                        //#endif
+                        , 0, 15728640);
+            }
             matrixStack.pop();
         }
     }

@@ -356,6 +356,11 @@ key:
       YOffset:
         .: 气泡Y轴偏移量
         '@Tooltip': 气泡的Y轴偏移量。
+      MaxLineWidth:
+        .: 单行最大长度
+        '@Tooltip': |-
+          一行最大的长度。
+          单位为2像素（？）。
       List:
         .: '规则 §6(当前会话标识符：%s§6)§r'
         '@Tooltip': |-

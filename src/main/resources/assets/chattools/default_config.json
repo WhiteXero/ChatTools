@@ -52,6 +52,7 @@
   "bubble.Enabled": true,
   "bubble.Lifetime": 8,
   "bubble.YOffset": 3,
+  "bubble.MaxLineWidth": 190,
   "bubble.List": [
     {
       "address": ".*\\.hypixel\\.net",

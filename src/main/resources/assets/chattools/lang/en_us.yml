@@ -360,6 +360,11 @@ key:
       YOffset:
         .: Y Offset
         '@Tooltip': Y offset of the bubble.
+      MaxLineWidth:
+        .: Max Line Width
+        '@Tooltip': |-
+          Maximum width of a line.
+          2px as a unit (maybe?).
       List:
         .: 'Rules §6(Current Session Identifier: %s §6)§r'
         '@Tooltip': |-
