@@ -1,5 +1,7 @@
 [>>Simplified Chinese<<](README.md)
 
+**[>>FAQ<<](https://70centsapple.top/blogs/#/chat-tools-faq)**
+
 # Chat Tools
 Chat Tools is a Minecraft Fabric Mod that provides players with numerous useful chat features.  
 Please install [Cloth Config](https://modrinth.com/mod/cloth-config) first.

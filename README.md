@@ -1,10 +1,12 @@
 [>>English<<](README_en.md)
 
+**[>>常见问题解答<<](https://70centsapple.top/blogs/#/chat-tools-faq-zh-cn)**
+
 # Chat Tools
 Chat Tools 是一个 Minecraft Fabric 模组，为玩家提供众多的实用聊天功能。  
 请安装前置模组 [Cloth Config](https://modrinth.com/mod/cloth-config)。
 
-Chat Tools的大部分功能支持高度个性化，请在配置页面进行配置。  
+Chat Tools 的大部分功能支持高度个性化，请在配置页面进行配置。  
 配置页面启动方式（请确保安装好 [Cloth Config](https://modrinth.com/mod/cloth-config) ）：
 - 输入指令 `/chattools opengui`
 - Chat Tools 与 [Mod Menu](https://modrinth.com/mod/modmenu) 联动，在 Mod Menu 中打开Chat Tools 配置界面
