@@ -84,6 +84,9 @@ public class Responder {
 
             // work
             String message = msg;
+            if (mc.player != null) {
+                message = message.replace("{pos}", String.format("(%d,%d,%d)", (int) mc.player.getX(), (int) mc.player.getY(), (int) mc.player.getZ()));
+            }
             try {
                 message = replaceAllGroupNames(messageReceived, pattern, message);
             } catch (Exception e) {
@@ -92,9 +95,6 @@ public class Responder {
                 MessageUtils.sendToActionbar(TextUtils.trans("texts.respond.failure", e.getMessage()));
                 e.printStackTrace();
                 return;
-            }
-            if (mc.player != null) {
-                message = message.replace("{pos}", String.format("(%d,%d,%d)", (int) mc.player.getX(), (int) mc.player.getY(), (int) mc.player.getZ()));
             }
             LoggerUtils.info("[ChatTools] Respond to `" + pattern + "`, with message `" + message + "`");
             message = message.replace("\\{", "{").replace("\\}", "}");
