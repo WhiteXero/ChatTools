@@ -2,10 +2,7 @@ package net.apple70cents.chattools.features.chatkeybindings;
 
 import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.config.SpecialUnits;
-import net.apple70cents.chattools.utils.KeyboardUtils;
-import net.apple70cents.chattools.utils.LoggerUtils;
-import net.apple70cents.chattools.utils.MessageUtils;
-import net.apple70cents.chattools.utils.TextUtils;
+import net.apple70cents.chattools.utils.*;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 
@@ -15,8 +12,8 @@ public class Repeat {
     private static boolean keyWasPressed;
 
     public static void tick() {
-        String key = (String) ChatTools.CONFIG.get("chatkeybindings.RepeatKey");
-        SpecialUnits.KeyModifiers modifier = SpecialUnits.KeyModifiers.valueOf((String) ChatTools.CONFIG.get("chatkeybindings.RepeatKeyModifier"));
+        String key = (String) ConfigUtils.get("chatkeybindings.RepeatKey");
+        SpecialUnits.KeyModifiers modifier = SpecialUnits.KeyModifiers.valueOf((String) ConfigUtils.get("chatkeybindings.RepeatKeyModifier"));
         if (KeyboardUtils.isKeyPressingWithModifier(key, modifier, SpecialUnits.MacroModes.GREEDY) && MinecraftClient.getInstance().currentScreen == null) {
             if (!keyWasPressed) {
                 keyWasPressed = true;

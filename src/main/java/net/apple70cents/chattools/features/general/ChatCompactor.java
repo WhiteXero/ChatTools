@@ -1,6 +1,6 @@
 package net.apple70cents.chattools.features.general;
 
-import net.apple70cents.chattools.ChatTools;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.TextUtils;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -10,7 +10,7 @@ public class ChatCompactor {
         if (occurrencesCount <= 1) {
             return msg;
         }
-        int maxOccurrence = ((Number) ChatTools.CONFIG.get("general.ChatCompactor.MaxOccurrence")).intValue();
+        int maxOccurrence = ((Number) ConfigUtils.get("general.ChatCompactor.MaxOccurrence")).intValue();
         String tail = "";
         if (occurrencesCount > maxOccurrence) {
             tail = " (" + maxOccurrence + "+)";
@@ -22,12 +22,12 @@ public class ChatCompactor {
 
     public static int calculateOccurrenceCount(Text message) {
         int previousOccurrenceCount = 0;
-        if ((boolean) ChatTools.CONFIG.get("general.ChatCompactor.Enabled") && message != null) {
+        if ((boolean) ConfigUtils.get("general.ChatCompactor.Enabled") && message != null) {
             TextUtils.MessageUnit latestMessageUnit = TextUtils.getLatestMessage();
             if (latestMessageUnit == null) {
                 return 1;
             }
-            if ((boolean) ChatTools.CONFIG.get("general.ChatCompactor.UseStrict")) {
+            if ((boolean) ConfigUtils.get("general.ChatCompactor.UseStrict")) {
                 if (message.equals(latestMessageUnit.message)) {
                     previousOccurrenceCount = latestMessageUnit.occurrenceCount;
                 }

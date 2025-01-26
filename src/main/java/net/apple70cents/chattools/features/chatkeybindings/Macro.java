@@ -1,7 +1,7 @@
 package net.apple70cents.chattools.features.chatkeybindings;
 
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.config.SpecialUnits;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.KeyboardUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
@@ -19,7 +19,7 @@ public class Macro {
         if (MinecraftClient.getInstance().currentScreen != null) {
             return;
         }
-        for (SpecialUnits.MacroUnit macro : SpecialUnits.MacroUnit.fromList((List) ChatTools.CONFIG.get("chatkeybindings.Macro.List"))) {
+        for (SpecialUnits.MacroUnit macro : SpecialUnits.MacroUnit.fromList((List) ConfigUtils.get("chatkeybindings.Macro.List"))) {
             if (KeyboardUtils.isKeyPressingWithModifier(macro.key, macro.modifier, macro.mode)) {
                 if (!keyWasPressed.contains(macro)) {
                     keyWasPressed.add(macro);

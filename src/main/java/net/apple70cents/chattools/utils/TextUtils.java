@@ -64,7 +64,7 @@ public class TextUtils {
     }
 
     public static String putMessageMap(Text text, long unixTimestamp, int occurrenceCount) {
-        int maxSize = ((Number) ChatTools.CONFIG.get("general.MaxHistoryLength")).intValue();
+        int maxSize = ((Number) ConfigUtils.get("general.MaxHistoryLength")).intValue();
         while (messageMap.size() > maxSize) {
             // pops the first element
             messageMap.remove(messageMap.keySet().iterator().next());

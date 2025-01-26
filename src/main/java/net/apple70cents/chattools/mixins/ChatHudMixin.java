@@ -1,7 +1,6 @@
 package net.apple70cents.chattools.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.features.bubble.BubbleRenderer;
 import net.apple70cents.chattools.features.filter.ChatFilter;
 import net.apple70cents.chattools.features.general.ChatCompactor;
@@ -10,6 +9,7 @@ import net.apple70cents.chattools.features.general.NickHider;
 import net.apple70cents.chattools.features.general.Timestamp;
 import net.apple70cents.chattools.features.notifier.BasicNotifier;
 import net.apple70cents.chattools.features.responder.Responder;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
@@ -55,8 +55,8 @@ public abstract class ChatHudMixin {
             //#endif
             , at = @At(value = "CONSTANT", args = "intValue=100"))
     public int modifyMaxHistorySize(int originalMaxSize) {
-        if ((boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
-            return ((Number) ChatTools.CONFIG.get("general.MaxHistoryLength")).intValue();
+        if ((boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
+            return ((Number) ConfigUtils.get("general.MaxHistoryLength")).intValue();
         } else {
             return 100;
         }
@@ -78,12 +78,12 @@ public abstract class ChatHudMixin {
             //$$ Text message, int messageId, int timestamp, boolean refresh
             //#endif
             , CallbackInfo ci) {
-        if (!(boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
+        if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
             return;
         }
         if (ChatFilter.shouldFilter(message)) {
             LoggerUtils.info("[ChatTools] Filtered message: " + message.getString());
-            if ((boolean) ChatTools.CONFIG.get("responder.RespondToFilteredMessages")) {
+            if ((boolean) ConfigUtils.get("responder.RespondToFilteredMessages")) {
                 Responder.work(message);
             }
             ChatFilter.sendPlaceholderIfActive();
@@ -104,7 +104,7 @@ public abstract class ChatHudMixin {
         //#else
         //$$ final int MESSAGE_IDX = 0;
         //#endif
-        if (!(boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
+        if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
             return;
         }
         Text message = args.get(MESSAGE_IDX);
@@ -112,21 +112,21 @@ public abstract class ChatHudMixin {
         if (ChatFilter.shouldFilter(message)) {
             return;
         }
-        if ((boolean) ChatTools.CONFIG.get("bubble.Enabled")) {
+        if ((boolean) ConfigUtils.get("bubble.Enabled")) {
             // it must be done before NickHider began to work
             BubbleRenderer.addChatBubble(message);
         }
         // This is not the only attempt that we try to activate the responder.
         // When filtering a message with `responder.respondToFilteredMessages` option on, responder will also try to work.
-        if ((boolean) ChatTools.CONFIG.get("responder.Enabled") && !MessageUtils.hadJustSentMessage()) {
+        if ((boolean) ConfigUtils.get("responder.Enabled") && !MessageUtils.hadJustSentMessage()) {
             // obviously, we don't respond to our own messages
             Responder.work(message);
         }
-        if ((boolean) ChatTools.CONFIG.get("general.NickHider.Enabled")) {
+        if ((boolean) ConfigUtils.get("general.NickHider.Enabled")) {
             message = NickHider.work(message);
         }
         int occurrenceCount = 1;
-        if ((boolean) ChatTools.CONFIG.get("general.ChatCompactor.Enabled")) {
+        if ((boolean) ConfigUtils.get("general.ChatCompactor.Enabled")) {
             occurrenceCount = ChatCompactor.calculateOccurrenceCount(message);
             if (occurrenceCount > 1 && !this.messages.isEmpty()) {
                 this.messages.remove(0);
@@ -135,8 +135,8 @@ public abstract class ChatHudMixin {
         }
         String hashcode = TextUtils.putMessageMap(message, Instant.now().getEpochSecond(), occurrenceCount);
 
-        if ((boolean) ChatTools.CONFIG.get("notifier.Highlight.InsertBeforeTimestamps")) {
-            if ((boolean) ChatTools.CONFIG.get("general.Timestamp.Enabled")) {
+        if ((boolean) ConfigUtils.get("notifier.Highlight.InsertBeforeTimestamps")) {
+            if ((boolean) ConfigUtils.get("general.Timestamp.Enabled")) {
                 message = Timestamp.work(message, hashcode);
             }
             if (BasicNotifier.shouldWork(message)) {
@@ -146,12 +146,12 @@ public abstract class ChatHudMixin {
             if (BasicNotifier.shouldWork(message)) {
                 message = BasicNotifier.work(message);
             }
-            if ((boolean) ChatTools.CONFIG.get("general.Timestamp.Enabled")) {
+            if ((boolean) ConfigUtils.get("general.Timestamp.Enabled")) {
                 message = Timestamp.work(message, hashcode);
             }
         }
 
-        if ((boolean) ChatTools.CONFIG.get("general.ChatCompactor.Enabled")) {
+        if ((boolean) ConfigUtils.get("general.ChatCompactor.Enabled")) {
             message = ChatCompactor.appendTrailing(message, occurrenceCount);
         }
         // we need to reset `justSentMessage` status, since it might be that this message received was sent by us
@@ -162,11 +162,11 @@ public abstract class ChatHudMixin {
     @Inject(method = "getTextStyleAt", at = @At(value = "RETURN"), cancellable = true)
     public void modifyHoverEvent(double x, double y, CallbackInfoReturnable<Style> cir) {
         Style style = cir.getReturnValue();
-        if (!(boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
+        if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
             cir.setReturnValue(style);
             return;
         }
-        if (!(boolean) ChatTools.CONFIG.get("general.PreviewClickEvents.Enabled")) {
+        if (!(boolean) ConfigUtils.get("general.PreviewClickEvents.Enabled")) {
             cir.setReturnValue(style);
             return;
         }

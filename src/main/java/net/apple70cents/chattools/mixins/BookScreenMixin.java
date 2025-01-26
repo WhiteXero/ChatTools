@@ -1,7 +1,7 @@
 package net.apple70cents.chattools.mixins;
 
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.features.general.ClickEventsPreviewer;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.minecraft.client.gui.screen.ingame.BookScreen;
 import net.minecraft.text.Style;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,11 +14,11 @@ public abstract class BookScreenMixin {
     @Inject(method = "getTextStyleAt", at = @At(value = "RETURN"), cancellable = true)
     public void modifyHoverEvent(double x, double y, CallbackInfoReturnable<Style> cir) {
         Style style = cir.getReturnValue();
-        if (!(boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
+        if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
             cir.setReturnValue(style);
             return;
         }
-        if (!(boolean) ChatTools.CONFIG.get("general.PreviewClickEvents.Enabled")) {
+        if (!(boolean) ConfigUtils.get("general.PreviewClickEvents.Enabled")) {
             cir.setReturnValue(style);
             return;
         }

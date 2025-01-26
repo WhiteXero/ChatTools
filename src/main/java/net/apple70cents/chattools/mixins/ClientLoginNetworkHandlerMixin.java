@@ -2,6 +2,7 @@ package net.apple70cents.chattools.mixins;
 
 import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.features.customjoinmessage.CustomJoinMessageSender;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.ContextUtils;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.client.network.ServerInfo;
@@ -33,10 +34,10 @@ public abstract class ClientLoginNetworkHandlerMixin {
     //$$ @Inject(method = "onLoginSuccess", at = @At(value = "TAIL"))
     //#endif
     public void onServerLoginSuccess(LoginSuccessS2CPacket packet, CallbackInfo ci) {
-        if (!(boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
+        if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
             return;
         }
-        if (!(boolean) ChatTools.CONFIG.get("customJoinMessage.Enabled")) {
+        if (!(boolean) ConfigUtils.get("customJoinMessage.Enabled")) {
             return;
         }
         //#if MC>=11900

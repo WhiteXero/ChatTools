@@ -21,8 +21,6 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import static net.apple70cents.chattools.ChatTools.CONFIG;
-import static net.apple70cents.chattools.ChatTools.DEFAULT_CONFIG;
 import static net.apple70cents.chattools.utils.TextUtils.trans;
 
 /**
@@ -38,7 +36,7 @@ public class ConfigScreenUtils {
             ;
 
     public static Text getTooltip(String key, String variableType) {
-        return getTooltip(key, variableType, DEFAULT_CONFIG.get(key));
+        return getTooltip(key, variableType, ConfigUtils.getDefault(key));
     }
 
     public static Text getTooltip(String key, String variableType, Object defaultVal) {
@@ -48,11 +46,11 @@ public class ConfigScreenUtils {
         if (MinecraftClient.getInstance().options.advancedItemTooltips) {
             try {
                 if (variableType.endsWith("List")) {
-                    if (!((List<?>) DEFAULT_CONFIG.get(key)).isEmpty()) {
+                    if (!((List<?>) ConfigUtils.getDefault(key)).isEmpty()) {
                         StringBuilder sb = new StringBuilder();
                         sb.append("[");
-                        for (int i = 0; i < ((List<?>) DEFAULT_CONFIG.get(key)).size(); i++) {
-                            String ele = ((List<?>) DEFAULT_CONFIG.get(key)).get(i).toString();
+                        for (int i = 0; i < ((List<?>) ConfigUtils.getDefault(key)).size(); i++) {
+                            String ele = ((List<?>) ConfigUtils.getDefault(key)).get(i).toString();
                             // if this is not the first element, we add a comma to the front
                             if (i != 0) sb.append(",");
                             // check if the list's type is raw string
@@ -100,28 +98,28 @@ public class ConfigScreenUtils {
         final Text SERVER_LABELED_KEY = trans(key, "§f" + ContextUtils.getSessionIdentifier());
         switch (type) {
             case "boolean":
-                return eb.startBooleanToggle(trans(key), (boolean) CONFIG.get(key))
-                         .setDefaultValue((boolean) DEFAULT_CONFIG.get(key)).setTooltip(tooltip)
-                         .setSaveConsumer(v -> CONFIG.set(key, v)).build();
+                return eb.startBooleanToggle(trans(key), (boolean) ConfigUtils.get(key))
+                         .setDefaultValue((boolean) ConfigUtils.getDefault(key)).setTooltip(tooltip)
+                         .setSaveConsumer(v -> ConfigUtils.set(key, v)).build();
             case "String":
-                return eb.startStrField(trans(key), (String) CONFIG.get(key))
-                         .setDefaultValue((String) DEFAULT_CONFIG.get(key)).setTooltip(tooltip)
-                         .setSaveConsumer(v -> CONFIG.set(key, v)).build();
+                return eb.startStrField(trans(key), (String) ConfigUtils.get(key))
+                         .setDefaultValue((String) ConfigUtils.getDefault(key)).setTooltip(tooltip)
+                         .setSaveConsumer(v -> ConfigUtils.set(key, v)).build();
             case "intSlider":
-                return eb.startIntSlider(trans(key), ((Number) CONFIG.get(key)).intValue(), args[0], args[1])
-                         .setDefaultValue(((Number) DEFAULT_CONFIG.get(key)).intValue()).setTooltip(tooltip)
-                         .setSaveConsumer(v -> CONFIG.set(key, (Number) v)).build();
+                return eb.startIntSlider(trans(key), ((Number) ConfigUtils.get(key)).intValue(), args[0], args[1])
+                         .setDefaultValue(((Number) ConfigUtils.getDefault(key)).intValue()).setTooltip(tooltip)
+                         .setSaveConsumer(v -> ConfigUtils.set(key, (Number) v)).build();
             case "intField":
-                return eb.startIntField(trans(key), ((Number) CONFIG.get(key)).intValue())
-                         .setDefaultValue(((Number) DEFAULT_CONFIG.get(key)).intValue()).setTooltip(tooltip)
-                         .setSaveConsumer(v -> CONFIG.set(key, (Number) v)).build();
+                return eb.startIntField(trans(key), ((Number) ConfigUtils.get(key)).intValue())
+                         .setDefaultValue(((Number) ConfigUtils.getDefault(key)).intValue()).setTooltip(tooltip)
+                         .setSaveConsumer(v -> ConfigUtils.set(key, (Number) v)).build();
             case "doubleField":
-                return eb.startDoubleField(trans(key), ((Number) CONFIG.get(key)).doubleValue())
-                         .setDefaultValue(((Number) DEFAULT_CONFIG.get(key)).doubleValue()).setTooltip(tooltip)
-                         .setSaveConsumer(v -> CONFIG.set(key, (Number) v)).build();
+                return eb.startDoubleField(trans(key), ((Number) ConfigUtils.get(key)).doubleValue())
+                         .setDefaultValue(((Number) ConfigUtils.getDefault(key)).doubleValue()).setTooltip(tooltip)
+                         .setSaveConsumer(v -> ConfigUtils.set(key, (Number) v)).build();
             case "keycode":
-                return eb.startKeyCodeField(trans(key), InputUtil.fromTranslationKey((String) CONFIG.get(key)))
-                         .setDefaultValue(InputUtil.fromTranslationKey((String) DEFAULT_CONFIG.get(key)))
+                return eb.startKeyCodeField(trans(key), InputUtil.fromTranslationKey((String) ConfigUtils.get(key)))
+                         .setDefaultValue(InputUtil.fromTranslationKey((String) ConfigUtils.getDefault(key)))
                          .setTooltip(tooltip)
                          //#if MC>=11800
                         .setKeySaveConsumer
@@ -131,11 +129,11 @@ public class ConfigScreenUtils {
                         //#else
                         //$$ .setKeySaveConsumer
                         //#endif
-                                (keybind -> CONFIG.set(key, keybind.getTranslationKey())).build();
+                                (keybind -> ConfigUtils.set(key, keybind.getTranslationKey())).build();
             case "StringList":
-                StringListBuilder builder = eb.startStrList(trans(key), (List<String>) CONFIG.get(key))
-                                              .setDefaultValue((List<String>) DEFAULT_CONFIG.get(key))
-                                              .setTooltip(tooltip).setSaveConsumer(v -> CONFIG.set(key, v));
+                StringListBuilder builder = eb.startStrList(trans(key), (List<String>) ConfigUtils.get(key))
+                                              .setDefaultValue((List<String>) ConfigUtils.getDefault(key))
+                                              .setTooltip(tooltip).setSaveConsumer(v -> ConfigUtils.set(key, v));
                 switch (errorSupplier) {
                     case "RegExNormal":
                         builder.setErrorSupplier(ErrorSuppliers.REGEX_COMPILE_ERROR_SUPPLIER_FOR_LIST);
@@ -158,11 +156,11 @@ public class ConfigScreenUtils {
             case "BubbleList":
                 return new NestedListListEntry<SpecialUnits.BubbleRuleUnit, MultiElementListEntry<SpecialUnits.BubbleRuleUnit>>
                     (SERVER_LABELED_KEY,
-                    SpecialUnits.BubbleRuleUnit.fromList((List) CONFIG.get(key)),
+                    SpecialUnits.BubbleRuleUnit.fromList((List) ConfigUtils.get(key)),
                     true,
                     () -> Optional.of(new net.minecraft.text.Text[]{tooltip}),
-                    v -> CONFIG.set(key, v),
-                    () -> SpecialUnits.BubbleRuleUnit.fromList((List) DEFAULT_CONFIG.get(key)),
+                    v -> ConfigUtils.set(key, v),
+                    () -> SpecialUnits.BubbleRuleUnit.fromList((List) ConfigUtils.getDefault(key)),
                     eb.getResetButtonKey(), true, true, (bubbleRuleUnit, ignored) -> {
                         AtomicReference<SpecialUnits.BubbleRuleUnit> bubbleRuleUnitRef = new AtomicReference<>(bubbleRuleUnit);
                         if (bubbleRuleUnit == null) {
@@ -213,11 +211,11 @@ public class ConfigScreenUtils {
             case "ResponderList":
                 return new NestedListListEntry<SpecialUnits.ResponderRuleUnit, MultiElementListEntry<SpecialUnits.ResponderRuleUnit>>
                     (SERVER_LABELED_KEY,
-                        SpecialUnits.ResponderRuleUnit.fromList((List) CONFIG.get(key)),
+                        SpecialUnits.ResponderRuleUnit.fromList((List) ConfigUtils.get(key)),
                         true,
                         () -> Optional.of(new net.minecraft.text.Text[]{tooltip}),
-                        v -> CONFIG.set(key, v),
-                        () -> SpecialUnits.ResponderRuleUnit.fromList((List) DEFAULT_CONFIG.get(key)),
+                        v -> ConfigUtils.set(key, v),
+                        () -> SpecialUnits.ResponderRuleUnit.fromList((List) ConfigUtils.getDefault(key)),
                         eb.getResetButtonKey(),
                         true,
                         true, (responderRuleUnit, ignored) -> {
@@ -287,11 +285,11 @@ public class ConfigScreenUtils {
             case "MacroList":
                 return new NestedListListEntry<SpecialUnits.MacroUnit, MultiElementListEntry<SpecialUnits.MacroUnit>>
                     (trans(key),
-                        SpecialUnits.MacroUnit.fromList((List) CONFIG.get(key)),
+                        SpecialUnits.MacroUnit.fromList((List) ConfigUtils.get(key)),
                         true,
                         () -> Optional.of(new net.minecraft.text.Text[]{tooltip}),
-                        v -> CONFIG.set(key, v),
-                        () -> SpecialUnits.MacroUnit.fromList((List) DEFAULT_CONFIG.get(key)),
+                        v -> ConfigUtils.set(key, v),
+                        () -> SpecialUnits.MacroUnit.fromList((List) ConfigUtils.getDefault(key)),
                         eb.getResetButtonKey(),
                         true,
                         true, (macroUnit, ignored) -> {
@@ -381,11 +379,11 @@ public class ConfigScreenUtils {
             case "FormatterList":
                 return new NestedListListEntry<SpecialUnits.FormatterUnit, MultiElementListEntry<SpecialUnits.FormatterUnit>>
                     (SERVER_LABELED_KEY,
-                        SpecialUnits.FormatterUnit.fromList((List) CONFIG.get(key)),
+                        SpecialUnits.FormatterUnit.fromList((List) ConfigUtils.get(key)),
                         true,
                         () -> Optional.of(new net.minecraft.text.Text[]{tooltip}),
-                        v -> CONFIG.set(key, v),
-                        () -> SpecialUnits.FormatterUnit.fromList((List) DEFAULT_CONFIG.get(key)),
+                        v -> ConfigUtils.set(key, v),
+                        () -> SpecialUnits.FormatterUnit.fromList((List) ConfigUtils.getDefault(key)),
                         eb.getResetButtonKey(),
                         true,
                         true,
@@ -429,11 +427,11 @@ public class ConfigScreenUtils {
             case "CustomJoinMessageList":
                 return new NestedListListEntry<SpecialUnits.CustomJoinMessageRuleUnit, MultiElementListEntry<SpecialUnits.CustomJoinMessageRuleUnit>>
                     (SERVER_LABELED_KEY,
-                        SpecialUnits.CustomJoinMessageRuleUnit.fromList((List) CONFIG.get(key)),
+                        SpecialUnits.CustomJoinMessageRuleUnit.fromList((List) ConfigUtils.get(key)),
                         true,
                         () -> Optional.of(new net.minecraft.text.Text[]{tooltip}),
-                        v -> CONFIG.set(key, v),
-                        () -> SpecialUnits.CustomJoinMessageRuleUnit.fromList((List) DEFAULT_CONFIG.get(key)),
+                        v -> ConfigUtils.set(key, v),
+                        () -> SpecialUnits.CustomJoinMessageRuleUnit.fromList((List) ConfigUtils.getDefault(key)),
                         eb.getResetButtonKey(),
                         true,
                         true,
@@ -494,14 +492,14 @@ public class ConfigScreenUtils {
             // @formatter:on
             case "EnumKeyModifiers":
                 return eb
-                        .startEnumSelector(trans(key), SpecialUnits.KeyModifiers.class, SpecialUnits.KeyModifiers.valueOf((String) CONFIG.get(key)))
-                        .setDefaultValue(SpecialUnits.KeyModifiers.valueOf((String) DEFAULT_CONFIG.get(key)))
-                        .setTooltip(tooltip).setSaveConsumer(v -> CONFIG.set(key, v.toString())).build();
+                        .startEnumSelector(trans(key), SpecialUnits.KeyModifiers.class, SpecialUnits.KeyModifiers.valueOf((String) ConfigUtils.get(key)))
+                        .setDefaultValue(SpecialUnits.KeyModifiers.valueOf((String) ConfigUtils.getDefault(key)))
+                        .setTooltip(tooltip).setSaveConsumer(v -> ConfigUtils.set(key, v.toString())).build();
             case "EnumToastModes":
                 return eb
-                        .startEnumSelector(trans(key), SpecialUnits.ToastModes.class, SpecialUnits.ToastModes.valueOf((String) CONFIG.get(key)))
-                        .setDefaultValue(SpecialUnits.ToastModes.valueOf((String) DEFAULT_CONFIG.get(key)))
-                        .setTooltip(tooltip).setSaveConsumer(v -> CONFIG.set(key, v.toString())).build();
+                        .startEnumSelector(trans(key), SpecialUnits.ToastModes.class, SpecialUnits.ToastModes.valueOf((String) ConfigUtils.get(key)))
+                        .setDefaultValue(SpecialUnits.ToastModes.valueOf((String) ConfigUtils.getDefault(key)))
+                        .setTooltip(tooltip).setSaveConsumer(v -> ConfigUtils.set(key, v.toString())).build();
             default:
                 LoggerUtils.error("[ChatTools] Unknown config type: " + type);
                 return null;

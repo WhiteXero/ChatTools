@@ -1,7 +1,7 @@
 package net.apple70cents.chattools.features.formatter;
 
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.config.SpecialUnits;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.ContextUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.minecraft.client.MinecraftClient;
@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class Formatter {
     public static String work(String message) {
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        for (String s : (List<String>) ChatTools.CONFIG.get("formatter.DisableOnMatchList")) {
+        for (String s : (List<String>) ConfigUtils.get("formatter.DisableOnMatchList")) {
             if (Pattern.compile(s, Pattern.MULTILINE).matcher(message).matches()) {
                 // return in advance, and don't work with it.
                 return message;
@@ -24,7 +24,7 @@ public class Formatter {
         }
         boolean matched = false;
         String formatter = "{text}";
-        for (SpecialUnits.FormatterUnit unit : SpecialUnits.FormatterUnit.fromList((List) ChatTools.CONFIG.get("formatter.List"))) {
+        for (SpecialUnits.FormatterUnit unit : SpecialUnits.FormatterUnit.fromList((List) ConfigUtils.get("formatter.List"))) {
             if ("*".equals(unit.address) || Pattern.compile(unit.address).matcher(ContextUtils.getSessionIdentifier()).matches()) {
                 matched = true;
                 formatter = unit.formatter;

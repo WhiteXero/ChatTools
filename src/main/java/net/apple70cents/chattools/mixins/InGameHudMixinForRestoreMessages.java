@@ -1,6 +1,6 @@
 package net.apple70cents.chattools.mixins;
 
-import net.apple70cents.chattools.ChatTools;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -29,16 +29,16 @@ public abstract class InGameHudMixinForRestoreMessages {
     //$$ @Inject(at = @At("HEAD"), method = "clear", cancellable = true)
     //$$ public void restoreMessages(boolean clearHistory, CallbackInfo ci) {
     //#endif
-        if (!((boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled"))) {
+        if (!((boolean) ConfigUtils.get("general.ChatTools.Enabled"))) {
             return;
         }
-        if (!((boolean) ChatTools.CONFIG.get("general.RestoreMessages.Enabled"))) {
+        if (!((boolean) ConfigUtils.get("general.RestoreMessages.Enabled"))) {
             return;
         }
         //#if MC<11700
         //$$ if(theFirstVisit){ theFirstVisit = false; } else if (clearHistory) {
         //#endif
-        if ((boolean) ChatTools.CONFIG.get("general.RestoreMessages.SplitLineEnabled")) {
+        if ((boolean) ConfigUtils.get("general.RestoreMessages.SplitLineEnabled")) {
             MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.RestoreMessagesSplitLine"));
         }
         // this cancels the clear function, in other words, restores the message.

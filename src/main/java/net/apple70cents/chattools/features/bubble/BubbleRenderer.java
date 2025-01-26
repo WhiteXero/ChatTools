@@ -3,6 +3,7 @@ package net.apple70cents.chattools.features.bubble;
 import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.config.SpecialUnits;
 import net.apple70cents.chattools.features.general.NickHider;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.ContextUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
@@ -70,10 +71,10 @@ public class BubbleRenderer {
                 return;
             }
             Text renderText = text;
-            if ((boolean) ChatTools.CONFIG.get("general.NickHider.Enabled")) {
+            if ((boolean) ConfigUtils.get("general.NickHider.Enabled")) {
                 renderText = NickHider.work(text);
             }
-            int yOffset = ((Number) ChatTools.CONFIG.get("bubble.YOffset")).intValue();
+            int yOffset = ((Number) ConfigUtils.get("bubble.YOffset")).intValue();
             EntityRenderDispatcher renderDispatcher = mc.getEntityRenderDispatcher();
             matrixStack.push();
             // getNameLabelHeight() -> getHeight() + 0.5F
@@ -96,7 +97,7 @@ public class BubbleRenderer {
                     //#endif
                     , -0.025F, 0.025F);
             Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
-            int maxLineWidth = ((Number) ChatTools.CONFIG.get("bubble.MaxLineWidth")).intValue();
+            int maxLineWidth = ((Number) ConfigUtils.get("bubble.MaxLineWidth")).intValue();
             List<OrderedText> lines = textRenderer.wrapLines(renderText, maxLineWidth);
             int lines_amount = lines.size();
             for (int i = 0; i < lines_amount; i++) {
@@ -143,7 +144,7 @@ public class BubbleRenderer {
                 // not the entity being selected
                 continue;
             } else if (bubbleMap.get(senderName)
-                                .getLifetime() >= ((Number) ChatTools.CONFIG.get("bubble.Lifetime")).intValue() * 1000L) {
+                                .getLifetime() >= ((Number) ConfigUtils.get("bubble.Lifetime")).intValue() * 1000L) {
                 // the bubble's lifetime is over, let's remove it
                 bubbleMap.remove(senderName);
                 continue;
@@ -163,7 +164,7 @@ public class BubbleRenderer {
         String pattern = "";
         boolean serverAddressPass = false;
         boolean fallback = false;
-        for (SpecialUnits.BubbleRuleUnit unit : SpecialUnits.BubbleRuleUnit.fromList((List) ChatTools.CONFIG.get("bubble.List"))) {
+        for (SpecialUnits.BubbleRuleUnit unit : SpecialUnits.BubbleRuleUnit.fromList((List) ConfigUtils.get("bubble.List"))) {
             if ("*".equals(unit.address) || Pattern.compile(unit.address).matcher(ContextUtils.getSessionIdentifier())
                                                    .matches()) {
                 serverAddressPass = true;

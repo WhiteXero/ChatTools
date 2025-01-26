@@ -1,9 +1,8 @@
 package net.apple70cents.chattools.mixins;
 
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.features.formatter.Formatter;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
-import net.minecraft.client.network.ClientPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -14,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 //#if MC>=11900
 @Mixin(net.minecraft.client.network.ClientPlayNetworkHandler.class)
 //#else
+//$$ import net.minecraft.client.network.ClientPlayerEntity;
 //$$ @Mixin(ClientPlayerEntity.class)
 //#endif
 public abstract class ClientPlayNetworkHandlerMixin {
@@ -21,10 +21,10 @@ public abstract class ClientPlayNetworkHandlerMixin {
     @ModifyVariable(method = "sendChatMessage", at = @At("HEAD"), argsOnly = true)
     public String sendPublicMessage(String message) {
         MessageUtils.setJustSentMessage(true);
-        if (!(boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
+        if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
             return message;
         }
-        if (!(boolean) ChatTools.CONFIG.get("formatter.Enabled")) {
+        if (!(boolean) ConfigUtils.get("formatter.Enabled")) {
             return message;
         }
         return Formatter.work(message);

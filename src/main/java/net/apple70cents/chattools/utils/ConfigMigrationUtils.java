@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.config.ConfigStorage;
 import net.minecraft.client.MinecraftClient;
 
@@ -19,7 +18,7 @@ import java.util.regex.Pattern;
  * @author 70CentsApple
  */
 public class ConfigMigrationUtils {
-    public static final double CURRENT_VERSION = ((Number) ChatTools.DEFAULT_CONFIG.get("config.version")).doubleValue();
+    public static final double CURRENT_VERSION = ((Number) ConfigUtils.getDefault("config.version")).doubleValue();
     public static double CONFIG_VERSION = -1.0;
 
     public static void checkAndMigrate() {

@@ -1,6 +1,6 @@
 package net.apple70cents.chattools.features.general;
 
-import net.apple70cents.chattools.ChatTools;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.text.Text;
@@ -51,9 +51,9 @@ public class ExclusiveActionbarHandler {
         //#endif
         TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
-        float size = ((Number) ChatTools.CONFIG.get("general.ExclusiveActionbar.Size")).floatValue();
-        int xOffset = ((Number) ChatTools.CONFIG.get("general.ExclusiveActionbar.XOffset")).intValue();
-        int yOffset = ((Number) ChatTools.CONFIG.get("general.ExclusiveActionbar.YOffset")).intValue();
+        float size = ((Number) ConfigUtils.get("general.ExclusiveActionbar.Size")).floatValue();
+        int xOffset = ((Number) ConfigUtils.get("general.ExclusiveActionbar.XOffset")).intValue();
+        int yOffset = ((Number) ConfigUtils.get("general.ExclusiveActionbar.YOffset")).intValue();
         int index = 0;
         for (ExclusiveActionbarMessageUnit ele : messageUnitList) {
             int opacity = calculateOpacity(ele.startTime, ele.lifeTimeInMillis);

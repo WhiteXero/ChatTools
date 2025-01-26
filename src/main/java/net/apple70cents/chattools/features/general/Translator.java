@@ -1,7 +1,7 @@
 package net.apple70cents.chattools.features.general;
 
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.config.SpecialUnits;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.KeyboardUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.apple70cents.chattools.utils.TextUtils;
@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 
 public class Translator {
     public static boolean shouldWork() {
-        if (!(boolean) ChatTools.CONFIG.get("general.Translator.Enabled")) {
+        if (!(boolean) ConfigUtils.get("general.Translator.Enabled")) {
             return false;
         }
         if (!(MinecraftClient.getInstance().currentScreen instanceof ChatScreen)) {
@@ -29,15 +29,15 @@ public class Translator {
 
     public static void work(TextFieldWidget chatField) {
         String originalText = chatField.getText();
-        String method = (boolean) ChatTools.CONFIG.get("general.Translator.PostInstead") ? "POST" : "GET";
-        if (((String) ChatTools.CONFIG.get("general.Translator.API")).isBlank()) {
+        String method = (boolean) ConfigUtils.get("general.Translator.PostInstead") ? "POST" : "GET";
+        if (((String) ConfigUtils.get("general.Translator.API")).isBlank()) {
             chatField.setText(TextUtils.trans("texts.translator.requireApi").getString());
             return;
         }
         chatField.setText(TextUtils.trans("texts.translator.await").getString());
         Runnable runnable = () -> {
             try {
-                String api = (String) ChatTools.CONFIG.get("general.Translator.API");
+                String api = (String) ConfigUtils.get("general.Translator.API");
                 if (api.contains("{text}")) {
                     api = api.replace("{text}", URLEncoder.encode(originalText, StandardCharsets.UTF_8));
                 } else {

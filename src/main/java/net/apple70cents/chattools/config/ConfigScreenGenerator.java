@@ -8,6 +8,7 @@ import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.utils.ConfigScreenUtils;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 
@@ -61,7 +62,7 @@ public class ConfigScreenGenerator {
         //#endif
         ConfigBuilder builder = ConfigBuilder.create().setTitle(trans("gui.title"))
                                              .setDefaultBackgroundTexture(backgroundTexture)
-                                             .setTransparentBackground(true).setSavingRunnable(ChatTools.CONFIG::save);
+                                             .setTransparentBackground(true).setSavingRunnable(ConfigUtils::save);
         ConfigEntryBuilder eb = builder.entryBuilder();
         for (Object categoryInfo : (List) configGuiMap.get("content")) {
             ConfigCategory category = builder.getOrCreateCategory(trans((String) ((Map) categoryInfo).get("key")));

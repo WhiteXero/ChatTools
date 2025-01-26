@@ -27,7 +27,7 @@ public class MessageUtils {
         if (MinecraftClient.getInstance().player == null) {
             return;
         }
-        if (!(boolean) ChatTools.CONFIG.get("general.ExclusiveActionbar.Enabled")) {
+        if (!(boolean) ConfigUtils.get("general.ExclusiveActionbar.Enabled")) {
             MinecraftClient.getInstance().player.sendMessage(text, true);
         } else {
             ExclusiveActionbarHandler.addToRenderQueue(text, 4000);
@@ -39,12 +39,12 @@ public class MessageUtils {
     }
 
     public static void sendToPublicChat(String text, boolean forceDisableFormatter) {
-        boolean oldStatus = (boolean) ChatTools.CONFIG.get("formatter.Enabled");
+        boolean oldStatus = (boolean) ConfigUtils.get("formatter.Enabled");
         if (forceDisableFormatter) {
-            ChatTools.CONFIG.set("formatter.Enabled", false);
+            ConfigUtils.set("formatter.Enabled", false);
         }
         sendToPublicChat(text);
-        ChatTools.CONFIG.set("formatter.Enabled", oldStatus);
+        ConfigUtils.set("formatter.Enabled", oldStatus);
     }
 
     public static void sendToPublicChat(String text) {

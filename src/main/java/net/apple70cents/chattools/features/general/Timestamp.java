@@ -1,7 +1,6 @@
 package net.apple70cents.chattools.features.general;
 
-import net.apple70cents.chattools.ChatTools;
-import net.apple70cents.chattools.utils.MessageUtils;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.TextUtils;
 import net.minecraft.text.*;
 
@@ -18,12 +17,12 @@ public class Timestamp {
                                                                                                .getOffset(instant));
         // get zone offset
         String offsetString = ZoneId.systemDefault().getRules().getOffset(instant).getId();
-        Text shortTimeDisplay = TextUtils.of(timeInFormat((String) ChatTools.CONFIG.get("general.Timestamp.Pattern")));
+        Text shortTimeDisplay = TextUtils.of(timeInFormat((String) ConfigUtils.get("general.Timestamp.Pattern")));
         // yyyy/MM/dd HH:mm:ss UTC±XX:XX
         Text longTimeDisplay = TextUtils.of(String.format("%4d/%d/%d %02d:%02d:%02d\nUTC%s", currentTime.getYear(), currentTime
                 .getMonth()
                 .getValue(), currentTime.getDayOfMonth(), currentTime.getHour(), currentTime.getMinute(), currentTime.getSecond(), offsetString));
-        if ((boolean) ChatTools.CONFIG.get("general.Timestamp.CopyToChatBar.Enabled")) {
+        if ((boolean) ConfigUtils.get("general.Timestamp.CopyToChatBar.Enabled")) {
             HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, ((MutableText) longTimeDisplay)
                     .append("\n\n").append(TextUtils.trans("texts.copy.launch")));
             ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/chattools get_message " + hashcode);

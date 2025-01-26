@@ -27,7 +27,7 @@ public class DownloadUtils {
     private static boolean shouldCheckMD5OnJudgingReadiness = true;
 
     public static boolean shouldCheckIfFullyReady() {
-        return (boolean) ChatTools.CONFIG.get("notifier.Toast.Enabled") && "ADDON".equals((String) ChatTools.CONFIG.get("notifier.Toast.Mode"));
+        return (boolean) ConfigUtils.get("notifier.Toast.Enabled") && "ADDON".equals((String) ConfigUtils.get("notifier.Toast.Mode"));
     }
 
     public static boolean checkIfFullyReady() {

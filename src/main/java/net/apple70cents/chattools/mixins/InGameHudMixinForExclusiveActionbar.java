@@ -1,7 +1,7 @@
 package net.apple70cents.chattools.mixins;
 
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.features.general.ExclusiveActionbarHandler;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,10 +37,10 @@ public abstract class InGameHudMixinForExclusiveActionbar {
         if (MinecraftClient.getInstance().options.hudHidden) {
             return;
         }
-        if (!((boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled"))) {
+        if (!((boolean) ConfigUtils.get("general.ChatTools.Enabled"))) {
             return;
         }
-        if (!((boolean) ChatTools.CONFIG.get("general.ExclusiveActionbar.Enabled"))) {
+        if (!((boolean) ConfigUtils.get("general.ExclusiveActionbar.Enabled"))) {
             return;
         }
         ExclusiveActionbarHandler.tick();

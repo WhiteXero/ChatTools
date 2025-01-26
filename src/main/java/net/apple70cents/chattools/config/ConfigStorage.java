@@ -3,6 +3,7 @@ package net.apple70cents.chattools.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.apple70cents.chattools.ChatTools;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.minecraft.client.MinecraftClient;
 
@@ -59,18 +60,19 @@ public class ConfigStorage {
         }
     }
 
-    public Object get(String variableName) {
-        try {
-            return configMap.get(variableName);
-        } catch (Exception e) {
-            try {
-                return ChatTools.DEFAULT_CONFIG.get(variableName);
-            } catch (Exception e2) {
-                LoggerUtils.error("[ChatTools] Error happened when getting variable: " + variableName);
-                e2.printStackTrace();
-                return null;
-            }
+    public Object get(String key) {
+        if (this.hasKey(key)){
+            return configMap.get(key);
+        } else if (ConfigUtils.DEFAULT_CONFIG.hasKey(key)){
+            return ConfigUtils.DEFAULT_CONFIG.get(key);
+        } else {
+            LoggerUtils.error("[ChatTools] Error occurred when getting variable \"" + key + "\", no such key!");
+            return null;
         }
+    }
+
+    public boolean hasKey(String key){
+        return this.configMap.get(key) != null;
     }
 
     public void set(String variableName, Object value) {

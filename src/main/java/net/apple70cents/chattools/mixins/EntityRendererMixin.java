@@ -1,8 +1,8 @@
 package net.apple70cents.chattools.mixins;
 
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.features.bubble.BubbleRenderer;
 import net.apple70cents.chattools.features.general.NickHider;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -37,19 +37,19 @@ public abstract class EntityRendererMixin {
     //$$ @Inject(method = "render", at = @At(value = "HEAD"))
     //$$ private void render(Entity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, CallbackInfo ci) {
     //#endif
-        if (!((boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled"))) {
+        if (!((boolean) ConfigUtils.get("general.ChatTools.Enabled"))) {
             return;
         }
-        if ((boolean) ChatTools.CONFIG.get("bubble.Enabled")) {
+        if ((boolean) ConfigUtils.get("bubble.Enabled")) {
             BubbleRenderer.render(entity, matrices, vertexConsumers, tickDelta);
         }
     }
 
     @ModifyVariable(method = "renderLabelIfPresent", at = @At(value = "HEAD", ordinal = 0), argsOnly = true)
     public Text nickHiderChangeLabel(Text text) {
-        if (!((boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled"))) {
+        if (!((boolean) ConfigUtils.get("general.ChatTools.Enabled"))) {
             return text;
-        } else if (!((boolean) ChatTools.CONFIG.get("general.NickHider.Enabled"))) {
+        } else if (!((boolean) ConfigUtils.get("general.NickHider.Enabled"))) {
             return text;
         }
         return NickHider.work(text);

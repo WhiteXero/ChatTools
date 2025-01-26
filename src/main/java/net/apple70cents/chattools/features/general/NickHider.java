@@ -1,6 +1,6 @@
 package net.apple70cents.chattools.features.general;
 
-import net.apple70cents.chattools.ChatTools;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.TextUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -16,11 +16,11 @@ public class NickHider {
     private static final Map<String, Text> cache = new LinkedHashMap<>();
 
     public static Text work(Text message) {
-        while (cache.size() > ((Number) ChatTools.CONFIG.get("general.NickHider.CacheSize")).intValue()) {
+        while (cache.size() > ((Number) ConfigUtils.get("general.NickHider.CacheSize")).intValue()) {
             cache.remove(cache.keySet().iterator().next());
         }
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
-        String nickname = TextUtils.encodeColorCodes((String) ChatTools.CONFIG.get("general.NickHider.Nickname"));
+        String nickname = TextUtils.encodeColorCodes((String) ConfigUtils.get("general.NickHider.Nickname"));
         if (player != null) {
             String playerName = player.getName().getString();
             String key = nickname + "|" + playerName + "|" + message.toString();

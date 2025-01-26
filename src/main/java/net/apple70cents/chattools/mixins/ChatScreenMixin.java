@@ -1,8 +1,8 @@
 package net.apple70cents.chattools.mixins;
 
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.features.general.ChatHistoryNavigator;
 import net.apple70cents.chattools.features.general.Translator;
+import net.apple70cents.chattools.utils.ConfigUtils;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import org.apache.commons.lang3.StringUtils;
@@ -35,10 +35,10 @@ public class ChatScreenMixin {
 
     @Inject(method = "init", at = @At("TAIL"))
     private void increaseChatFieldMaxLength(CallbackInfo ci) {
-        if (!(boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
+        if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
             return;
         }
-        if (!(boolean) ChatTools.CONFIG.get("general.IncreaseChatFieldMaxLength")) {
+        if (!(boolean) ConfigUtils.get("general.IncreaseChatFieldMaxLength")) {
             return;
         }
         chatField.setMaxLength(Integer.MAX_VALUE);
@@ -47,10 +47,10 @@ public class ChatScreenMixin {
     //#if MC>=11900
     @Inject(method = "normalize", at = @At("HEAD"), cancellable = true)
     private void doNotTruncate(String text, CallbackInfoReturnable<String> cir) {
-        if (!(boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
+        if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
             return;
         }
-        if (!(boolean) ChatTools.CONFIG.get("general.IncreaseChatFieldMaxLength")) {
+        if (!(boolean) ConfigUtils.get("general.IncreaseChatFieldMaxLength")) {
             return;
         }
         cir.setReturnValue(StringUtils.normalizeSpace(text.trim()));
@@ -59,7 +59,7 @@ public class ChatScreenMixin {
 
     @Inject(method = "keyPressed", at = @At("HEAD"))
     private void keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
-        if (!(boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled")) {
+        if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
             return;
         }
         if (Translator.shouldWork()) {
@@ -75,9 +75,9 @@ public class ChatScreenMixin {
     @Unique
     private boolean shouldHideChatHistory() {
         return MinecraftClient.getInstance().options.hudHidden &&
-                (boolean) ChatTools.CONFIG.get("general.ChatTools.Enabled") &&
+                (boolean) ConfigUtils.get("general.ChatTools.Enabled") &&
                 (MinecraftClient.getInstance().currentScreen instanceof ChatScreen) &&
-                (boolean) ChatTools.CONFIG.get("general.HideChatHistoryInF1Mode");
+                (boolean) ConfigUtils.get("general.HideChatHistoryInF1Mode");
     }
 
     @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;render(Lnet/minecraft/client/gui/DrawContext;IIIZ)V"))

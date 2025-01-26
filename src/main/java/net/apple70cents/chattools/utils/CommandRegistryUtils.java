@@ -99,14 +99,14 @@ public class CommandRegistryUtils {
             }))
             // chattools on
             .then(literal("on").executes(t -> {
-                ChatTools.CONFIG.set("general.ChatTools.Enabled", true);
+                ConfigUtils.set("general.ChatTools.Enabled", true);
                 LoggerUtils.info("[ChatTools] Command Executed: Enabled ChatTools");
                 MessageUtils.sendToActionbar(TextUtils.trans("texts.on"));
                 return Command.SINGLE_SUCCESS;
             }))
             // chattools off
             .then(literal("off").executes(t -> {
-                ChatTools.CONFIG.set("general.ChatTools.Enabled", false);
+                ConfigUtils.set("general.ChatTools.Enabled", false);
                 LoggerUtils.info("[ChatTools] Command Executed: Disabled ChatTools");
                 MessageUtils.sendToActionbar(TextUtils.trans("texts.off"));
                 return Command.SINGLE_SUCCESS;
@@ -139,7 +139,7 @@ public class CommandRegistryUtils {
                     // one arg
                     .then(argument("key", StringArgumentType.string()).executes(t -> {
                         String key = StringArgumentType.getString(t, "key");
-                        MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.get", key, ChatTools.CONFIG.get(key)));
+                        MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.get", key, ConfigUtils.get(key)));
                         return Command.SINGLE_SUCCESS;
                     }))
                 )
@@ -156,7 +156,7 @@ public class CommandRegistryUtils {
                                 String value = StringArgumentType.getString(t, "value");
                                 updateConfig(key, value);
                                 if (BoolArgumentType.getBool(t, "save")) {
-                                    ChatTools.CONFIG.save();
+                                    ConfigUtils.save();
                                     MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set.saved"));
                                 }
                                 return Command.SINGLE_SUCCESS;
@@ -174,7 +174,7 @@ public class CommandRegistryUtils {
                                     String key = StringArgumentType.getString(t, "key");
                                     toggleBooleanConfig(key);
                                     if (BoolArgumentType.getBool(t, "save")) {
-                                        ChatTools.CONFIG.save();
+                                        ConfigUtils.save();
                                         MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set.saved"));
                                     }
                                     return Command.SINGLE_SUCCESS;
@@ -222,11 +222,11 @@ public class CommandRegistryUtils {
         if (!ConfigScreenGenerator.configGuiMapInitialized || ConfigScreenGenerator.getKey2TypeMappings().isEmpty()) {
             ConfigScreenGenerator.getConfigBuilder(); // let Key2TypeMappings initialize
         }
-        if (ChatTools.CONFIG.get(key) == null) {
+        if (ConfigUtils.get(key) == null) {
             MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.toggle.error", key));
             return;
         }
-        boolean now = (boolean) ChatTools.CONFIG.get(key);
+        boolean now = (boolean) ConfigUtils.get(key);
         updateConfig(key, String.valueOf(!now));
     }
 
@@ -237,28 +237,28 @@ public class CommandRegistryUtils {
         try {
             if (!ConfigScreenGenerator.getKey2TypeMappings().containsKey(key)) {
                 // if we don't have that key, we consider it as a string
-                ChatTools.CONFIG.set(key, value);
+                ConfigUtils.set(key, value);
                 MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set.warning", key));
             } else {
                 switch (String.valueOf(ConfigScreenGenerator.getKey2TypeMappings().get(key))) {
                     case "boolean":
-                        ChatTools.CONFIG.set(key, Boolean.parseBoolean(value));
+                        ConfigUtils.set(key, Boolean.parseBoolean(value));
                         break;
                     case "String":
-                        ChatTools.CONFIG.set(key, String.valueOf(value));
+                        ConfigUtils.set(key, String.valueOf(value));
                         break;
                     case "intSlider":
                     case "intField":
-                        ChatTools.CONFIG.set(key, Integer.parseInt(value));
+                        ConfigUtils.set(key, Integer.parseInt(value));
                         break;
                     case "doubleField":
-                        ChatTools.CONFIG.set(key, Double.parseDouble(value));
+                        ConfigUtils.set(key, Double.parseDouble(value));
                         break;
                     case "EnumToastModes":
-                        ChatTools.CONFIG.set(key, SpecialUnits.ToastModes.valueOf(value));
+                        ConfigUtils.set(key, SpecialUnits.ToastModes.valueOf(value));
                         break;
                     case "EnumKeyModifiers":
-                        ChatTools.CONFIG.set(key, SpecialUnits.KeyModifiers.valueOf(value));
+                        ConfigUtils.set(key, SpecialUnits.KeyModifiers.valueOf(value));
                         break;
                     case "FAQ":
                     case "sub":
@@ -274,11 +274,11 @@ public class CommandRegistryUtils {
                         return;
                     case "":
                     default:
-                        ChatTools.CONFIG.set(key, String.valueOf(value));
+                        ConfigUtils.set(key, String.valueOf(value));
                         MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set.warning", key));
                 }
             }
-            MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set", key, ChatTools.CONFIG.get(key)));
+            MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.set", key, ConfigUtils.get(key)));
         } catch (Exception e) {
             e.printStackTrace();
             MessageUtils.sendToNonPublicChat(TextUtils.literal(e.toString()).copy()

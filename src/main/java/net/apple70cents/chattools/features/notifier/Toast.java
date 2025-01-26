@@ -1,11 +1,7 @@
 package net.apple70cents.chattools.features.notifier;
 
 import com.sshtools.twoslices.ToastType;
-import net.apple70cents.chattools.ChatTools;
-import net.apple70cents.chattools.utils.DownloadUtils;
-import net.apple70cents.chattools.utils.LoggerUtils;
-import net.apple70cents.chattools.utils.MessageUtils;
-import net.apple70cents.chattools.utils.TextUtils;
+import net.apple70cents.chattools.utils.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +16,7 @@ import java.util.Map;
 public class Toast {
     public static void work(String text) {
         final String TITLE = TextUtils.trans("texts.toast.title").getString();
-        switch ((String) ChatTools.CONFIG.get("notifier.Toast.Mode")) {
+        switch ((String) ConfigUtils.get("notifier.Toast.Mode")) {
             case "AWT":
                 toastWithAWT(TITLE, text);
                 break;

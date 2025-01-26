@@ -1,11 +1,7 @@
 package net.apple70cents.chattools.features.responder;
 
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.config.SpecialUnits;
-import net.apple70cents.chattools.utils.ContextUtils;
-import net.apple70cents.chattools.utils.LoggerUtils;
-import net.apple70cents.chattools.utils.MessageUtils;
-import net.apple70cents.chattools.utils.TextUtils;
+import net.apple70cents.chattools.utils.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
@@ -55,7 +51,7 @@ public class Responder {
         String message = "";
         long delayInMilliseconds = 0;
         boolean forceDisableFormatter = false;
-        for (SpecialUnits.ResponderRuleUnit unit : SpecialUnits.ResponderRuleUnit.fromList((List) ChatTools.CONFIG.get("responder.List"))) {
+        for (SpecialUnits.ResponderRuleUnit unit : SpecialUnits.ResponderRuleUnit.fromList((List) ConfigUtils.get("responder.List"))) {
             if ("*".equals(unit.address) || Pattern.compile(unit.address).matcher(ContextUtils.getSessionIdentifier()).matches()) {
                 if (Pattern.compile(unit.pattern, Pattern.MULTILINE).matcher(messageReceived).find()) {
                     shouldRespond = true;
