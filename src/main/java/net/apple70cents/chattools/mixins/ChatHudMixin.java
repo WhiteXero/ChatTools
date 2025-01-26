@@ -125,10 +125,6 @@ public abstract class ChatHudMixin {
         if ((boolean) ChatTools.CONFIG.get("general.NickHider.Enabled")) {
             message = NickHider.work(message);
         }
-        if (BasicNotifier.shouldWork(message)) {
-            message = BasicNotifier.work(message);
-        }
-
         int occurrenceCount = 1;
         if ((boolean) ChatTools.CONFIG.get("general.ChatCompactor.Enabled")) {
             occurrenceCount = ChatCompactor.calculateOccurrenceCount(message);
@@ -139,8 +135,20 @@ public abstract class ChatHudMixin {
         }
         String hashcode = TextUtils.putMessageMap(message, Instant.now().getEpochSecond(), occurrenceCount);
 
-        if ((boolean) ChatTools.CONFIG.get("general.Timestamp.Enabled")) {
-            message = Timestamp.work(message, hashcode);
+        if ((boolean) ChatTools.CONFIG.get("notifier.Highlight.InsertBeforeTimestamps")) {
+            if ((boolean) ChatTools.CONFIG.get("general.Timestamp.Enabled")) {
+                message = Timestamp.work(message, hashcode);
+            }
+            if (BasicNotifier.shouldWork(message)) {
+                message = BasicNotifier.work(message);
+            }
+        } else {
+            if (BasicNotifier.shouldWork(message)) {
+                message = BasicNotifier.work(message);
+            }
+            if ((boolean) ChatTools.CONFIG.get("general.Timestamp.Enabled")) {
+                message = Timestamp.work(message, hashcode);
+            }
         }
 
         if ((boolean) ChatTools.CONFIG.get("general.ChatCompactor.Enabled")) {

@@ -262,6 +262,9 @@ key:
           '@Tooltip': |-
             切换是否应覆写消息。 
             原文本的属性将会被擦除并覆写。
+        InsertBeforeTimestamps:
+          .: 插入到时间戳前
+          '@Tooltip': 切换高亮文本应该插入在时间戳前方还是后方。
       IgnoreMyMessageEnabled:
         .: 忽略我自己的消息
         '@Tooltip': 切换是否应从匹配中排除我自己的消息。

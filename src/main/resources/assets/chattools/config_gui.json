@@ -216,6 +216,10 @@
             {
               "type": "boolean",
               "key": "notifier.Highlight.OverwriteEnabled"
+            },
+            {
+              "type": "boolean",
+              "key": "notifier.Highlight.InsertBeforeTimestamps"
             }
           ]
         },

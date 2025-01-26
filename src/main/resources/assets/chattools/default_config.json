@@ -35,6 +35,7 @@
   "notifier.Highlight.Enabled": true,
   "notifier.Highlight.Prefix": "\u00266[!]\u0026r ",
   "notifier.Highlight.OverwriteEnabled": false,
+  "notifier.Highlight.InsertBeforeTimestamps": false,
   "notifier.IgnoreMyMessageEnabled": true,
   "notifier.MatchMyNameEnabled": true,
   "notifier.AllowList": [],

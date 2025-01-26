@@ -268,6 +268,9 @@ key:
           '@Tooltip': |-
             Toggles whether the message should be overwritten. 
             The property attributes of the text will be erased and overwritten.
+        InsertBeforeTimestamps:
+          .: Insert Before Timestamps
+          '@Tooltip': Toggles whether the prefix should be inserted before the timestamp or after it.
       IgnoreMyMessageEnabled:
         .: Ignore My Own Messages
         '@Tooltip': Toggles whether my own messages should be picked out from being matched.
