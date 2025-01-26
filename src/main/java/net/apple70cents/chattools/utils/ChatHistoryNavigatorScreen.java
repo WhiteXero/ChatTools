@@ -344,6 +344,28 @@ public class ChatHistoryNavigatorScreen extends Screen {
             return this.width - 7 + x;
         }
 
+        //#if MC>=12104
+        @Override
+        protected double getDeltaYPerScroll() {
+            int lineHeight = textRenderer.fontHeight + 3;
+            return hasShiftDown() ? lineHeight : lineHeight * 7;
+        }
+        //#else
+        //$$ @Override
+        //$$ public boolean mouseScrolled(
+        //$$    //#if MC>=12004
+        //$$        double mouseX, double mouseY, double horizontalAmount, double verticalAmount
+        //$$    //#else
+        //$$        //$$ double mouseX, double mouseY, double verticalAmount
+        //$$    //#endif
+        //$$     ) {
+        //$$     int lineHeight = textRenderer.fontHeight + 3;
+        //$$     double scrollAmount = hasShiftDown() ? lineHeight : lineHeight * 7;
+        //$$     this.setScrollAmount(this.getScrollAmount() - verticalAmount * scrollAmount);
+        //$$     return true;
+        //$$ }
+        //#endif
+
         //#if MC>=12005
         @Override
         protected void drawMenuListBackground(DrawContext context) {
