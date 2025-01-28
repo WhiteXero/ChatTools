@@ -6,15 +6,15 @@ import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.regex.Pattern;
-//#if MC<12005
-//$$ import net.minecraft.sound.SoundCategory;
-//#endif
 
 /**
  * @author 70CentsApple
@@ -58,28 +58,34 @@ public class BasicNotifier {
         MessageUtils.setJustSentMessage(false);
 
         ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        World world = MinecraftClient.getInstance().world;
 
         // Toast
-        if ((boolean) ConfigUtils.get("notifier.Toast.Enabled") && !MinecraftClient.getInstance()
-                                                                                        .isWindowFocused()) {
+        if ((boolean) ConfigUtils.get("notifier.Toast.Enabled") && !MinecraftClient.getInstance().isWindowFocused()) {
             Toast.work(TextUtils.wash(text.getString()));
         }
 
         // Sound
-        if ((boolean) ConfigUtils.get("notifier.Sound.Enabled") && player != null) {
+        if ((boolean) ConfigUtils.get("notifier.Sound.Enabled") && player != null && world != null) {
             MinecraftClient.getInstance().execute(() -> {
                 String identifier = (String) ConfigUtils.get("notifier.Sound.Type");
                 int volume = ((Number) ConfigUtils.get("notifier.Sound.Volume")).intValue();
                 int pitch = ((Number) ConfigUtils.get("notifier.Sound.Pitch")).intValue();
-                //#if MC>=12100
-                player.playSound(SoundEvent.of(Identifier.of(identifier)), volume * 0.01F, pitch * 0.1F);
-                //#elseif MC>=12005
-                //$$ player.playSound(SoundEvent.of(new Identifier(identifier)), volume * 0.01F, pitch * 0.1F);
-                //#elseif MC>=11900
-                //$$ player.playSound(SoundEvent.of(new Identifier(identifier)), SoundCategory.PLAYERS, volume * 0.01F, pitch * 0.1F);
-                //#else
-                //$$ player.playSound(new SoundEvent(new Identifier(identifier)), SoundCategory.PLAYERS, volume * 0.01F, pitch * 0.1F);
-                //#endif
+
+                boolean sendFromCameraPos = (boolean) ConfigUtils.get("notifier.Sound.PlaySoundFromCameraPositionEnabled");
+                Entity camera = MinecraftClient.getInstance().cameraEntity;
+                double x = (sendFromCameraPos && camera != null) ? camera.getPos().x : player.getX();
+                double y = (sendFromCameraPos && camera != null) ? camera.getPos().y : player.getY();
+                double z = (sendFromCameraPos && camera != null) ? camera.getPos().z : player.getZ();
+                world.playSound(x, y, z,
+                        //#if MC>=12100
+                        SoundEvent.of(Identifier.of(identifier))
+                        //#elseif MC>=11900
+                        //$$ SoundEvent.of(new Identifier(identifier))
+                        //#else
+                        //$$ new SoundEvent(new Identifier(identifier))
+                        //#endif
+                        , SoundCategory.PLAYERS, volume * 0.01F, pitch * 0.1F, true);
             });
         }
 

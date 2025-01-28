@@ -231,6 +231,7 @@ key:
         .: Sound
         '@Tooltip': |-
           Plays a sound effect.
+          The sound effect will be categorized into the "Players" section.
           Only matched messages count.
         Enabled:
           .: Enable Sound
@@ -244,6 +245,13 @@ key:
         Pitch:
           .: Pitch
           '@Tooltip': Changes the pitch of the sound.
+        PlaySoundFromCameraPositionEnabled:
+          .: Play Sound From Camera Position
+          '@Tooltip': |-
+            If disabled, the sound effect played will be located at the player position,
+            i.e. if the camera is not at the player position, then the volume will be attenuated according to the distance.
+            
+            If enabled, the sound effect played will be located at the camera position.
       Actionbar:
         .: Actionbar
         '@Tooltip': |-
