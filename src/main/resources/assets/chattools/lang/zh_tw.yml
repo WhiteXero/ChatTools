@@ -58,9 +58,6 @@ key:
       requireRestart: 請在更改後重啟 Minecraft 以應用更改
       defaultValue: 默認：%s
       variableType: 類型：%s
-    faq:
-      .: '[常見問題解答]'
-      '@Tooltip': 查看常見問題解答
     gui:
       title: 配置 Chat Tools [聊天工具箱]
     category:
@@ -72,6 +69,9 @@ key:
       responder: 自動響應
       filter: 聊天過濾
     general:
+      FAQ:
+        .: '[常見問題解答]'
+        '@Tooltip': 查看常見問題解答
       ChatTools:
         Enabled:
           .: 啟用 Chat Tools [聊天工具箱]

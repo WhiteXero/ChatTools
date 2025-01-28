@@ -67,6 +67,11 @@ public class ConfigStorage {
             return ConfigUtils.DEFAULT_CONFIG.get(key);
         } else {
             LoggerUtils.error("[ChatTools] Error occurred when getting variable \"" + key + "\", no such key!");
+            try {
+                throw new Exception();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return null;
         }
     }

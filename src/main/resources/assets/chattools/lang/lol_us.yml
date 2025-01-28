@@ -60,9 +60,6 @@ key:
       requireRestart: dont forget 2 restart Meowcraft later, yo.
       defaultValue: 'deefolt: %s'
       variableType: 'var type: %s'
-    faq:
-      .: '[Wut Peeps Asks A Lot]'
-      '@Tooltip': click me & see
     gui:
       title: Chatz Stuffz Configurashunz
     category:
@@ -74,6 +71,9 @@ key:
       responder: Auto-Meow
       filter: Meow-meow Filter
     general:
+      FAQ:
+        .: '[Wut Peeps Asks A Lot]'
+        '@Tooltip': click me & see
       ChatTools:
         Enabled:
           .: Turn On Chatz Toolz

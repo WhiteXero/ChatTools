@@ -22,7 +22,7 @@ import net.minecraft.registry.BuiltinRegistries;
 public class TextUtils {
     public static final Style WEBSITE_URL_STYLE = Style.EMPTY.withUnderline(true)
                                                              .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://70centsapple.top/blogs/#/chat-tools-faq"))
-                                                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ConfigScreenUtils.getTooltip("faq", "FAQ", null)));
+                                                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ConfigScreenUtils.getTooltip("general.FAQ", "FAQ", null)));
     public static final String PREFIX = "key.chattools.";
     public static final Text SPACER = literal("").copy().setStyle(Style.EMPTY);
 

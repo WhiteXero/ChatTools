@@ -69,9 +69,6 @@ key:
       requireRestart: Restart Minecraft to apply changes!
       defaultValue: 'Default: %s'
       variableType: 'Variable Type: %s'
-    faq:
-      .: '[FAQs]'
-      '@Tooltip': Click to visit Frequently Asked Questions.
     gui:
       title: Chat Tools Configuration
     category:
@@ -84,6 +81,9 @@ key:
       filter: Chat Filter
       customJoinMessage: Custom Join Message
     general:
+      FAQ:
+        .: '[FAQs]'
+        '@Tooltip': Click to visit Frequently Asked Questions.
       ChatTools:
         Enabled:
           .: Enable Chat Tools

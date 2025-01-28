@@ -93,7 +93,7 @@ public class ConfigScreenUtils {
     public static TooltipListEntry getEntryBuilder(ConfigEntryBuilder eb, String type, String key, String errorSupplier, int... args) {
         // the `args` are only for `min` and `max` value for int sliders (recently)
         // `errorSuppliers` will only apply to `StringList`s
-        Text tooltip = getTooltip(key, type);
+        Text tooltip = "FAQ".equals(type) ? getTooltip(key, type, null) : getTooltip(key, type);
         // display current server (if it can be used)
         final Text SERVER_LABELED_KEY = trans(key, "§f" + ContextUtils.getSessionIdentifier());
         switch (type) {
@@ -150,7 +150,7 @@ public class ConfigScreenUtils {
                 }
                 return builder.build();
             case "FAQ":
-                return eb.startTextDescription(((MutableText) trans("faq")).setStyle(TextUtils.WEBSITE_URL_STYLE))
+                return eb.startTextDescription(trans(key).copy().setStyle(TextUtils.WEBSITE_URL_STYLE))
                          .build();
             // @formatter:off
             case "BubbleList":
