@@ -5,8 +5,8 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.text.Text;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 //#if MC>=12000
 import net.minecraft.client.gui.DrawContext;
@@ -33,7 +33,7 @@ public class ExclusiveActionbarHandler {
         }
     }
 
-    private static List<ExclusiveActionbarMessageUnit> messageUnitList = new ArrayList<>();
+    private static List<ExclusiveActionbarMessageUnit> messageUnitList = new CopyOnWriteArrayList<>();
 
     public static void addToRenderQueue(Text message, long lifeTimeInMillis) {
         messageUnitList.add(new ExclusiveActionbarMessageUnit(message, lifeTimeInMillis));
