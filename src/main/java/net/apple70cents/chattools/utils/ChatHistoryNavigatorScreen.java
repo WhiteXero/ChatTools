@@ -183,7 +183,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
 
         public Text getText() {
             if (this.messageUnit == null) {
-                return Text.literal("§lOutdated message! It should NOT be here!");
+                return TextUtils.literal("§lOutdated message! It should NOT be here!");
             }
             return this.messageUnit.message;
         }
