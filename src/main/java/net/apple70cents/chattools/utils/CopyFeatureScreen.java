@@ -69,6 +69,13 @@ public class CopyFeatureScreen extends Screen {
             })));
         }
         addCenterButton("cancel", this.height - 30, (button) -> {
+            if (oldScreen instanceof ChatHistoryNavigatorScreen) {
+                if (((ChatHistoryNavigatorScreen) oldScreen).keywordField != null) {
+                    ((ChatHistoryNavigatorScreen) oldScreen).chatUnitListWidget.setKeyword(((ChatHistoryNavigatorScreen) oldScreen).keywordField.getText());
+                } else {
+                    ((ChatHistoryNavigatorScreen) oldScreen).chatUnitListWidget.setKeyword("");
+                }
+            }
             MinecraftClient.getInstance().setScreen(oldScreen);
         });
     }

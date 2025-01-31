@@ -47,7 +47,7 @@ import net.minecraft.client.gui.screen.narration.NarrationPart;
  */
 public class ChatHistoryNavigatorScreen extends Screen {
     @Nullable
-    private TextFieldWidget keywordField;
+    public TextFieldWidget keywordField;
     ChatUnitListWidget chatUnitListWidget;
     ButtonWidget modeSelectorWidget;
 
@@ -175,7 +175,6 @@ public class ChatHistoryNavigatorScreen extends Screen {
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             // left click
             if (button == 0) {
-                // FIXME Recover hashcodeResultList when the Copy Screen closes
                 MinecraftClient.getInstance().setScreen(new CopyFeatureScreen(messageUnit));
                 return true;
             }
@@ -183,6 +182,9 @@ public class ChatHistoryNavigatorScreen extends Screen {
         }
 
         public Text getText() {
+            if (this.messageUnit == null) {
+                return Text.literal("§lOutdated message! It should NOT be here!");
+            }
             return this.messageUnit.message;
         }
 
