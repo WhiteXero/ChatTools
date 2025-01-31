@@ -1,6 +1,5 @@
 package net.apple70cents.chattools.utils;
 
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.features.general.ExclusiveActionbarHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -31,6 +30,18 @@ public class MessageUtils {
             MinecraftClient.getInstance().player.sendMessage(text, true);
         } else {
             ExclusiveActionbarHandler.addToRenderQueue(text, 4000);
+        }
+    }
+
+    public static void sendToActionbar(Text text, int duration) {
+        if (MinecraftClient.getInstance().player == null) {
+            return;
+        }
+        if (!(boolean) ConfigUtils.get("general.ExclusiveActionbar.Enabled")) {
+            LoggerUtils.warn("[ChatTools] Customized actionbar duration is not supported when Exclusive Actionbar is disabled.");
+            sendToActionbar(text);
+        } else {
+            ExclusiveActionbarHandler.addToRenderQueue(text, duration);
         }
     }
 

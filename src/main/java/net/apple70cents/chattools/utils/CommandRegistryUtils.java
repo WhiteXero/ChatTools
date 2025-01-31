@@ -2,9 +2,9 @@ package net.apple70cents.chattools.utils;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.config.ConfigScreenGenerator;
 import net.apple70cents.chattools.config.ConfigStorage;
 import net.apple70cents.chattools.config.SpecialUnits;
@@ -74,8 +74,12 @@ public class CommandRegistryUtils {
                     Text text = Texts.parse(null, TextArgumentType.getTextArgument(t, "message"), MinecraftClient.getInstance().player, 0);
                     MessageUtils.sendToActionbar(text);
                     return Command.SINGLE_SUCCESS;
-                })
-            )))
+                }).then(argument("duration_in_milliseconds",IntegerArgumentType.integer()).executes(t -> {
+                        Text text = Texts.parse(null, TextArgumentType.getTextArgument(t, "message"), MinecraftClient.getInstance().player, 0);
+                        int duration = IntegerArgumentType.getInteger(t, "duration_in_milliseconds");
+                        MessageUtils.sendToActionbar(text, duration);
+                        return Command.SINGLE_SUCCESS;
+                })))))
             // chattools download
             .then(literal("download").executes(t -> {
                 LoggerUtils.info("[ChatTools] Command Executed: Trying to download Addon Toast dependencies");
