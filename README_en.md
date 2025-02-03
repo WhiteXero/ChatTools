@@ -2,16 +2,35 @@
 
 **[>>FAQ<<](https://70centsapple.top/blogs/#/chat-tools-faq)**
 
-# Chat Tools
-Chat Tools is a Minecraft Fabric Mod that provides players with numerous useful chat features.  
-Please install [Cloth Config](https://modrinth.com/mod/cloth-config) first.
+# 📋 Overview
+Chat Tools is a highly customizable Minecraft client mod that supports various features, allowing them to interoperate through commands and more.
 
-Most of the features of Chat Tools support a high degree of personalization, please configure them in the configuration page.  
-To activate the configuration page (please make sure [Cloth Config](https://modrinth.com/mod/cloth-config) is installed):
-- Activate the command `/chattools opengui`
-- Chat Tools is linked to [Mod Menu](https://modrinth.com/mod/modmenu), and the Chat Tools configuration screen can be shown in Mod Menu.
+# 📖 Glossary and Technical Details
+- **Session Identifier** _(Chat Tools-specific term)_ is a string that, in single-player mode, corresponds to the current save name, and in multiplayer mode, corresponds to the server address. Related Regular Expressions use the `matches()` method for matching.
+- **Pattern** _(General term)_ refers to the Regular Expression pattern. Chat Tools uses the MULTILINE mode for Regular Expressions and matches them using the `find()` method.
+- Chat Tools maintains multi versions by using macro replacement. The same version of Chat Tools may exhibit slight differences between Minecraft versions.
+- When processing player messages, Chat Tools removes color codes (§.).
+- By enabling Advanced Tooltips (F3+H), you can hover over configuration items on the configuration page to view their keys, default values, and other details.
 
-# Function introduction
+# 🛠️ Commands
+- `/chattools on` - Enable the mod.
+- `/chattools off` - Disable the mod.
+- `/chattools opengui` - Open the configuration page.
+- `/chattools download` - Download addons.
+- `/chattools regex_checker <pattern> [<test_content>]` - Without test content: check if the pattern is a valid regex. With test content: validate the pattern and test if it matches the content.
+- `/chattools send_to_client text <text_JSON_component>` - Send specific text to the client chat bar.
+- `/chattools send_to_client actionbar <text_JSON_component>` - Display specific text on the client actionbar.
+- `/chattools config openfile` - Open the configuration file (editing requires a game restart to apply changes).
+- `/chattools config get <key>` - Retrieve the value of a specific configuration key for the current session.
+- `/chattools config set <key> <value> [<save>]` - Set the value of a specific configuration key. If save is set to true, the changes will also be saved to the file.
+- `/chattools config toggle <key> [<save>]` - Toggle the state of a boolean-type configuration key. If save is set to true, the changes will also be saved to the file.
+
+# ✨ Function introduction
+For elaborate descriptions and examples, please see **[>>FAQ<<](https://70centsapple.top/blogs/#/chat-tools-faq)**.
+
+<details>
+<summary>General Section</summary>
+
 ## General Section
 Contains the basic settings of Chat Tools
 - Show Timestamp  
@@ -30,6 +49,10 @@ Press Shift + Tab in your chat bar to start translation.
 - Max History Length  
 Adjusts the maximum number of chat history kept in the game.  
 ![Max History Length](<images/Max History Length.png>)
+</details>
+
+<details>
+<summary>Notifier Section</summary>
 
 ## Notifier Section
 Various chat notifier features
@@ -46,9 +69,13 @@ Support custom highlighting prefix.
 The contents of the list will be matched.
 - Ban List  
 The contents of the list will not be matched. (Its priority is greater than Allow List)
+</details>
+
+<details>
+<summary>Formatter Section</summary>
 
 ## Formatter Section
-Format your own messages using the specified pattern. You can apply different rules to different servers. [See Bubble Rules](#bubble-section).
+Format your own messages using the specified pattern. You can apply different rules to different servers.
 - Pattern  
 Automatically format the replacement style.  
 For example:  
@@ -62,6 +89,10 @@ The number of items (or `all`) sent in chat when selling items to the Chest Shop
 Commands that begin with various special characters.  
 Chat Tools' default RegEx string `^\d+$|^[.#%$/].*|\ball\b` is all that is needed.  
 Of course, you can change it or add more yourself.
+</details>
+
+<details>
+<summary>Chat Keybindings Section</summary>
 
 ## Chat Keybindings Section
 Use hotkeys to replace frequently used commands
@@ -72,6 +103,10 @@ While playing a Parkour map, do F3+C and activate it once. Then you can quickly 
 - Command Keybindings  
 Set hotkeys for frequently used commands.  
 ![Command Keybindings](<images/Command Keybindings.png>)
+</details>
+
+<details>
+<summary>Bubble Section</summary>
 
 ## Bubble Section
 - Enable Chat Bubbles  
@@ -80,6 +115,10 @@ Renders a chat bubble over one's head.
 - Bubble Rules  
 Apply different bubble rules on different servers.  
 ![Bubble Rules](<images/Bubble Rules.png>)
+</details>
+
+<details>
+<summary>Responder Section</summary>
 
 ## Responder Section
 > **Warning: If you are going to use this feature in a server, please inquire with other players and admins first!**
@@ -87,3 +126,4 @@ Apply different bubble rules on different servers.
 Response to other's messages automatically.
 - Responder Rules  
 Apply different responder rules on different servers.
+</details>
