@@ -40,6 +40,7 @@ public class TextUtils {
 
     // For a newly received message, the key is its hashcode and the value is its MessageUnit
     public static Map<String, MessageUnit> messageMap = new LinkedHashMap<>();
+    public static MessageUnit latestMessage = null;
 
     /**
      * Generates a random string conducted by 0-9,a-z
@@ -59,8 +60,11 @@ public class TextUtils {
     }
 
     public static MessageUnit getLatestMessage() {
-        // the last element of messageMap
-        return messageMap.values().stream().reduce((first, second) -> second).orElse(null);
+        return latestMessage;
+    }
+
+    protected static void setLatestMessage(MessageUnit unit) {
+        latestMessage = unit;
     }
 
     public static String putMessageMap(Text text, long unixTimestamp, int occurrenceCount) {
@@ -77,7 +81,9 @@ public class TextUtils {
             hashcode = generateRandomString(6);
             retries++;
         }
-        messageMap.put(hashcode, new MessageUnit(text, unixTimestamp, occurrenceCount));
+        MessageUnit messageUnit = new MessageUnit(text, unixTimestamp, occurrenceCount);
+        messageMap.put(hashcode, messageUnit);
+        setLatestMessage(messageUnit);
         return hashcode;
     }
 
