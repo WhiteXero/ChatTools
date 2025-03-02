@@ -70,7 +70,7 @@ public class CommandRegistryUtils {
             .then(literal("send_to_client")
                 // chattools send_to_client text
                 .then(literal("text").then(argument("message", ClientComponentArgument.textComponent(
-                        //#if MC>=11900
+                        //#if MC>=12006
                         buildContext
                         //#endif
                     )).executes(t -> {
@@ -80,7 +80,7 @@ public class CommandRegistryUtils {
                 })))
                 // chattools send_to_client actionbar
                 .then(literal("actionbar").then(argument("message", ClientComponentArgument.textComponent(
-                        //#if MC>=11900
+                        //#if MC>=12006
                         buildContext
                         //#endif
                     )).executes(t -> {
