@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BookViewScreen.class)
-public abstract class BookScreenMixin {
+public abstract class BookViewScreenMixin {
     @Inject(method = "getClickedComponentStyleAt", at = @At(value = "RETURN"), cancellable = true)
     public void modifyHoverEvent(double x, double y, CallbackInfoReturnable<Style> cir) {
         Style style = cir.getReturnValue();

@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * @author 70CentsApple
  */
 @Mixin(ClientHandshakePacketListenerImpl.class)
-public abstract class ClientLoginNetworkHandlerMixin {
+public abstract class ClientHandshakePacketListenerImplMixin {
     //#if MC>=11900
     @Shadow
     @Final

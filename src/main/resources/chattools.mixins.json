@@ -4,15 +4,15 @@
   "package": "net.apple70cents.chattools.mixins",
   "compatibilityLevel": "{{COMPATIBILITY_LEVEL}}",
   "mixins": [
-    "BookScreenMixin",
-    "ChatHudMixin",
-    "ChatMessageC2SPacketMixin",
+    "BookViewScreenMixin",
+    "ChatComponentMixin",
+    "ServerboundChatPacketMixin",
     "ChatScreenMixin",
-    "ClientLoginNetworkHandlerMixin",
-    "ClientPlayNetworkHandlerMixin",
+    "ClientHandshakePacketListenerImplMixin",
+    "ClientPacketListenerMixin",
     "EntityRendererMixin",
-    "InGameHudMixinForRestoreMessages",
-    "InGameHudMixinForExclusiveActionbar"
+    "GuiMixinForRestoreMessages",
+    "GuiMixinForExclusiveActionbar"
   ],
   "injectors": {
     "defaultRequire": 1

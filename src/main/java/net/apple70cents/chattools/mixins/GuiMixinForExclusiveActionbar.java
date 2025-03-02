@@ -23,7 +23,7 @@ import net.minecraft.client.DeltaTracker;
  */
 
 @Mixin(Gui.class)
-public abstract class InGameHudMixinForExclusiveActionbar {
+public abstract class GuiMixinForExclusiveActionbar {
     //#if MC>=12100
     @Inject(method = "renderOverlayMessage", at = @At(value = "HEAD"))
     public void renderExclusiveActionbar(GuiGraphics context, DeltaTracker deltaTracker, CallbackInfo ci) {

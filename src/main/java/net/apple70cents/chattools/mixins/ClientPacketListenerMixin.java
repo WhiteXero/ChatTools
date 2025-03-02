@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 //#else
 //$$ @Mixin(net.minecraft.client.player.LocalPlayer.class)
 //#endif
-public abstract class ClientPlayNetworkHandlerMixin {
+public abstract class ClientPacketListenerMixin {
     // it catches the messages that are about to send, to apply Formatter to them
     @ModifyVariable(method =
         //#if MC>=11900

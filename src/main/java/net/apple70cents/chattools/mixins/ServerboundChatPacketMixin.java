@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ServerboundChatPacket.class)
-public abstract class ChatMessageC2SPacketMixin {
+public abstract class ServerboundChatPacketMixin {
     @ModifyExpressionValue(
         //#if MC>=11900
         method = "write"

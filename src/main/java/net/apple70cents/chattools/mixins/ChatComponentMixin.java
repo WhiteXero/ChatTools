@@ -37,7 +37,7 @@ import net.minecraft.network.chat.MessageSignature;
  * @author 70CentsApple
  */
 @Mixin(ChatComponent.class)
-public abstract class ChatHudMixin {
+public abstract class ChatComponentMixin {
 
     @Shadow
     public abstract void rescaleChat();

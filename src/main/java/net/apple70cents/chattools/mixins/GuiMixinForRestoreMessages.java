@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 //$$ import net.minecraft.client.gui.components.ChatComponent;
 //$$ @Mixin(ChatComponent.class)
 //#endif
-public abstract class InGameHudMixinForRestoreMessages {
+public abstract class GuiMixinForRestoreMessages {
     //#if MC>=11700
     @Inject(method = "onDisconnected", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/ChatComponent;clearMessages(Z)V"), cancellable = true)
     public void restoreMessages(CallbackInfo ci) {
