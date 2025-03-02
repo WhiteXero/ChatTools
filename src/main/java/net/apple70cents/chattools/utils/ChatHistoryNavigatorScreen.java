@@ -1,15 +1,12 @@
 package net.apple70cents.chattools.utils;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ElementListWidget;
-import net.minecraft.client.gui.widget.EntryListWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.screen.ScreenTexts;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Instant;
@@ -23,23 +20,23 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 //#if MC>=11900
-import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.components.Tooltip;
 //#endif
 //#if MC>=12000
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-import net.minecraft.client.gui.screen.narration.NarrationPart;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.narration.NarratedElementType;
 //#elseif MC>=11700
-//$$ import net.minecraft.client.util.math.MatrixStack;
-//$$ import net.minecraft.client.gui.Element;
-//$$ import net.minecraft.client.gui.Selectable;
-//$$ import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
-//$$ import net.minecraft.client.gui.screen.narration.NarrationPart;
+//$$ import com.mojang.blaze3d.vertex.PoseStack;
+//$$ import net.minecraft.client.gui.components.events.GuiEventListener;
+//$$ import net.minecraft.client.gui.narration.NarratableEntry;
+//$$ import net.minecraft.client.gui.narration.NarrationElementOutput;
+//$$ import net.minecraft.client.gui.narration.NarratedElementType;
 //#else
-//$$ import net.minecraft.client.util.math.MatrixStack;
-//$$ import net.minecraft.client.gui.Element;
+//$$ import com.mojang.blaze3d.vertex.PoseStack;
+//$$ import net.minecraft.client.gui.components.events.GuiEventListener;
 //#endif
 
 /**
@@ -47,31 +44,31 @@ import net.minecraft.client.gui.screen.narration.NarrationPart;
  */
 public class ChatHistoryNavigatorScreen extends Screen {
     @Nullable
-    public TextFieldWidget keywordField;
+    public EditBox keywordField;
     ChatUnitListWidget chatUnitListWidget;
-    ButtonWidget modeSelectorWidget;
+    Button modeSelectorWidget;
 
-    public ChatHistoryNavigatorScreen(Text title) {
+    public ChatHistoryNavigatorScreen(Component title) {
         super(title);
     }
 
     @Override
     protected void init() {
         super.init();
-        this.keywordField = new TextFieldWidget(this.textRenderer, 30, 35, this.width - 155, 20, this.keywordField, TextUtils.trans("texts.ChatHistoryNavigator.placeholder"));
+        this.keywordField = new EditBox(this.font, 30, 35, this.width - 155, 20, this.keywordField, TextUtils.trans("texts.ChatHistoryNavigator.placeholder"));
         this.keywordField.setMaxLength(Integer.MAX_VALUE);
-        this.keywordField.setChangedListener(keyword -> {
+        this.keywordField.setResponder(keyword -> {
             this.chatUnitListWidget.setKeyword(keyword);
         });
 
         //#if MC>=11700
-        this.addDrawableChild(this.keywordField);
+        this.addRenderableWidget(this.keywordField);
         //#else
         //$$ this.addButton(this.keywordField);
         //#endif
         this.setInitialFocus(this.keywordField);
 
-        this.chatUnitListWidget = new ChatUnitListWidget(MinecraftClient.getInstance(), this.width - 60, this.height - 120, 65, textRenderer.fontHeight + 3, this.keywordField.getText(), this.chatUnitListWidget);
+        this.chatUnitListWidget = new ChatUnitListWidget(Minecraft.getInstance(), this.width - 60, this.height - 120, 65, font.lineHeight + 3, this.keywordField.getValue(), this.chatUnitListWidget);
         //#if MC>=12002
         this.chatUnitListWidget.setX(30);
         //#else
@@ -81,48 +78,45 @@ public class ChatHistoryNavigatorScreen extends Screen {
         //#if MC>=12005
         //#elseif MC>=12003
         //$$ this.chatUnitListWidget.setRenderBackground(false);
-        //#elseif MC>=11700
-        //$$ this.chatUnitListWidget.setRenderBackground(false);
-        //$$ this.chatUnitListWidget.setRenderHorizontalShadows(false);
         //#else
-        //$$ this.chatUnitListWidget.method_31322(false);
-        //$$ this.chatUnitListWidget.method_31323(false);
+        //$$ this.chatUnitListWidget.setRenderBackground(false);
+        //$$ this.chatUnitListWidget.setRenderTopAndBottom(false);
         //#endif
-        this.addSelectableChild(chatUnitListWidget);
+        this.addWidget(chatUnitListWidget);
 
         // Mode Selector Button
-        Text modeSelectorButtonText = TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode());
-        ButtonWidget.PressAction pressAction = (button) -> {
+        Component modeSelectorButtonText = TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode());
+        Button.OnPress pressAction = (button) -> {
             this.chatUnitListWidget.switchToNextSearchMode();
             this.modeSelectorWidget.setMessage(TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode()));
             //#if MC>=11900
-            this.modeSelectorWidget.setTooltip(Tooltip.of(TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode() + ".@Tooltip")));
+            this.modeSelectorWidget.setTooltip(Tooltip.create(TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode() + ".@Tooltip")));
             //#endif
 
-            this.chatUnitListWidget.setKeyword(this.keywordField.getText());
+            this.chatUnitListWidget.setKeyword(this.keywordField.getValue());
             this.chatUnitListWidget.refreshUnitEntries();
         };
         //#if MC>=11900
-        this.modeSelectorWidget = ButtonWidget.builder(modeSelectorButtonText, pressAction)
-                                              .dimensions(this.width - 120, 35, 90, 20).build();
-        this.addDrawableChild(modeSelectorWidget);
+        this.modeSelectorWidget = Button.builder(modeSelectorButtonText, pressAction)
+                                              .bounds(this.width - 120, 35, 90, 20).build();
+        this.addRenderableWidget(modeSelectorWidget);
         //#elseif MC>=11700
-        //$$ this.modeSelectorWidget = new ButtonWidget(this.width - 120, 35, 90, 20, modeSelectorButtonText, pressAction, (button, matrices, mouseX, mouseY) -> renderTooltip(matrices, TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode() + ".@Tooltip"), mouseX, mouseY));
-        //$$ addDrawableChild(modeSelectorWidget);
+        //$$ this.modeSelectorWidget = new Button(this.width - 120, 35, 90, 20, modeSelectorButtonText, pressAction, (button, poseStack, mouseX, mouseY) -> renderTooltip(poseStack, TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode() + ".@Tooltip"), mouseX, mouseY));
+        //$$ addRenderableWidget(modeSelectorWidget);
         //#else
-        //$$ this.modeSelectorWidget = new ButtonWidget(this.width - 120, 35, 90, 20, modeSelectorButtonText, pressAction, (button, matrices, mouseX, mouseY) -> TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode() + ".@Tooltip"));
+        //$$ this.modeSelectorWidget = new Button(this.width - 120, 35, 90, 20, modeSelectorButtonText, pressAction, (button, poseStack, mouseX, mouseY) -> TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode() + ".@Tooltip"));
         //$$ addButton(modeSelectorWidget);
         //#endif
 
         // Done button
         //#if MC>=11900
-        this.addDrawableChild(ButtonWidget.builder(ScreenTexts.DONE, (button) -> {
-            this.close();
-        }).dimensions(this.width / 2 - 80, this.height - 28, 160, 20).build());
+        this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, (button) -> {
+            this.onClose();
+        }).bounds(this.width / 2 - 80, this.height - 28, 160, 20).build());
         //#elseif MC>=11700
-        //$$ addDrawableChild(new ButtonWidget(this.width / 2 - 80, this.height - 28, 160, 20, ScreenTexts.DONE, (button) -> {this.close();}));
+        //$$ addRenderableWidget(new Button(this.width / 2 - 80, this.height - 28, 160, 20, CommonComponents.GUI_DONE, (button) -> {this.onClose();}));
         //#else
-        //$$ addButton(new ButtonWidget(this.width / 2 - 80, this.height - 28, 160, 20, ScreenTexts.DONE, (button) -> {MinecraftClient.getInstance().openScreen(null);}));
+        //$$ addButton(new Button(this.width / 2 - 80, this.height - 28, 160, 20, CommonComponents.GUI_DONE, (button) -> {Minecraft.getInstance().setScreen(null);}));
         //#endif
     }
 
@@ -130,29 +124,29 @@ public class ChatHistoryNavigatorScreen extends Screen {
     @Override
     public void render(
             //#if MC>=12000
-            DrawContext context
+            GuiGraphics context
             //#else
-            //$$ MatrixStack context
+            //$$ PoseStack context
             //#endif
             , int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         // this draws the title
         //#if MC>=12000
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 15, 16777215);
+        context.drawCenteredString(this.font, this.title, this.width / 2, 15, 16777215);
         //#else
-        //$$ drawCenteredTextWithShadow(context,this.textRenderer, this.title, this.width / 2, 15, 16777215);
+        //$$ drawCenteredString(context,this.font, this.title, this.width / 2, 15, 16777215);
         //#endif
 
         if (this.chatUnitListWidget.searchMode == SearchModes.REGEX) {
             try {
                 if (this.keywordField != null) {
-                    Pattern.compile(this.keywordField.getText());
+                    Pattern.compile(this.keywordField.getValue());
                 }
             } catch (PatternSyntaxException e) {
-                Text errorText = TextUtils.literal(e.getDescription()).copy()
-                                          .setStyle(Style.EMPTY.withFormatting(Formatting.RED));
+                Component errorText = TextUtils.literal(e.getDescription()).copy()
+                                          .setStyle(Style.EMPTY.applyFormat(ChatFormatting.RED));
                 //#if MC>=12000
-                context.drawTooltip(textRenderer, errorText, mouseX, mouseY);
+                context.renderTooltip(font, errorText, mouseX, mouseY);
                 //#else
                 //$$ renderTooltip(context, errorText, mouseX, mouseY);
                 //#endif
@@ -164,7 +158,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
         }
     }
 
-    protected class ChatUnitEntry extends ElementListWidget.Entry<ChatUnitEntry> {
+    protected class ChatUnitEntry extends ContainerObjectSelectionList.Entry<ChatUnitEntry> {
         TextUtils.MessageUnit messageUnit;
 
         public ChatUnitEntry(String hashcode) {
@@ -175,61 +169,60 @@ public class ChatHistoryNavigatorScreen extends Screen {
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             // left click
             if (button == 0) {
-                MinecraftClient.getInstance().setScreen(new CopyFeatureScreen(messageUnit));
+                Minecraft.getInstance().setScreen(new CopyFeatureScreen(messageUnit));
                 return true;
             }
             return false;
         }
 
-        public Text getText() {
+        public Component getText() {
             if (this.messageUnit == null) {
                 return TextUtils.literal("§lOutdated message! It should NOT be here!");
             }
             return this.messageUnit.message;
         }
 
-        public Text getTooltip() {
+        public Component getTooltip() {
             LocalDateTime time = LocalDateTime.ofEpochSecond(this.messageUnit.unixTimestamp, 0, ZoneId.systemDefault()
                                                                                                       .getRules()
                                                                                                       .getOffset(Instant.now()));
             String offsetString = ZoneId.systemDefault().getRules().getOffset(Instant.now()).getId();
             // yyyy/MM/dd HH:mm:ss UTC±XX:XX
-            Text longTimeDisplay = TextUtils.of(String.format("%4d/%d/%d %02d:%02d:%02d\nUTC%s", time.getYear(), time
+            Component longTimeDisplay = TextUtils.of(String.format("%4d/%d/%d %02d:%02d:%02d\nUTC%s", time.getYear(), time
                     .getMonth()
                     .getValue(), time.getDayOfMonth(), time.getHour(), time.getMinute(), time.getSecond(), offsetString));
             return longTimeDisplay;
         }
 
         //#if MC>=11700
-        public List<? extends Selectable> selectableChildren() {
+        public List<? extends NarratableEntry> narratables() {
             return Collections.emptyList();
         }
         //#endif
 
-        public List<? extends Element> children() {
+        public List<? extends GuiEventListener> children() {
             return Collections.emptyList();
         }
 
         @Override
         public void render(
                 //#if MC>=12000
-                DrawContext context
+                GuiGraphics context
                 //#else
-                //$$ MatrixStack context
+                //$$ PoseStack context
                 //#endif
                 , int index, int y, int x, int itemWidth, int itemHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             //#if MC>=12000
-            context.drawTextWithShadow(textRenderer, this.getText(), x, y, 16777215);
+            context.drawString(font, this.getText(), x, y, 16777215);
             //#else
-            //$$ drawTextWithShadow(context, textRenderer, this.getText(), x, y, 16777215);
+            //$$ drawString(context, font, this.getText(), x, y, 16777215);
             //#endif
             if (hovered) {
-                List<Text> timestamps = Arrays.stream(this.getTooltip().getString().split("\n")).map(TextUtils::of)
-                                              .toList();
+                List<Component> timestamps = Arrays.stream(this.getTooltip().getString().split("\n")).map(TextUtils::of).collect(Collectors.toList());
                 //#if MC>=12000
-                context.drawTooltip(textRenderer, timestamps, mouseX, mouseY);
+                context.renderComponentTooltip(font, timestamps, mouseX, mouseY);
                 //#else
-                //$$ renderTooltip(context, timestamps, mouseX, mouseY);
+                //$$ renderComponentTooltip(context, timestamps, mouseX, mouseY);
                 //#endif
             }
         }
@@ -239,7 +232,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
         CASE_INSENSITIVE, CASE_SENSITIVE, REGEX;
     }
 
-    protected class ChatUnitListWidget extends EntryListWidget<ChatUnitEntry> {
+    protected class ChatUnitListWidget extends AbstractSelectionList<ChatUnitEntry> {
         private List<String> hashcodeResultList;
         private SearchModes searchMode;
 
@@ -248,7 +241,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
                 hashcodeResultList = new ArrayList<>();
             }
             hashcodeResultList.clear();
-            if (keyword == null || keyword.isBlank()) {
+            if (keyword == null || keyword.trim().isEmpty()) {
                 return;
             }
 
@@ -314,7 +307,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
             return this.searchMode;
         }
 
-        public ChatUnitListWidget(MinecraftClient client, int width, int height, int y, int itemHeight, String keyword, @Nullable ChatUnitListWidget copyFrom) {
+        public ChatUnitListWidget(Minecraft client, int width, int height, int y, int itemHeight, String keyword, @Nullable ChatUnitListWidget copyFrom) {
             //#if MC>=12002
             super(client, width, height, y, itemHeight);
             //#else
@@ -337,19 +330,27 @@ public class ChatHistoryNavigatorScreen extends Screen {
         }
 
         @Override
-        protected int getScrollbarX() {
+        protected int
+            //#if MC>=12102
+            scrollBarX()
+            //#elseif MC>=12006
+            //$$ getDefaultScrollbarPosition()
+            //#else
+            //$$ getScrollbarPosition()
+            //#endif
+            {
             //#if MC>=12002
             int x = this.getX();
             //#else
-            //$$ int x = this.left;
+            //$$ int x = this.x0;
             //#endif
             return this.width - 7 + x;
         }
 
         //#if MC>=12104
         @Override
-        protected double getDeltaYPerScroll() {
-            int lineHeight = textRenderer.fontHeight + 3;
+        protected double scrollRate() {
+            int lineHeight = font.lineHeight + 3;
             return hasShiftDown() ? lineHeight : lineHeight * 7;
         }
         //#else
@@ -361,7 +362,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
         //$$        //$$ double mouseX, double mouseY, double verticalAmount
         //$$    //#endif
         //$$     ) {
-        //$$     int lineHeight = textRenderer.fontHeight + 3;
+        //$$     int lineHeight = font.lineHeight + 3;
         //$$     double scrollAmount = hasShiftDown() ? lineHeight : lineHeight * 7;
         //$$     this.setScrollAmount(this.getScrollAmount() - verticalAmount * scrollAmount);
         //$$     return true;
@@ -370,31 +371,31 @@ public class ChatHistoryNavigatorScreen extends Screen {
 
         //#if MC>=12005
         @Override
-        protected void drawMenuListBackground(DrawContext context) {
+        protected void renderListBackground(GuiGraphics context) {
         }
         //#endif
 
         //#if MC>=11900
         @Nullable
         public Tooltip getTooltip() {
-            if (getHoveredEntry() == null) {
+            if (getHovered() == null) {
                 return null;
             }
-            return Tooltip.of(getHoveredEntry().getTooltip());
+            return Tooltip.create(getHovered().getTooltip());
         }
         //#endif
 
-        //#if MC>=12002
-        protected void appendClickableNarrations(NarrationMessageBuilder builder) {
-            if (getHoveredEntry() != null) {
-                builder.put(NarrationPart.TITLE, getHoveredEntry().getText());
+    //#if MC>=11700
+        //#if MC>=12004
+        protected void updateWidgetNarration
+        //#else
+        //$$ @Override public void updateNarration
+        //#endif
+        (NarrationElementOutput builder) {
+            if (getHovered() != null) {
+                builder.add(NarratedElementType.TITLE, getHovered().getText());
             }
         }
-        //#elseif MC>=11700
-        //$$ public void appendNarrations(NarrationMessageBuilder builder) {
-        //$$     if (getHoveredEntry() != null) {builder.put(NarrationPart.TITLE, getHoveredEntry().getText());}
-        //$$ }
-        //#else
-        //#endif
+    //#endif
     }
 }

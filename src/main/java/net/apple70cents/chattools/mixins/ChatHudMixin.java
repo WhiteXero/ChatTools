@@ -13,10 +13,10 @@ import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
-import net.minecraft.client.gui.hud.ChatHud;
-import net.minecraft.client.gui.hud.ChatHudLine;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
+import net.minecraft.client.GuiMessage;
+import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -29,29 +29,29 @@ import java.time.Instant;
 import java.util.List;
 
 //#if MC>=11900
-import net.minecraft.client.gui.hud.MessageIndicator;
-import net.minecraft.network.message.MessageSignatureData;
+import net.minecraft.client.GuiMessageTag;
+import net.minecraft.network.chat.MessageSignature;
 //#endif
 
 /**
  * @author 70CentsApple
  */
-@Mixin(ChatHud.class)
+@Mixin(ChatComponent.class)
 public abstract class ChatHudMixin {
 
     @Shadow
-    public abstract void reset();
+    public abstract void rescaleChat();
 
 
-    @Shadow @Final private List<ChatHudLine> messages;
+    @Shadow @Final private List<GuiMessage> allMessages;
 
     @ModifyExpressionValue(method =
             //#if MC>=12005
-            {"addVisibleMessage(Lnet/minecraft/client/gui/hud/ChatHudLine;)V", "addMessage*", "addToMessageHistory"}
+            {"addMessageToQueue", "addMessageToDisplayQueue", "addMessage*", "addRecentChat"}
             //#elseif MC>=11900
-            //$$ "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V"
+            //$$ {"addRecentChat", "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;ILnet/minecraft/client/GuiMessageTag;Z)V"}
             //#else
-            //$$ "addMessage(Lnet/minecraft/text/Text;IIZ)V"
+            //$$ "addMessage(Lnet/minecraft/network/chat/Component;IIZ)V"
             //#endif
             , at = @At(value = "CONSTANT", args = "intValue=100"))
     public int modifyMaxHistorySize(int originalMaxSize) {
@@ -62,20 +62,16 @@ public abstract class ChatHudMixin {
         }
     }
 
-    //#if MC>=12005
-    @Inject(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V", at = @At(value = "HEAD"), cancellable = true)
-    //#elseif MC>=11900
-    //$$ @Inject(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V", at = @At(value = "HEAD"), cancellable = true)
+    //#if MC>=11900
+    @Inject(method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V", at = @At(value = "HEAD"), cancellable = true)
     //#else
-    //$$ @Inject(method = "addMessage(Lnet/minecraft/text/Text;IIZ)V", at = @At(value = "HEAD"), cancellable = true)
+    //$$ @Inject(method = "addMessage(Lnet/minecraft/network/chat/Component;IIZ)V", at = @At(value = "HEAD"), cancellable = true)
     //#endif
     public void onReceivingMessages(
-            //#if MC>=12005
-            Text message, MessageSignatureData signatureData, MessageIndicator indicator
-            //#elseif MC>=11900
-            //$$ Text message, MessageSignatureData signature, int ticks, MessageIndicator indicator, boolean refresh
+            //#if MC>=11900
+            Component message, MessageSignature signature, GuiMessageTag indicator
             //#else
-            //$$ Text message, int messageId, int timestamp, boolean refresh
+            //$$ Component message, int messageId, int timestamp, boolean refresh
             //#endif
             , CallbackInfo ci) {
         if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
@@ -92,11 +88,11 @@ public abstract class ChatHudMixin {
     }
 
     //#if MC>=12005
-    @ModifyArgs(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHudLine;<init>(ILnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V"))
+    @ModifyArgs(method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/GuiMessage;<init>(ILnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V"))
     //#elseif MC>=11900
-    //$$ @ModifyArgs(method = "addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;Lnet/minecraft/client/gui/hud/MessageIndicator;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;addMessage(Lnet/minecraft/text/Text;Lnet/minecraft/network/message/MessageSignatureData;ILnet/minecraft/client/gui/hud/MessageIndicator;Z)V"))
+    //$$ @ModifyArgs(method = "addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;Lnet/minecraft/client/GuiMessageTag;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/ChatComponent;addMessage(Lnet/minecraft/network/chat/Component;Lnet/minecraft/network/chat/MessageSignature;ILnet/minecraft/client/GuiMessageTag;Z)V"))
     //#else
-    //$$ @ModifyArgs(method = "addMessage(Lnet/minecraft/text/Text;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;addMessage(Lnet/minecraft/text/Text;IIZ)V"))
+    //$$ @ModifyArgs(method = "addMessage(Lnet/minecraft/network/chat/Component;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/ChatComponent;addMessage(Lnet/minecraft/network/chat/Component;IIZ)V"))
     //#endif
     public void onReceivingMessages(Args args) {
         //#if MC>=12005
@@ -107,7 +103,7 @@ public abstract class ChatHudMixin {
         if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
             return;
         }
-        Text message = args.get(MESSAGE_IDX);
+        Component message = args.get(MESSAGE_IDX);
         // ignores this message if Chat Filter is to work
         if (ChatFilter.shouldFilter(message)) {
             return;
@@ -128,9 +124,9 @@ public abstract class ChatHudMixin {
         int occurrenceCount = 1;
         if ((boolean) ConfigUtils.get("general.ChatCompactor.Enabled")) {
             occurrenceCount = ChatCompactor.calculateOccurrenceCount(message);
-            if (occurrenceCount > 1 && !this.messages.isEmpty()) {
-                this.messages.remove(0);
-                this.reset();
+            if (occurrenceCount > 1 && !this.allMessages.isEmpty()) {
+                this.allMessages.remove(0);
+                this.rescaleChat();
             }
         }
         String hashcode = TextUtils.putMessageMap(message, Instant.now().getEpochSecond(), occurrenceCount);
@@ -159,7 +155,7 @@ public abstract class ChatHudMixin {
         args.set(MESSAGE_IDX, message);
     }
 
-    @Inject(method = "getTextStyleAt", at = @At(value = "RETURN"), cancellable = true)
+    @Inject(method = "getClickedComponentStyleAt", at = @At(value = "RETURN"), cancellable = true)
     public void modifyHoverEvent(double x, double y, CallbackInfoReturnable<Style> cir) {
         Style style = cir.getReturnValue();
         if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {

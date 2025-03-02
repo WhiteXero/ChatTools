@@ -5,9 +5,9 @@ import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.KeyboardUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.apple70cents.chattools.utils.TextUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.ChatScreen;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -21,20 +21,20 @@ public class Translator {
         if (!(boolean) ConfigUtils.get("general.Translator.Enabled")) {
             return false;
         }
-        if (!(MinecraftClient.getInstance().currentScreen instanceof ChatScreen)) {
+        if (!(Minecraft.getInstance().screen instanceof ChatScreen)) {
             return false;
         }
         return KeyboardUtils.isKeyPressingWithModifier("key.keyboard.tab", SpecialUnits.KeyModifiers.SHIFT, SpecialUnits.MacroModes.LAZY);
     }
 
-    public static void work(TextFieldWidget chatField) {
-        String originalText = chatField.getText();
+    public static void work(EditBox chatField) {
+        String originalText = chatField.getValue();
         String method = (boolean) ConfigUtils.get("general.Translator.PostInstead") ? "POST" : "GET";
         if (((String) ConfigUtils.get("general.Translator.API")).isBlank()) {
-            chatField.setText(TextUtils.trans("texts.translator.requireApi").getString());
+            chatField.setValue(TextUtils.trans("texts.translator.requireApi").getString());
             return;
         }
-        chatField.setText(TextUtils.trans("texts.translator.await").getString());
+        chatField.setValue(TextUtils.trans("texts.translator.await").getString());
         Runnable runnable = () -> {
             try {
                 String api = (String) ConfigUtils.get("general.Translator.API");
@@ -57,14 +57,14 @@ public class Translator {
                         while ((line = in.readLine()) != null) {
                             response.append(line);
                         }
-                        chatField.setText(response.toString());
+                        chatField.setValue(response.toString());
                         LoggerUtils.info("[ChatTools] Response: " + response);
                         return;
                     }
                 }
             } catch (Exception e) {
                 LoggerUtils.error("[ChatTools] Error occurred when visiting Translation API");
-                chatField.setText(e.toString());
+                chatField.setValue(e.toString());
                 e.printStackTrace();
             }
         };

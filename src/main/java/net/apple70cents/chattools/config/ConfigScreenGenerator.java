@@ -6,11 +6,10 @@ import me.shedaniel.clothconfig2.api.ConfigBuilder;
 import me.shedaniel.clothconfig2.api.ConfigCategory;
 import me.shedaniel.clothconfig2.api.ConfigEntryBuilder;
 import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.utils.ConfigScreenUtils;
 import net.apple70cents.chattools.utils.ConfigUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -39,7 +38,7 @@ public class ConfigScreenGenerator {
 
     public static void loadConfigGuiMap() {
         try {
-            InputStream inputStream = MinecraftClient.getInstance().getClass().getClassLoader()
+            InputStream inputStream = Minecraft.getInstance().getClass().getClassLoader()
                                                      .getResourceAsStream("assets/chattools/config_gui.json");
             Reader reader = new InputStreamReader(inputStream);
             configGuiMap = GSON.fromJson(reader, Map.class);
@@ -56,9 +55,9 @@ public class ConfigScreenGenerator {
         }
 
         //#if MC>=12100
-        Identifier backgroundTexture = Identifier.of("minecraft:textures/block/oak_planks.png");
+        ResourceLocation backgroundTexture = ResourceLocation.parse("minecraft:textures/block/oak_planks.png");
         //#else
-        //$$ Identifier backgroundTexture = new Identifier("minecraft:textures/block/oak_planks.png");
+        //$$ ResourceLocation backgroundTexture = new ResourceLocation("minecraft:textures/block/oak_planks.png");
         //#endif
         ConfigBuilder builder = ConfigBuilder.create().setTitle(trans("gui.title"))
                                              .setDefaultBackgroundTexture(backgroundTexture)

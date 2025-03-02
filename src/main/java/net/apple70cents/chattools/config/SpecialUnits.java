@@ -1,6 +1,6 @@
 package net.apple70cents.chattools.config;
 
-import net.minecraft.client.util.InputUtil;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +113,7 @@ public class SpecialUnits {
         public String command;
 
         public MacroUnit() {
-            this.key = InputUtil.UNKNOWN_KEY.getTranslationKey();
+            this.key = InputConstants.UNKNOWN.getName();
             this.modifier = KeyModifiers.NONE;
             this.mode = MacroModes.LAZY;
             this.command = "";
@@ -128,7 +128,7 @@ public class SpecialUnits {
 
         public static MacroUnit of(Object ele) {
             if (ele instanceof Map) {
-                String key = (String) ((Map) ele).getOrDefault("key", InputUtil.UNKNOWN_KEY.getTranslationKey());
+                String key = (String) ((Map) ele).getOrDefault("key", InputConstants.UNKNOWN.getName());
                 KeyModifiers modifier = KeyModifiers.valueOf((String) ((Map) ele).getOrDefault("modifier", KeyModifiers.NONE));
                 MacroModes mode = MacroModes.valueOf((String) ((Map) ele).getOrDefault("mode", MacroModes.LAZY));
                 String command = (String) ((Map) ele).getOrDefault("command", "");

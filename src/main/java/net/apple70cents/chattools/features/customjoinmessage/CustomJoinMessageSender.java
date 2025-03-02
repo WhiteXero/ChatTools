@@ -4,7 +4,7 @@ import net.apple70cents.chattools.config.SpecialUnits;
 import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -27,7 +27,7 @@ public class CustomJoinMessageSender {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            MinecraftClient.getInstance().execute(() -> {
+            Minecraft.getInstance().execute(() -> {
                 MessageUtils.setJustSentMessage(true);
                 MessageUtils.sendToPublicChat(message, forceDisableFormatter);
             });

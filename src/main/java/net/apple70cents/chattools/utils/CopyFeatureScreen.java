@@ -1,11 +1,11 @@
 package net.apple70cents.chattools.utils;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.MultilineText;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.MultiLineLabel;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -14,18 +14,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 //#if MC>=12000
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.GuiGraphics;
 //#else
-//$$ import net.minecraft.client.util.math.MatrixStack;
+//$$ import com.mojang.blaze3d.vertex.PoseStack;
 //#endif
 
 public class CopyFeatureScreen extends Screen {
-    private MultilineText messageSplit;
+    private MultiLineLabel messageSplit;
     private Screen oldScreen;
     private TextUtils.MessageUnit unit;
-    private Map<String, ButtonWidget> buttons;
+    private Map<String, Button> buttons;
     private final Map<String, ButtonData> buttonDatas;
-    private MultilineText previewTextSplit;
+    private MultiLineLabel previewTextSplit;
 
     protected static class ButtonData {
         public int index;
@@ -39,8 +39,8 @@ public class CopyFeatureScreen extends Screen {
 
     public CopyFeatureScreen(TextUtils.MessageUnit unit) {
         super(TextUtils.trans("texts.copy.title"));
-        this.oldScreen = MinecraftClient.getInstance().currentScreen;
-        this.messageSplit = MultilineText.EMPTY;
+        this.oldScreen = Minecraft.getInstance().screen;
+        this.messageSplit = MultiLineLabel.EMPTY;
         this.unit = unit;
         this.buttons = new HashMap<>();
         this.buttonDatas = new HashMap<>();
@@ -49,7 +49,7 @@ public class CopyFeatureScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        this.messageSplit = MultilineText.create(this.textRenderer, unit.message, this.width - 50);
+        this.messageSplit = MultiLineLabel.create(this.font, unit.message, this.width - 50);
 
         this.buttonDatas.put("copyObjectData", new ButtonData(-3, unit.message.toString()));
         this.buttonDatas.put("copyRaw", new ButtonData(-2, unit.message.getString()));
@@ -65,34 +65,34 @@ public class CopyFeatureScreen extends Screen {
         int midH = this.height / 2;
         for (Map.Entry<String, ButtonData> buttonData : buttonDatas.entrySet()) {
             buttons.put(buttonData.getKey(), addCenterButton(buttonData.getKey(), midH + 21 * buttonData.getValue().index, (button -> {
-                MinecraftClient.getInstance().keyboard.setClipboard(buttonData.getValue().content);
+                Minecraft.getInstance().keyboardHandler.setClipboard(buttonData.getValue().content);
             })));
         }
         addCenterButton("cancel", this.height - 30, (button) -> {
             if (oldScreen instanceof ChatHistoryNavigatorScreen) {
                 if (((ChatHistoryNavigatorScreen) oldScreen).keywordField != null) {
-                    ((ChatHistoryNavigatorScreen) oldScreen).chatUnitListWidget.setKeyword(((ChatHistoryNavigatorScreen) oldScreen).keywordField.getText());
+                    ((ChatHistoryNavigatorScreen) oldScreen).chatUnitListWidget.setKeyword(((ChatHistoryNavigatorScreen) oldScreen).keywordField.getValue());
                 } else {
                     ((ChatHistoryNavigatorScreen) oldScreen).chatUnitListWidget.setKeyword("");
                 }
             }
-            MinecraftClient.getInstance().setScreen(oldScreen);
+            Minecraft.getInstance().setScreen(oldScreen);
         });
     }
 
-    protected ButtonWidget addCenterButton(String translationKey, int y, ButtonWidget.PressAction func) {
+    protected Button addCenterButton(String translationKey, int y, Button.OnPress func) {
         int buttonW = 200;
         int buttonH = 20;
         //#if MC>=11900
-        ButtonWidget buttonWidget = ButtonWidget.builder(TextUtils.trans("texts.copy." + translationKey), func)
-                                                .position(this.width / 2 - buttonW / 2, y - buttonH / 2)
+        Button buttonWidget = Button.builder(TextUtils.trans("texts.copy." + translationKey), func)
+                                                .pos(this.width / 2 - buttonW / 2, y - buttonH / 2)
                                                 .size(buttonW, buttonH).build();
         //#else
-        //$$ ButtonWidget buttonWidget = new ButtonWidget(this.width / 2 - buttonW / 2, y - buttonH / 2, buttonW, buttonH, TextUtils.trans("texts.copy." + translationKey), func);
+        //$$ Button buttonWidget = new Button(this.width / 2 - buttonW / 2, y - buttonH / 2, buttonW, buttonH, TextUtils.trans("texts.copy." + translationKey), func);
         //#endif
 
         //#if MC>=11700
-        this.addDrawableChild(buttonWidget);
+        this.addRenderableWidget(buttonWidget);
         //#else
         //$$ addButton(buttonWidget);
         //#endif
@@ -103,30 +103,30 @@ public class CopyFeatureScreen extends Screen {
     @Override
     public void render(
             //#if MC>=12000
-            DrawContext context
+            GuiGraphics context
             //#else
-            //$$ MatrixStack context
+            //$$ PoseStack context
             //#endif
             , int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         // this draws the title
-        // context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, this.getTitleY(), 16777215);
+        // context.drawCenteredString(this.font, this.title, this.width / 2, this.getTitleY(), 16777215);
         // this draws the message
-        this.messageSplit.drawCenterWithShadow(context, this.width / 2, this.getMessageY());
+        this.messageSplit.renderCentered(context, this.width / 2, this.getMessageY());
         // this draws the content preview
-        Text previewText = TextUtils.SPACER;
-        for (Map.Entry<String, ButtonWidget> button : buttons.entrySet()) {
+        Component previewText = TextUtils.SPACER;
+        for (Map.Entry<String, Button> button : buttons.entrySet()) {
             if (button.getValue().isMouseOver(mouseX, mouseY)) {
                 previewText = TextUtils.of(buttonDatas.get(button.getKey()).content);
             }
         }
-        this.previewTextSplit = MultilineText.create(this.textRenderer, previewText, this.width - 50);
-        this.previewTextSplit.drawCenterWithShadow(context, this.width / 2, this.height / 2 + 60);
+        this.previewTextSplit = MultiLineLabel.create(this.font, previewText, this.width - 50);
+        this.previewTextSplit.renderCentered(context, this.width / 2, this.height / 2 + 60);
     }
 
     private int getTitleY() {
         int i = (this.height - this.getMessagesHeight()) / 2;
-        return MathHelper.clamp(i - 29, 10, 30);
+        return Mth.clamp(i - 29, 10, 30);
     }
 
     private int getMessageY() {
@@ -134,7 +134,7 @@ public class CopyFeatureScreen extends Screen {
     }
 
     private int getMessagesHeight() {
-        return this.messageSplit.count() * 9;
+        return this.messageSplit.getLineCount() * 9;
     }
 
     private String getLongTimeDisplay(long timestamp) {

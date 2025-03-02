@@ -5,7 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.apple70cents.chattools.config.ConfigStorage;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -55,7 +55,7 @@ public class ConfigMigrationUtils {
             return;
         }
         if (CONFIG_VERSION < 2.0) {
-            migrateFromV1ToV2(configFile, MinecraftClient.getInstance().getClass().getClassLoader()
+            migrateFromV1ToV2(configFile, Minecraft.getInstance().getClass().getClassLoader()
                                                          .getResourceAsStream("assets/chattools/migration_v1_to_v2.json"));
         }
         // Refresh

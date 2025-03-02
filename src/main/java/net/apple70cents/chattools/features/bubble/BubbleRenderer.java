@@ -1,21 +1,20 @@
 package net.apple70cents.chattools.features.bubble;
 
-import net.apple70cents.chattools.ChatTools;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.apple70cents.chattools.config.SpecialUnits;
 import net.apple70cents.chattools.features.general.NickHider;
 import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.ContextUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.text.OrderedText;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.Entity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,33 +22,33 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 //#if MC>=12100
-import net.minecraft.entity.EntityAttachmentType;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.entity.EntityAttachment;
+import net.minecraft.world.phys.Vec3;
 //#endif
 //#if MC>=11900
 import org.joml.Matrix4f;
 //#else
-//$$ import net.minecraft.util.math.Matrix4f;
+//$$ import com.mojang.math.Matrix4f;
 //#endif
 
 /**
  * @author 70CentsApple
  */
 public class BubbleRenderer {
-    static MinecraftClient mc = MinecraftClient.getInstance();
-    static TextRenderer textRenderer = mc.textRenderer;
+    static Minecraft mc = Minecraft.getInstance();
+    static Font font = mc.font;
 
     protected static class BubbleUnit {
-        Text text;
+        Component text;
         long startTime;
 
-        BubbleUnit(Text text, long startTime) {
+        BubbleUnit(Component text, long startTime) {
             this.text = text;
             this.startTime = startTime;
         }
 
         BubbleUnit(String str, long startTime) {
-            this.text = Text.of(str);
+            this.text = TextUtils.of(str);
             this.startTime = startTime;
         }
 
@@ -66,74 +65,73 @@ public class BubbleRenderer {
             return "BubbleUnit{" + "text=" + text + ", startTime=" + startTime + '}';
         }
 
-        public void render(Entity entity, MatrixStack matrixStack, VertexConsumerProvider vertexConsumers, float tickDelta) {
+        public void render(Entity entity, PoseStack poseStack, MultiBufferSource multiBufferSource, float tickDelta) {
             if (mc.player == null) {
                 return;
             }
-            Text renderText = text;
+            Component renderComponent = text;
             if ((boolean) ConfigUtils.get("general.NickHider.Enabled")) {
-                renderText = NickHider.work(text);
+                renderComponent = NickHider.work(text);
             }
             int yOffset = ((Number) ConfigUtils.get("bubble.YOffset")).intValue();
             EntityRenderDispatcher renderDispatcher = mc.getEntityRenderDispatcher();
-            matrixStack.push();
+            poseStack.pushPose();
             // getNameLabelHeight() -> getHeight() + 0.5F
 
             //#if MC>=12100
-            Vec3d vec3d = entity.getAttachments()
-                                .getPointNullable(EntityAttachmentType.NAME_TAG, 0, entity.getYaw(tickDelta));
+            Vec3 vec3d = entity.getAttachments().getNullable(EntityAttachment.NAME_TAG, 0, entity.getYRot());
             if (vec3d != null) {
-                matrixStack.translate(vec3d.x, vec3d.y + 0.5F + yOffset / 10.0F, vec3d.z);
+                poseStack.translate(vec3d.x, vec3d.y + 0.5F + yOffset / 10.0F, vec3d.z);
             }
             //#else
-            //$$ matrixStack.translate(0.0F, entity.getHeight() + 0.5F + yOffset / 10.0F, 0.0F);
+            //$$ poseStack.translate(0.0F, entity.getBbHeight() + 0.5F + yOffset / 10.0F, 0.0F);
             //#endif
-            matrixStack.multiply(renderDispatcher.getRotation());
-            matrixStack.scale(
+            poseStack.mulPose(renderDispatcher.cameraOrientation());
+            poseStack.scale(
                     //#if MC>=12100
                     0.025F
                     //#else
                     //$$ -0.025F
                     //#endif
                     , -0.025F, 0.025F);
-            Matrix4f matrix4f = matrixStack.peek().getPositionMatrix();
+            Matrix4f matrix4f = poseStack.last().pose();
             int maxLineWidth = ((Number) ConfigUtils.get("bubble.MaxLineWidth")).intValue();
-            List<OrderedText> lines = textRenderer.wrapLines(renderText, maxLineWidth);
+            List<FormattedCharSequence> lines = font.split(renderComponent, maxLineWidth);
             int lines_amount = lines.size();
             for (int i = 0; i < lines_amount; i++) {
                 int y = 9 * (i - lines_amount);
-                OrderedText line = lines.get(i);
-                float xOffset = -textRenderer.getWidth(line) / 2.0F;
-                textRenderer.draw(line, xOffset, y, 553648127, false, matrix4f, vertexConsumers,
+                FormattedCharSequence line = lines.get(i);
+                float xOffset = -font.width(line) / 2.0F;
+                font.drawInBatch(line, xOffset, y, 553648127, false, matrix4f, multiBufferSource,
                         //#if MC>=11900
-                        TextRenderer.TextLayerType.SEE_THROUGH
+                        Font.DisplayMode.SEE_THROUGH
                         //#else
                         //$$ true
                         //#endif
                         , 1056964608, 15728640);
-                textRenderer.draw(line, xOffset, y, -1, false, matrix4f, vertexConsumers,
+                font.drawInBatch(line, xOffset, y, -1, false, matrix4f, multiBufferSource,
                         //#if MC>=11900
-                        TextRenderer.TextLayerType.NORMAL
+                        Font.DisplayMode.NORMAL
                         //#else
                         //$$ false
                         //#endif
                         , 0, 15728640);
             }
-            matrixStack.pop();
+            poseStack.popPose();
         }
     }
 
     private static Map<String, BubbleUnit> bubbleMap = new HashMap<>();
 
-    public static void render(Entity entity, MatrixStack matrices, VertexConsumerProvider vertex, float tickDelta) {
+    public static void render(Entity entity, PoseStack poseStack, MultiBufferSource multiBufferSource, float tickDelta) {
         if (bubbleMap.isEmpty()) {
             return;
-        } else if (mc.world == null) {
+        } else if (mc.level == null) {
             return;
         }
-        for (AbstractClientPlayerEntity potentialSender : mc.world.getPlayers()) {
-            Text senderDisplayName = potentialSender.getDisplayName();
-            Text entityDisplayName = entity.getDisplayName();
+        for (AbstractClientPlayer potentialSender : mc.level.players()) {
+            Component senderDisplayName = potentialSender.getDisplayName();
+            Component entityDisplayName = entity.getDisplayName();
             if (senderDisplayName == null || entityDisplayName == null) {
                 return;
             }
@@ -149,16 +147,16 @@ public class BubbleRenderer {
                 bubbleMap.remove(senderName);
                 continue;
             }
-            double d = mc.getEntityRenderDispatcher().getSquaredDistanceToCamera(potentialSender);
+            double d = mc.getEntityRenderDispatcher().distanceToSqr(potentialSender);
             if (d <= 4096.0) {
-                bubbleMap.get(senderName).render(entity, matrices, vertex, tickDelta);
+                bubbleMap.get(senderName).render(entity, poseStack, multiBufferSource, tickDelta);
             }
         }
     }
 
-    public static void addChatBubble(Text text) {
+    public static void addChatBubble(Component text) {
         String message = TextUtils.wash(text.getString());
-        if (mc.world == null) {
+        if (mc.level == null) {
             return;
         }
         String pattern = "";

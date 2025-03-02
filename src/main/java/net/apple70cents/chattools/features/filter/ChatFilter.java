@@ -3,17 +3,17 @@ package net.apple70cents.chattools.features.filter;
 import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class ChatFilter {
 
-    public static boolean shouldFilter(Text text) {
+    public static boolean shouldFilter(Component text) {
         if (!(boolean) ConfigUtils.get("filter.Enabled")) {
             return false;
         }
@@ -37,7 +37,7 @@ public class ChatFilter {
             return;
         }
         Style style = Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextUtils.trans("texts.filterPlaceholder.@Tooltip")));
-        Text placeholder = ((MutableText) TextUtils.trans("texts.filterPlaceholder")).setStyle(style);
+        Component placeholder = TextUtils.trans("texts.filterPlaceholder").copy().setStyle(style);
         MessageUtils.sendToNonPublicChat(placeholder);
     }
 }

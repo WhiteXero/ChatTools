@@ -1,12 +1,11 @@
 package net.apple70cents.chattools.mixins;
 
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.features.customjoinmessage.CustomJoinMessageSender;
 import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.ContextUtils;
-import net.minecraft.client.network.ClientLoginNetworkHandler;
-import net.minecraft.client.network.ServerInfo;
-import net.minecraft.network.packet.s2c.login.LoginSuccessS2CPacket;
+import net.minecraft.client.multiplayer.ClientHandshakePacketListenerImpl;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.network.protocol.login.ClientboundLoginFinishedPacket;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,26 +13,22 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 //#if MC<11900
-//$$ import net.minecraft.client.MinecraftClient;
+//$$ import net.minecraft.client.Minecraft;
 //#endif
 
 /**
  * @author 70CentsApple
  */
-@Mixin(ClientLoginNetworkHandler.class)
+@Mixin(ClientHandshakePacketListenerImpl.class)
 public abstract class ClientLoginNetworkHandlerMixin {
     //#if MC>=11900
     @Shadow
     @Final
-    private ServerInfo serverInfo;
+    private ServerData serverData;
     //#endif
 
-    //#if MC>=11800
-    @Inject(method = "onSuccess", at = @At(value = "TAIL"))
-    //#else
-    //$$ @Inject(method = "onLoginSuccess", at = @At(value = "TAIL"))
-    //#endif
-    public void onServerLoginSuccess(LoginSuccessS2CPacket packet, CallbackInfo ci) {
+    @Inject(method = "handleLoginFinished", at = @At(value = "TAIL"))
+    public void onServerLoginSuccess(ClientboundLoginFinishedPacket clientboundLoginFinishedPacket, CallbackInfo ci) {
         if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
             return;
         }
@@ -41,13 +36,13 @@ public abstract class ClientLoginNetworkHandlerMixin {
             return;
         }
         //#if MC>=11900
-        if (this.serverInfo != null) {
-            CustomJoinMessageSender.work(this.serverInfo.address);
+        if (this.serverData != null) {
+            CustomJoinMessageSender.work(this.serverData.ip);
         } else {
             CustomJoinMessageSender.work(ContextUtils.getSessionIdentifier());
         }
         //#else
-        //$$ if (MinecraftClient.getInstance().getCurrentServerEntry() != null) {CustomJoinMessageSender.work(ContextUtils.getSessionIdentifier());}
+        //$$ if (Minecraft.getInstance().getCurrentServer() != null) {CustomJoinMessageSender.work(ContextUtils.getSessionIdentifier());}
         //#endif
     }
 

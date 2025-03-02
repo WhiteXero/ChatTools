@@ -1,32 +1,32 @@
 package net.apple70cents.chattools.features.general;
 
 import net.apple70cents.chattools.utils.ConfigUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 //#if MC>=12000
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.GuiGraphics;
 //#else
-//$$ import net.minecraft.client.util.math.MatrixStack;
+//$$ import com.mojang.blaze3d.vertex.PoseStack;
 //#endif
 
 public class ExclusiveActionbarHandler {
     protected static class ExclusiveActionbarMessageUnit {
-        Text text;
+        Component text;
         long startTime;
         long lifeTimeInMillis;
 
-        ExclusiveActionbarMessageUnit(Text text, long startTime, long lifeTimeInMillis) {
+        ExclusiveActionbarMessageUnit(Component text, long startTime, long lifeTimeInMillis) {
             this.text = text;
             this.startTime = startTime;
             this.lifeTimeInMillis = lifeTimeInMillis;
         }
 
-        ExclusiveActionbarMessageUnit(Text text, long lifeTimeInMillis) {
+        ExclusiveActionbarMessageUnit(Component text, long lifeTimeInMillis) {
             this.text = text;
             this.startTime = System.currentTimeMillis();
             this.lifeTimeInMillis = lifeTimeInMillis;
@@ -35,7 +35,7 @@ public class ExclusiveActionbarHandler {
 
     private static List<ExclusiveActionbarMessageUnit> messageUnitList = new CopyOnWriteArrayList<>();
 
-    public static void addToRenderQueue(Text message, long lifeTimeInMillis) {
+    public static void addToRenderQueue(Component message, long lifeTimeInMillis) {
         messageUnitList.add(new ExclusiveActionbarMessageUnit(message, lifeTimeInMillis));
     }
 
@@ -45,11 +45,11 @@ public class ExclusiveActionbarHandler {
     }
 
     //#if MC>=12000
-    public static void render(DrawContext context) {
+    public static void render(GuiGraphics context) {
         //#else
-        //$$ public static void render(MatrixStack matrices) {
+        //$$ public static void render(PoseStack pose) {
         //#endif
-        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
+        Font font = Minecraft.getInstance().font;
 
         float size = ((Number) ConfigUtils.get("general.ExclusiveActionbar.Size")).floatValue();
         int xOffset = ((Number) ConfigUtils.get("general.ExclusiveActionbar.XOffset")).intValue();
@@ -60,21 +60,20 @@ public class ExclusiveActionbarHandler {
             yOffset += calculateOffset(ele.startTime, ele.lifeTimeInMillis);
             if (opacity > 2) {
                 //#if MC>=12000
-                context.getMatrices().push();
-                context.getMatrices()
-                       .translate(context.getScaledWindowWidth() / 2.0F, context.getScaledWindowHeight() - 68.0F - 4.0F, 0.0F);
-                context.getMatrices().scale(size, size, 1);
-                int textWidth = textRenderer.getWidth(ele.text);
-                context.drawCenteredTextWithShadow(textRenderer, ele.text, xOffset, yOffset + index * 12, opacity << 24 | 16777215);
-                context.getMatrices().pop();
+                context.pose().pushPose();
+                context.pose()
+                       .translate(context.guiWidth() / 2.0F, context.guiHeight() - 68.0F - 4.0F, 0.0F);
+                context.pose().scale(size, size, 1);
+                context.drawCenteredString(font, ele.text, xOffset, yOffset + index * 12, opacity << 24 | 16777215);
+                context.pose().popPose();
                 //#else
-                //$$ matrices.push();
-                //$$ matrices.translate(MinecraftClient.getInstance().getWindow().getScaledWidth() / 2.0F, MinecraftClient
-                //$$         .getInstance().getWindow().getScaledHeight() - 68.0F - 4.0F, 0.0F);
-                //$$ matrices.scale(size, size, 1);
-                //$$ int textWidth = textRenderer.getWidth(ele.text);
-                //$$ textRenderer.drawWithShadow(matrices, ele.text, (-textWidth / 2.0F) + xOffset, yOffset + index * 12, opacity << 24 | 16777215);
-                //$$ matrices.pop();
+                //$$ pose.pushPose();
+                //$$ pose.translate(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2.0F, Minecraft
+                //$$         .getInstance().getWindow().getGuiScaledHeight() - 68.0F - 4.0F, 0.0F);
+                //$$ pose.scale(size, size, 1);
+                //$$ int textWidth = font.width(ele.text);
+                //$$ font.drawShadow(pose, ele.text, (-textWidth / 2.0F) + xOffset, yOffset + index * 12, opacity << 24 | 16777215);
+                //$$ pose.popPose();
                 //#endif
                 index++;
             }

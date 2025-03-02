@@ -5,10 +5,6 @@ apply plugin: 'me.fallenbreath.yamlang'
 
 int mcVersion = project.mcVersion
 
-preprocess {
-    tabIndentation = true
-}
-
 repositories {
     maven { url 'https://jitpack.io' }
     maven { url "https://maven.shedaniel.me/" } // Cloth Config
@@ -23,7 +19,7 @@ configurations {
 dependencies {
     // loom
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    mappings loom.officialMojangMappings()
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.

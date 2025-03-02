@@ -5,21 +5,21 @@ import net.apple70cents.chattools.utils.ChatHistoryNavigatorScreen;
 import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.KeyboardUtils;
 import net.apple70cents.chattools.utils.TextUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.ChatScreen;
 
 public class ChatHistoryNavigator {
     public static boolean shouldWork() {
         if (!(boolean) ConfigUtils.get("general.ChatHistoryNavigator.Enabled")) {
             return false;
         }
-        if (!(MinecraftClient.getInstance().currentScreen instanceof ChatScreen)) {
+        if (!(Minecraft.getInstance().screen instanceof ChatScreen)) {
             return false;
         }
         return KeyboardUtils.isKeyPressingWithModifier("key.keyboard.f", SpecialUnits.KeyModifiers.CTRL, SpecialUnits.MacroModes.LAZY);
     }
 
     public static void popupNavigatorScreen() {
-        MinecraftClient.getInstance().setScreen(new ChatHistoryNavigatorScreen(TextUtils.trans("texts.ChatHistoryNavigator.title")));
+        Minecraft.getInstance().setScreen(new ChatHistoryNavigatorScreen(TextUtils.trans("texts.ChatHistoryNavigator.title")));
     }
 }

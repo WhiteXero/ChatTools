@@ -2,8 +2,8 @@ package net.apple70cents.chattools.features.responder;
 
 import net.apple70cents.chattools.config.SpecialUnits;
 import net.apple70cents.chattools.utils.*;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * @author 70CentsApple
  */
 public class Responder {
-    static MinecraftClient mc = MinecraftClient.getInstance();
+    static Minecraft mc = Minecraft.getInstance();
 
     /**
      * Replace the group name in the format `{GROUP}` in `message` with the corresponding grouping in the raw message.
@@ -44,7 +44,7 @@ public class Responder {
         return message;
     }
 
-    public static void work(Text text) {
+    public static void work(Component text) {
         String messageReceived = TextUtils.wash(text.getString());
         boolean shouldRespond = false;
         String pattern = "";

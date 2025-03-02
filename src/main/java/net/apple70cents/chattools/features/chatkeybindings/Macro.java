@@ -5,7 +5,7 @@ import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.KeyboardUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +16,7 @@ public class Macro {
     static Set<SpecialUnits.MacroUnit> keyWasPressed = new HashSet<>();
 
     public static void tick() {
-        if (MinecraftClient.getInstance().currentScreen != null) {
+        if (Minecraft.getInstance().screen != null) {
             return;
         }
         for (SpecialUnits.MacroUnit macro : SpecialUnits.MacroUnit.fromList((List) ConfigUtils.get("chatkeybindings.Macro.List"))) {

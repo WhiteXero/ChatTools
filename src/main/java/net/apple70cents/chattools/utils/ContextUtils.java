@@ -1,14 +1,14 @@
 package net.apple70cents.chattools.utils;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 public class ContextUtils {
     public static String getSessionIdentifier() {
         try {
-            return MinecraftClient.getInstance().getServer().getSaveProperties().getLevelName();
+            return Minecraft.getInstance().getSingleplayerServer().getWorldData().getLevelName();
         } catch (Exception e1) {
             try {
-                return MinecraftClient.getInstance().getCurrentServerEntry().address;
+                return Minecraft.getInstance().getCurrentServer().ip;
             } catch (Exception e2) {
                 return "-";
             }

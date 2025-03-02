@@ -5,8 +5,7 @@ import net.apple70cents.chattools.features.chatkeybindings.Repeat;
 import net.apple70cents.chattools.utils.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.MutableText;
+import net.minecraft.client.Minecraft;
 
 /**
  * @author 70CentsApple
@@ -20,8 +19,8 @@ public class ChatTools implements ModInitializer {
         // show welcome message if needed
         ClientTickEvents.START_WORLD_TICK.register(client -> {
             if ((boolean) ConfigUtils.get("general.ShowWelcomeMessageEnabled")) {
-                if (MinecraftClient.getInstance().player != null) {
-                    MessageUtils.sendToNonPublicChat(((MutableText) TextUtils.trans("texts.welcomeMessage")).setStyle(TextUtils.WEBSITE_URL_STYLE));
+                if (Minecraft.getInstance().player != null) {
+                    MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.welcomeMessage").copy().setStyle(TextUtils.WEBSITE_URL_STYLE));
                     LoggerUtils.info("[ChatTools] Shown welcome message.");
                     ConfigUtils.set("general.ShowWelcomeMessageEnabled", false);
                     ConfigUtils.save();

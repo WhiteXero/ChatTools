@@ -3,8 +3,7 @@ package net.apple70cents.chattools.utils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.apple70cents.chattools.ChatTools;
-import net.minecraft.text.*;
+import net.minecraft.network.chat.*;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,25 +12,25 @@ import java.util.Random;
 import java.util.regex.Pattern;
 
 //#if MC>=12005
-import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.data.registries.VanillaRegistries;
 //#endif
 
 /**
  * @author 70CentsApple
  */
 public class TextUtils {
-    public static final Style WEBSITE_URL_STYLE = Style.EMPTY.withUnderline(true)
+    public static final Style WEBSITE_URL_STYLE = Style.EMPTY.withUnderlined(true)
                                                              .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://70centsapple.top/blogs/#/chat-tools-faq"))
                                                              .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ConfigScreenUtils.getTooltip("general.FAQ", "FAQ", null)));
     public static final String PREFIX = "key.chattools.";
-    public static final Text SPACER = literal("").copy().setStyle(Style.EMPTY);
+    public static final Component SPACER = literal("").copy().setStyle(Style.EMPTY);
 
     public static class MessageUnit {
-        public Text message;
+        public Component message;
         public long unixTimestamp;
         public int occurrenceCount;
 
-        public MessageUnit(Text message, long unixTimestamp, int occurrenceCount) {
+        public MessageUnit(Component message, long unixTimestamp, int occurrenceCount) {
             this.message = message;
             this.unixTimestamp = unixTimestamp;
             this.occurrenceCount = occurrenceCount;
@@ -67,7 +66,7 @@ public class TextUtils {
         latestMessage = unit;
     }
 
-    public static String putMessageMap(Text text, long unixTimestamp, int occurrenceCount) {
+    public static String putMessageMap(Component text, long unixTimestamp, int occurrenceCount) {
         int maxSize = ((Number) ConfigUtils.get("general.MaxHistoryLength")).intValue();
         while (messageMap.size() > maxSize) {
             // pops the first element
@@ -96,45 +95,45 @@ public class TextUtils {
     }
 
 
-    public static Text literal(String str) {
+    public static Component literal(String str) {
         //#if MC>=11900
-        return Text.literal(str);
+        return Component.literal(str);
         //#else
-        //$$return new LiteralText(str);
+        //$$return new TextComponent(str);
         //#endif
     }
 
-    public static Text transWithPrefix(String str, String prefix) {
+    public static Component transWithPrefix(String str, String prefix) {
         //#if MC>=11900
-        return Text.translatable(prefix + str);
+        return Component.translatable(prefix + str);
         //#else
-        //$$return new TranslatableText(prefix + str);
+        //$$return new TranslatableComponent(prefix + str);
         //#endif
     }
 
-    public static Text transWithPrefix(String str, String prefix, Object... args) {
+    public static Component transWithPrefix(String str, String prefix, Object... args) {
         //#if MC>=11900
-        return Text.translatable(prefix + str, args);
+        return Component.translatable(prefix + str, args);
         //#else
-        //$$return new TranslatableText(prefix + str, args);
+        //$$return new TranslatableComponent(prefix + str, args);
         //#endif
     }
 
-    public static Text trans(String str, Object... args) {
+    public static Component trans(String str, Object... args) {
         return transWithPrefix(str, PREFIX, args);
     }
 
-    public static Text trans(String str) {
+    public static Component trans(String str) {
         return transWithPrefix(str, PREFIX);
     }
 
-    public static Text of(String str) {
-        return Text.of(str);
+    public static Component of(String str) {
+        return Component.nullToEmpty(str);
     }
 
-    public static Text empty() {
+    public static Component empty() {
         //#if MC>=11900
-        return Text.empty();
+        return Component.empty();
         //#else
         //$$return of("");
         //#endif
@@ -169,8 +168,8 @@ public class TextUtils {
         return str.replace('§', '&');
     }
 
-    public static Text textArray2text(List<Text> texts) {
-        MutableText result = (MutableText) literal("");
+    public static Component textArray2text(List<Component> texts) {
+        MutableComponent result = (MutableComponent) literal("");
         for (int i = 0; i < texts.size(); i++) {
             result.append(texts.get(i));
             if (i != texts.size() - 1) {
@@ -181,24 +180,24 @@ public class TextUtils {
     }
 
     /**
-     * replace a {@link MutableText}
+     * replace a {@link MutableComponent}
      *
      * @param text      the text
      * @param oldString old string
      * @param newString new string
      * @return text after replacement
      */
-    public static MutableText replaceText(MutableText text, String oldString, String newString) {
+    public static MutableComponent replaceComponent(MutableComponent text, String oldString, String newString) {
         //#if MC>=12005
-        JsonElement jsonElement = new Text.Serializer(BuiltinRegistries.createWrapperLookup()).serialize(text, null, null);
+        JsonElement jsonElement = new Component.SerializerAdapter(VanillaRegistries.createLookup()).serialize(text, null, null);
         //#else
-        //$$ JsonElement jsonElement = Text.Serialization.toJsonTree(text);
+        //$$ JsonElement jsonElement = Component.Serializer.toJsonTree(text);
         //#endif
         replaceFieldValue(jsonElement, oldString, newString);
         //#if MC>=12005
-        return new Text.Serializer(BuiltinRegistries.createWrapperLookup()).deserialize(jsonElement, null, null);
+        return new Component.SerializerAdapter(VanillaRegistries.createLookup()).deserialize(jsonElement, null, null);
         //#else
-        //$$ return Text.Serialization.fromJsonTree(jsonElement);
+        //$$ return Component.Serializer.fromJson(jsonElement);
         //#endif
     }
 

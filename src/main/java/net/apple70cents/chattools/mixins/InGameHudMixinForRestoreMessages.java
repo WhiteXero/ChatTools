@@ -3,7 +3,7 @@ package net.apple70cents.chattools.mixins;
 import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
-import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.gui.Gui;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,19 +14,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 
 //#if MC>=11700
-@Mixin(InGameHud.class)
+@Mixin(Gui.class)
 //#else
-//$$ import net.minecraft.client.MinecraftClient;
-//$$ import net.minecraft.client.gui.hud.ChatHud;
-//$$ @Mixin(ChatHud.class)
+//$$ import net.minecraft.client.gui.components.ChatComponent;
+//$$ @Mixin(ChatComponent.class)
 //#endif
 public abstract class InGameHudMixinForRestoreMessages {
     //#if MC>=11700
-    @Inject(method = "clear", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/ChatHud;clear(Z)V"), cancellable = true)
+    @Inject(method = "onDisconnected", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/ChatComponent;clearMessages(Z)V"), cancellable = true)
     public void restoreMessages(CallbackInfo ci) {
     //#else
     //$$ boolean theFirstVisit = true;
-    //$$ @Inject(at = @At("HEAD"), method = "clear", cancellable = true)
+    //$$ @Inject(at = @At("HEAD"), method = "clearMessages", cancellable = true)
     //$$ public void restoreMessages(boolean clearHistory, CallbackInfo ci) {
     //#endif
         if (!((boolean) ConfigUtils.get("general.ChatTools.Enabled"))) {

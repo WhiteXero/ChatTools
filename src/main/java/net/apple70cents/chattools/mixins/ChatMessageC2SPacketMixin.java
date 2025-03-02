@@ -2,11 +2,11 @@ package net.apple70cents.chattools.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.apple70cents.chattools.utils.ConfigUtils;
-import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
+import net.minecraft.network.protocol.game.ServerboundChatPacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-@Mixin(ChatMessageC2SPacket.class)
+@Mixin(ServerboundChatPacket.class)
 public abstract class ChatMessageC2SPacketMixin {
     @ModifyExpressionValue(
         //#if MC>=11900

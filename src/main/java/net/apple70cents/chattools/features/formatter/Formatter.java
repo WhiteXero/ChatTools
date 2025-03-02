@@ -4,8 +4,8 @@ import net.apple70cents.chattools.config.SpecialUnits;
 import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.ContextUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  */
 public class Formatter {
     public static String work(String message) {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         for (String s : (List<String>) ConfigUtils.get("formatter.DisableOnMatchList")) {
             if (Pattern.compile(s, Pattern.MULTILINE).matcher(message).matches()) {
                 // return in advance, and don't work with it.

@@ -2,17 +2,19 @@ package net.apple70cents.chattools.features.general;
 
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.apple70cents.chattools.utils.TextUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.*;
-import net.minecraft.util.Formatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Style;
 import org.spongepowered.asm.mixin.Unique;
 
 import java.util.ArrayList;
 import java.util.List;
 //#if MC<12000
-//$$ import net.minecraft.client.item.TooltipContext;
-//$$ import net.minecraft.client.gui.screen.Screen;
+//$$ import net.minecraft.world.item.TooltipFlag;
 //#endif
 
 /**
@@ -24,43 +26,43 @@ public class ClickEventsPreviewer {
             return null;
         }
         HoverEvent hoverEvent = style.getHoverEvent();
-        Text textToAppend = getTextToAppend(style);
+        Component textToAppend = getComponentToAppend(style);
 
         // Return if already injected or with no text to append
         if (isModified(style) || textToAppend == null) {
             return style;
         }
         // Add two empty lines before it (Also works as a Style Spacer)
-        Text textToAppendWithTwoEmptyLinesInFront = ((MutableText) TextUtils.literal("\n\n")).append(textToAppend);
+        Component textToAppendWithTwoEmptyLinesInFront = TextUtils.literal("\n\n").copy().append(textToAppend);
         if (hoverEvent == null) {
             style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, textToAppend));
         } else {
-            Text oldHoverText = hoverEvent.getValue(HoverEvent.Action.SHOW_TEXT);
+            Component oldHoverComponent = hoverEvent.getValue(HoverEvent.Action.SHOW_TEXT);
             // Has Actions.SHOW_TEXT
-            if (oldHoverText != null) {
-                Text newHoverText = (TextUtils.SPACER.copy().append(oldHoverText)).append(textToAppendWithTwoEmptyLinesInFront);
-                style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newHoverText));
+            if (oldHoverComponent != null) {
+                Component newHoverComponent = (TextUtils.SPACER.copy().append(oldHoverComponent)).append(textToAppendWithTwoEmptyLinesInFront);
+                style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newHoverComponent));
             } else {
-                HoverEvent.EntityContent entityContent = hoverEvent.getValue(HoverEvent.Action.SHOW_ENTITY);
-                HoverEvent.ItemStackContent itemContent = hoverEvent.getValue(HoverEvent.Action.SHOW_ITEM);
+                HoverEvent.EntityTooltipInfo entityContent = hoverEvent.getValue(HoverEvent.Action.SHOW_ENTITY);
+                HoverEvent.ItemStackInfo itemContent = hoverEvent.getValue(HoverEvent.Action.SHOW_ITEM);
                 if (entityContent != null) {
                     // Has Actions.SHOW_ENTITY
-                    oldHoverText = TextUtils.textArray2text(entityContent.asTooltip());
+                    oldHoverComponent = TextUtils.textArray2text(entityContent.getTooltipLines());
                 } else if (itemContent != null) {
                     // Has Actions.SHOW_ITEM
-                    oldHoverText = TextUtils.textArray2text(
+                    oldHoverComponent = TextUtils.textArray2text(
                             //#if MC>=12000
-                            Screen.getTooltipFromItem(MinecraftClient.getInstance(), itemContent.asStack())
+                            Screen.getTooltipFromItem(Minecraft.getInstance(), itemContent.getItemStack())
                             //#elseif MC>=11900
-                            //$$ itemContent.asStack().getTooltip(MinecraftClient.getInstance().player, TooltipContext.ADVANCED)
+                            //$$ itemContent.getItemStack().getTooltipLines(Minecraft.getInstance().player, TooltipFlag.ADVANCED)
                             //#else
-                            //$$ itemContent.asStack().getTooltip(MinecraftClient.getInstance().player, TooltipContext.Default.ADVANCED)
+                            //$$ itemContent.getItemStack().getTooltipLines(Minecraft.getInstance().player, TooltipFlag.Default.ADVANCED)
                             //#endif
                     );
                 }
-                if (oldHoverText != null) {
-                    Text newHoverText = (TextUtils.SPACER.copy().append(oldHoverText)).append(textToAppendWithTwoEmptyLinesInFront);
-                    style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newHoverText));
+                if (oldHoverComponent != null) {
+                    Component newHoverComponent = (TextUtils.SPACER.copy().append(oldHoverComponent)).append(textToAppendWithTwoEmptyLinesInFront);
+                    style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, newHoverComponent));
                 } else {
                     style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, textToAppendWithTwoEmptyLinesInFront));
                 }
@@ -70,13 +72,13 @@ public class ClickEventsPreviewer {
     }
 
     @Unique
-    private static Text getTextToAppend(Style style) {
+    private static Component getComponentToAppend(Style style) {
         boolean hasInsertion = style.getInsertion() != null && !style.getInsertion().isBlank();
         boolean hasClickEvent = style.getClickEvent() != null;
         if (!hasInsertion && !hasClickEvent) {
             return null;
         }
-        List<Text> texts = new ArrayList<>();
+        List<Component> texts = new ArrayList<>();
         texts.add(TextUtils.trans("texts.PreviewClickEvents.overall"));
         if (hasInsertion) {
             texts.add(TextUtils.trans("texts.PreviewClickEvents.insertion", style.getInsertion()));
@@ -84,9 +86,9 @@ public class ClickEventsPreviewer {
         if (hasClickEvent) {
             texts.add(TextUtils.trans("texts.PreviewClickEvents.clickEvent"));
             ClickEvent clickEvent = style.getClickEvent();
-            Text value = TextUtils.of(clickEvent.getValue()).copy().formatted(Formatting.GREEN);
+            Component value = TextUtils.of(clickEvent.getValue()).copy().withStyle(ChatFormatting.GREEN);
             //#if MC>=12002
-            String action = clickEvent.getAction().asString();
+            String action = clickEvent.getAction().getSerializedName();
             //#else
             //$$ String action = clickEvent.getAction().getName();
             //#endif
@@ -131,7 +133,7 @@ public class ClickEventsPreviewer {
         if (hoverEvent == null) {
             return false;
         }
-        Text tooltip = hoverEvent.getValue(HoverEvent.Action.SHOW_TEXT);
+        Component tooltip = hoverEvent.getValue(HoverEvent.Action.SHOW_TEXT);
         if (tooltip == null) {
             return false;
         }

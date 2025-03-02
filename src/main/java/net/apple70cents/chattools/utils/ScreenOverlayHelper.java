@@ -1,10 +1,10 @@
 package net.apple70cents.chattools.utils;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Overlay;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Overlay;
+import net.minecraft.client.gui.screens.Screen;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 /**
  * @author 70CentsApple
@@ -12,24 +12,24 @@ import net.minecraft.client.util.math.MatrixStack;
 public abstract class ScreenOverlayHelper extends Overlay {
 
     private final Overlay oldOverlay;
-    private final MinecraftClient client;
+    private final Minecraft client;
     private final Screen screenToOpen;
 
-    public ScreenOverlayHelper(MinecraftClient client, Screen screenToOpen) {
+    public ScreenOverlayHelper(Minecraft client, Screen screenToOpen) {
         this.client = client;
         this.oldOverlay = client.getOverlay();
         this.screenToOpen = screenToOpen;
     }
 
-    public void render(MatrixStack context, int mouseX, int mouseY, float delta) {
-        if (client.currentScreen == null) {
+    public void render(PoseStack context, int mouseX, int mouseY, float delta) {
+        if (client.screen == null) {
             client.setScreen(screenToOpen);
             client.setOverlay(oldOverlay);
         }
     }
 
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        if (client.currentScreen == null) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        if (client.screen == null) {
             client.setScreen(screenToOpen);
             client.setOverlay(oldOverlay);
         }

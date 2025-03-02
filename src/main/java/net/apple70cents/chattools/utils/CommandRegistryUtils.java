@@ -1,37 +1,50 @@
 package net.apple70cents.chattools.utils;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import net.apple70cents.chattools.config.ConfigScreenGenerator;
 import net.apple70cents.chattools.config.ConfigStorage;
 import net.apple70cents.chattools.config.SpecialUnits;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.argument.TextArgumentType;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.text.Texts;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Pair;
-import net.minecraft.util.Util;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.*;
+import net.minecraft.util.Tuple;
 
+import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import static net.minecraft.server.command.CommandManager.argument;
-import static net.minecraft.server.command.CommandManager.literal;
+//#if MC>=12004
+import net.minecraft.commands.ParserUtils;
+import net.minecraft.core.HolderLookup;
+//#endif
 
 //#if MC>=11900
-import net.minecraft.command.CommandRegistryAccess;
+import net.minecraft.commands.CommandBuildContext;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 //#else
 // fabric v2 begin to work since 1.19
 //$$ import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 //$$ import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+//
+//$$ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.argument;
+//$$ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
 //#endif
 
 
@@ -39,16 +52,16 @@ public class CommandRegistryUtils {
     public static void register() {
         //#if MC>=11900
         ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-            dispatcher.register((LiteralArgumentBuilder<FabricClientCommandSource>) CommandRegistryUtils.getBuilder(registryAccess));
+            dispatcher.register(CommandRegistryUtils.getBuilder(registryAccess));
         });
         //#else
-        //$$ ClientCommandManager.DISPATCHER.register((LiteralArgumentBuilder<FabricClientCommandSource>) CommandRegistryUtils.getBuilder());
+        //$$ ClientCommandManager.DISPATCHER.register(CommandRegistryUtils.getBuilder());
         //#endif
     }
 
-    public static LiteralArgumentBuilder<?> getBuilder(
+    public static LiteralArgumentBuilder<FabricClientCommandSource> getBuilder(
             //#if MC>=11900
-            CommandRegistryAccess registryAccess
+            CommandBuildContext buildContext
             //#endif
     ) {
         // @formatter:off
@@ -56,26 +69,26 @@ public class CommandRegistryUtils {
             // chattools send_to_client
             .then(literal("send_to_client")
                 // chattools send_to_client text
-                .then(literal("text").then(argument("message", TextArgumentType.text(
-                        //#if MC>=12006
-                        registryAccess
+                .then(literal("text").then(argument("message", ClientComponentArgument.textComponent(
+                        //#if MC>=11900
+                        buildContext
                         //#endif
                     )).executes(t -> {
-                    Text text = Texts.parse(null, TextArgumentType.getTextArgument(t, "message"), MinecraftClient.getInstance().player, 0);
+                    Component text = ComponentUtils.updateForEntity(new FakeCommandSource(t.getSource().getPlayer()), ClientComponentArgument.getComponent(t, "message"), t.getSource().getPlayer(), 0);
                     MessageUtils.sendToNonPublicChat(text);
                     return Command.SINGLE_SUCCESS;
                 })))
                 // chattools send_to_client actionbar
-                .then(literal("actionbar").then(argument("message", TextArgumentType.text(
-                        //#if MC>=12006
-                        registryAccess
+                .then(literal("actionbar").then(argument("message", ClientComponentArgument.textComponent(
+                        //#if MC>=11900
+                        buildContext
                         //#endif
                     )).executes(t -> {
-                    Text text = Texts.parse(null, TextArgumentType.getTextArgument(t, "message"), MinecraftClient.getInstance().player, 0);
+                    Component text = ComponentUtils.updateForEntity(new FakeCommandSource(t.getSource().getPlayer()), ClientComponentArgument.getComponent(t, "message"), t.getSource().getPlayer(), 0);
                     MessageUtils.sendToActionbar(text);
                     return Command.SINGLE_SUCCESS;
-                }).then(argument("duration_in_milliseconds",IntegerArgumentType.integer()).executes(t -> {
-                        Text text = Texts.parse(null, TextArgumentType.getTextArgument(t, "message"), MinecraftClient.getInstance().player, 0);
+                }).then(argument("duration_in_milliseconds", IntegerArgumentType.integer()).executes(t -> {
+                        Component text = ComponentUtils.updateForEntity(new FakeCommandSource(t.getSource().getPlayer()), ClientComponentArgument.getComponent(t, "message"), t.getSource().getPlayer(), 0);
                         int duration = IntegerArgumentType.getInteger(t, "duration_in_milliseconds");
                         MessageUtils.sendToActionbar(text, duration);
                         return Command.SINGLE_SUCCESS;
@@ -94,9 +107,9 @@ public class CommandRegistryUtils {
             // chattools opengui
             .then(literal("opengui").executes(t -> {
                 MessageUtils.sendToActionbar(TextUtils.trans("gui.title"));
-                MinecraftClient.getInstance()
-                               .setOverlay(new ScreenOverlayHelper(MinecraftClient.getInstance(), ConfigScreenGenerator
-                                       .getConfigBuilder().setParentScreen(null).build()) {
+                Minecraft.getInstance()
+                               .setOverlay(new ScreenOverlayHelper(Minecraft.getInstance(),
+                                       ConfigScreenGenerator.getConfigBuilder().setParentScreen(null).build()) {
                                });
                 LoggerUtils.info("[ChatTools] Command Executed: GUI opened");
                 return Command.SINGLE_SUCCESS;
@@ -122,9 +135,9 @@ public class CommandRegistryUtils {
                 TextUtils.MessageUnit messageUnit = TextUtils.getMessageMap(hash);
                 if (messageUnit != null) {
                     LoggerUtils.info(String.format("Time:%d Text:%s", messageUnit.unixTimestamp, messageUnit.message));
-                    MinecraftClient.getInstance().setScreen(new CopyFeatureScreen(messageUnit));
+                    Minecraft.getInstance().setScreen(new CopyFeatureScreen(messageUnit));
                 } else {
-                    Text errorText = ((MutableText) TextUtils.literal("[ChatTools] Failed to get message by hash: " + hash)).formatted(Formatting.RED);
+                    Component errorText = TextUtils.literal("[ChatTools] Failed to get message by hash: " + hash).copy().withStyle(ChatFormatting.RED);
                     LoggerUtils.error(errorText.getString());
                     MessageUtils.sendToNonPublicChat(errorText);
                 }
@@ -134,7 +147,7 @@ public class CommandRegistryUtils {
             .then(literal("config")
                 // chattools config openfile
                 .then(literal("openfile").executes(t -> {
-                    Util.getOperatingSystem().open(ConfigStorage.FILE);
+                    Util.getPlatform().openFile(ConfigStorage.FILE);
                     MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.requireRestart"));
                     return Command.SINGLE_SUCCESS;
                 }))
@@ -190,36 +203,36 @@ public class CommandRegistryUtils {
             .then(literal("regex_checker")
                 // one arg
                 .then(argument("regex", StringArgumentType.string()).executes(t -> {
-                        Pair<Boolean, String> result = checkRegex(StringArgumentType.getString(t, "regex"));
-                        MessageUtils.sendToNonPublicChat(((MutableText) TextUtils.literal(result.getRight())).formatted(result.getLeft() ? Formatting.GREEN : Formatting.RED));
+                        Tuple<Boolean, String> result = checkRegex(StringArgumentType.getString(t, "regex"));
+                        MessageUtils.sendToNonPublicChat(TextUtils.literal(result.getB()).copy().withStyle(result.getA() ? ChatFormatting.GREEN : ChatFormatting.RED));
                         return Command.SINGLE_SUCCESS;
                     })
                     // two args
                     .then(argument("test_context", StringArgumentType.string()).executes(t -> {
                         String regex = StringArgumentType.getString(t, "regex");
                         String testContext = StringArgumentType.getString(t, "test_context");
-                        Pair<Boolean, String> result = checkRegex(regex);
-                        if (!result.getLeft()) {
-                            MessageUtils.sendToNonPublicChat(((MutableText) TextUtils.literal(result.getRight())).formatted(Formatting.RED));
+                        Tuple<Boolean, String> result = checkRegex(regex);
+                        if (!result.getA()) {
+                            MessageUtils.sendToNonPublicChat(TextUtils.literal(result.getB()).copy().withStyle(ChatFormatting.RED));
                             return Command.SINGLE_SUCCESS;
                         }
                         if (Pattern.compile(regex).matcher(testContext).find()) {
-                            MessageUtils.sendToNonPublicChat(((MutableText) TextUtils.literal(String.format("[ChatTools] Context [%s] could pass the RegEx test!", testContext))).formatted(Formatting.GREEN));
+                            MessageUtils.sendToNonPublicChat(TextUtils.literal(String.format("[ChatTools] Context [%s] could pass the RegEx test!", testContext)).copy().withStyle(ChatFormatting.GREEN));
                         } else {
-                            MessageUtils.sendToNonPublicChat(((MutableText) TextUtils.literal(String.format("[ChatTools] Context [%s] could NOT pass the RegEx test!", testContext))).formatted(Formatting.RED));
+                            MessageUtils.sendToNonPublicChat(TextUtils.literal(String.format("[ChatTools] Context [%s] could NOT pass the RegEx test!", testContext)).copy().withStyle(ChatFormatting.RED));
                         }
                         return Command.SINGLE_SUCCESS;
                     }))));
         // @formatter:on
     }
 
-    public static Pair<Boolean, String> checkRegex(String pattern) {
+    public static Tuple<Boolean, String> checkRegex(String pattern) {
         try {
             Pattern.compile(pattern);
         } catch (PatternSyntaxException e) {
-            return new Pair<>(false, e.getMessage().replace("\r", ""));
+            return new Tuple<>(false, e.getMessage().replace("\r", ""));
         }
-        return new Pair<>(true, "There's nothing wrong with the RegEx pattern.");
+        return new Tuple<>(true, "There's nothing wrong with the RegEx pattern.");
     }
 
     public static void toggleBooleanConfig(String key) {
@@ -286,7 +299,83 @@ public class CommandRegistryUtils {
         } catch (Exception e) {
             e.printStackTrace();
             MessageUtils.sendToNonPublicChat(TextUtils.literal(e.toString()).copy()
-                                                      .setStyle(Style.EMPTY.withFormatting(Formatting.RED)));
+                                                      .setStyle(Style.EMPTY.applyFormat(ChatFormatting.RED)));
+        }
+    }
+
+    public static class ClientComponentArgument implements ArgumentType<Component> {
+        public static final DynamicCommandExceptionType INVALID_COMPONENT_EXCEPTION = new DynamicCommandExceptionType(text -> TextUtils.transWithPrefix("argument.component.invalid", "", text));
+        //#if MC>=12006
+        private final HolderLookup.Provider holderLookupProvider;
+        //#endif
+
+        //#if MC>=12006
+        private ClientComponentArgument(HolderLookup.Provider holderLookupProvider) {
+            this.holderLookupProvider = holderLookupProvider;
+        }
+        public static ClientComponentArgument textComponent(CommandBuildContext buildContext) {
+            return new ClientComponentArgument(buildContext);
+        }
+        //#else
+        //$$ private ClientComponentArgument() {}
+        //$$ public static ClientComponentArgument textComponent() {return new ClientComponentArgument();}
+        //#endif
+
+        public static Component getComponent(final CommandContext<FabricClientCommandSource> context, final String name) {
+            return context.getArgument(name, Component.class);
+        }
+
+        @Override
+        public Component parse(final StringReader stringReader) throws CommandSyntaxException {
+            try {
+                //#if MC>=12004
+                return ParserUtils.parseJson(
+                        //#if MC>=12006
+                        this.holderLookupProvider,
+                        //#endif
+                        stringReader, ComponentSerialization.CODEC);
+                //#else
+                //$$ Component component = Component.Serializer.fromJson(stringReader);
+                //$$ if (component == null) { throw INVALID_COMPONENT_EXCEPTION.createWithContext(stringReader, "empty"); }
+                //$$ else { return component; }
+                //#endif
+            } catch (Exception var4) {
+                String string = var4.getCause() != null ? var4.getCause().getMessage() : var4.getMessage();
+                throw INVALID_COMPONENT_EXCEPTION.createWithContext(stringReader, string);
+            }
+        }
+    }
+
+    public static class FakeCommandSource extends CommandSourceStack {
+        public FakeCommandSource(LocalPlayer player) {
+            super(new CommandSource() {
+                //#if MC>=11900
+                @Override
+                public void sendSystemMessage(Component component) {
+                    MessageUtils.sendToNonPublicChat(component);
+                }
+                //#elseif MC>=11700
+                //$$ @Override public void sendMessage(Component component, UUID uuid) {MessageUtils.sendToNonPublicChat(component);}
+                //$$ @Override public boolean alwaysAccepts() {return CommandSource.super.alwaysAccepts();}
+                //#else
+                //$$ @Override public void sendMessage(Component component, UUID uuid) {MessageUtils.sendToNonPublicChat(component);}
+                //#endif
+
+                @Override
+                public boolean acceptsSuccess() {
+                    return true;
+                }
+
+                @Override
+                public boolean acceptsFailure() {
+                    return true;
+                }
+
+                @Override
+                public boolean shouldInformAdmins() {
+                    return true;
+                }
+            }, player.position(), player.getRotationVector(), null, 4, player.getScoreboardName(), player.getName(), null, player);
         }
     }
 }

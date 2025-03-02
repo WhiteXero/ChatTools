@@ -2,14 +2,14 @@ package net.apple70cents.chattools.features.general;
 
 import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.TextUtils;
-import net.minecraft.text.*;
+import net.minecraft.network.chat.*;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 public class Timestamp {
-    public static Text work(Text message, String hashcode) {
+    public static Component work(Component message, String hashcode) {
         Instant instant = Instant.now();
         long currentUnixTimestamp = instant.getEpochSecond();
         LocalDateTime currentTime = LocalDateTime.ofEpochSecond(currentUnixTimestamp, 0, ZoneId.systemDefault()
@@ -17,21 +17,21 @@ public class Timestamp {
                                                                                                .getOffset(instant));
         // get zone offset
         String offsetString = ZoneId.systemDefault().getRules().getOffset(instant).getId();
-        Text shortTimeDisplay = TextUtils.of(timeInFormat((String) ConfigUtils.get("general.Timestamp.Pattern")));
+        Component shortTimeDisplay = TextUtils.of(timeInFormat((String) ConfigUtils.get("general.Timestamp.Pattern")));
         // yyyy/MM/dd HH:mm:ss UTC±XX:XX
-        Text longTimeDisplay = TextUtils.of(String.format("%4d/%d/%d %02d:%02d:%02d\nUTC%s", currentTime.getYear(), currentTime
+        Component longTimeDisplay = TextUtils.of(String.format("%4d/%d/%d %02d:%02d:%02d\nUTC%s", currentTime.getYear(), currentTime
                 .getMonth()
                 .getValue(), currentTime.getDayOfMonth(), currentTime.getHour(), currentTime.getMinute(), currentTime.getSecond(), offsetString));
         if ((boolean) ConfigUtils.get("general.Timestamp.CopyToChatBar.Enabled")) {
-            HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, ((MutableText) longTimeDisplay)
+            HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, longTimeDisplay.copy()
                     .append("\n\n").append(TextUtils.trans("texts.copy.launch")));
             ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/chattools get_message " + hashcode);
-            MutableText timestampText = ((MutableText) shortTimeDisplay).setStyle(Style.EMPTY.withHoverEvent(hoverEvent)
-                                                                                             .withClickEvent(clickEvent));
+            MutableComponent timestampText = shortTimeDisplay.copy().setStyle(Style.EMPTY.withHoverEvent(hoverEvent)
+                                                                                              .withClickEvent(clickEvent));
             return (TextUtils.SPACER.copy().append(timestampText)).append(message);
         } else {
             HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, longTimeDisplay);
-            MutableText timestampText = ((MutableText) shortTimeDisplay).setStyle(Style.EMPTY.withHoverEvent(hoverEvent));
+            MutableComponent timestampText = shortTimeDisplay.copy().setStyle(Style.EMPTY.withHoverEvent(hoverEvent));
             return (TextUtils.SPACER.copy().append(timestampText)).append(message);
         }
     }

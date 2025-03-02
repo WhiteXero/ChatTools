@@ -2,10 +2,9 @@ package net.apple70cents.chattools.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.apple70cents.chattools.ChatTools;
 import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 import java.io.*;
 import java.util.List;
@@ -49,7 +48,7 @@ public class ConfigStorage {
         try {
             Reader reader;
             if (loadDefault) {
-                reader = new InputStreamReader(MinecraftClient.getInstance().getClass().getClassLoader()
+                reader = new InputStreamReader(Minecraft.getInstance().getClass().getClassLoader()
                                                               .getResourceAsStream("assets/chattools/default_config.json"));
             } else {
                 reader = new BufferedReader(new FileReader(FILE));

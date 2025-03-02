@@ -1,10 +1,10 @@
 package net.apple70cents.chattools.utils;
 
 import net.apple70cents.chattools.features.general.ExclusiveActionbarHandler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -22,19 +22,19 @@ public class MessageUtils {
         justSentMessage = bl;
     }
 
-    public static void sendToActionbar(Text text) {
-        if (MinecraftClient.getInstance().player == null) {
+    public static void sendToActionbar(Component text) {
+        if (Minecraft.getInstance().player == null) {
             return;
         }
         if (!(boolean) ConfigUtils.get("general.ExclusiveActionbar.Enabled")) {
-            MinecraftClient.getInstance().player.sendMessage(text, true);
+            Minecraft.getInstance().player.displayClientMessage(text, true);
         } else {
             ExclusiveActionbarHandler.addToRenderQueue(text, 4000);
         }
     }
 
-    public static void sendToActionbar(Text text, int duration) {
-        if (MinecraftClient.getInstance().player == null) {
+    public static void sendToActionbar(Component text, int duration) {
+        if (Minecraft.getInstance().player == null) {
             return;
         }
         if (!(boolean) ConfigUtils.get("general.ExclusiveActionbar.Enabled")) {
@@ -45,8 +45,8 @@ public class MessageUtils {
         }
     }
 
-    public static void sendToNonPublicChat(Text text) {
-        MinecraftClient.getInstance().inGameHud.getChatHud().addMessage(text);
+    public static void sendToNonPublicChat(Component text) {
+        Minecraft.getInstance().gui.getChat().addMessage(text);
     }
 
     public static void sendToPublicChat(String text, boolean forceDisableFormatter) {
@@ -59,7 +59,7 @@ public class MessageUtils {
     }
 
     public static void sendToPublicChat(String text) {
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
@@ -68,15 +68,15 @@ public class MessageUtils {
         //#if MC>=11900
         String text2 = StringUtils.normalizeSpace(text.trim());
         if (!text2.isEmpty()) {
-            MinecraftClient.getInstance().inGameHud.getChatHud().addToMessageHistory(text);
+            Minecraft.getInstance().gui.getChat().addRecentChat(text);
             if (text2.startsWith("/")) {
-                player.networkHandler.sendChatCommand(text2.substring(1));
+                player.connection.sendCommand(text2.substring(1));
             } else {
-                player.networkHandler.sendChatMessage(text2);
+                player.connection.sendChat(text2);
             }
         }
         //#else
-        //$$ player.sendChatMessage(text);
+        //$$ player.chat(text);
         //#endif
     }
 
@@ -87,12 +87,12 @@ public class MessageUtils {
      * @return null or the player name
      */
     public static String findTheFirstPlayerName(String str) {
-        if (MinecraftClient.getInstance().world == null) {
+        if (Minecraft.getInstance().level == null) {
             return null;
         }
         int minIndex = str.length();
         String firstPlayerName = null;
-        for (AbstractClientPlayerEntity player : MinecraftClient.getInstance().world.getPlayers()) {
+        for (AbstractClientPlayer player : Minecraft.getInstance().level.players()) {
             if (player.getDisplayName() == null) {
                 continue;
             }

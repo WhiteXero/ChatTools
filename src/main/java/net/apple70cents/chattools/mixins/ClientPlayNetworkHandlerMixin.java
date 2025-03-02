@@ -11,14 +11,19 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
  * @author 70CentsApple
  */
 //#if MC>=11900
-@Mixin(net.minecraft.client.network.ClientPlayNetworkHandler.class)
+@Mixin(net.minecraft.client.multiplayer.ClientPacketListener.class)
 //#else
-//$$ import net.minecraft.client.network.ClientPlayerEntity;
-//$$ @Mixin(ClientPlayerEntity.class)
+//$$ @Mixin(net.minecraft.client.player.LocalPlayer.class)
 //#endif
 public abstract class ClientPlayNetworkHandlerMixin {
-    // it catches the messages that are about to send, and apply Formatter to them
-    @ModifyVariable(method = "sendChatMessage", at = @At("HEAD"), argsOnly = true)
+    // it catches the messages that are about to send, to apply Formatter to them
+    @ModifyVariable(method =
+        //#if MC>=11900
+         "sendChat"
+        //#else
+        //$$ "chat"
+        //#endif
+         , at = @At("HEAD"), argsOnly = true)
     public String sendPublicMessage(String message) {
         MessageUtils.setJustSentMessage(true);
         if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {

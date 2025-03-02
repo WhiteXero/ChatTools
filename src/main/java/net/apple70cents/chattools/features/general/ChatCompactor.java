@@ -2,11 +2,11 @@ package net.apple70cents.chattools.features.general;
 
 import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.TextUtils;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 
 public class ChatCompactor {
-    public static Text appendTrailing(Text msg, int occurrencesCount) {
+    public static Component appendTrailing(Component msg, int occurrencesCount) {
         if (occurrencesCount <= 1) {
             return msg;
         }
@@ -17,10 +17,10 @@ public class ChatCompactor {
         } else {
             tail = " (" + occurrencesCount + ")";
         }
-        return msg.copy().append(TextUtils.literal(tail).copy().formatted(Formatting.GRAY));
+        return msg.copy().append(TextUtils.literal(tail).copy().withStyle(ChatFormatting.GRAY));
     }
 
-    public static int calculateOccurrenceCount(Text message) {
+    public static int calculateOccurrenceCount(Component message) {
         int previousOccurrenceCount = 0;
         if ((boolean) ConfigUtils.get("general.ChatCompactor.Enabled") && message != null) {
             TextUtils.MessageUnit latestMessageUnit = TextUtils.getLatestMessage();

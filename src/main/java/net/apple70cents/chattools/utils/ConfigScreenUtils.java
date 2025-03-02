@@ -7,11 +7,11 @@ import me.shedaniel.clothconfig2.gui.entries.NestedListListEntry;
 import me.shedaniel.clothconfig2.gui.entries.TooltipListEntry;
 import me.shedaniel.clothconfig2.impl.builders.StringListBuilder;
 import net.apple70cents.chattools.config.SpecialUnits;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +35,15 @@ public class ConfigScreenUtils {
             //#endif
             ;
 
-    public static Text getTooltip(String key, String variableType) {
+    public static Component getTooltip(String key, String variableType) {
         return getTooltip(key, variableType, ConfigUtils.getDefault(key));
     }
 
-    public static Text getTooltip(String key, String variableType, Object defaultVal) {
+    public static Component getTooltip(String key, String variableType, Object defaultVal) {
         boolean isNull = (defaultVal == null || defaultVal.toString().isBlank());
         String defaultValue = isNull ? "NULL" : defaultVal.toString();
         // check if F3+H is on
-        if (MinecraftClient.getInstance().options.advancedItemTooltips) {
+        if (Minecraft.getInstance().options.advancedItemTooltips) {
             try {
                 if (variableType.endsWith("List")) {
                     if (!((List<?>) ConfigUtils.getDefault(key)).isEmpty()) {
@@ -76,12 +76,12 @@ public class ConfigScreenUtils {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Text defaults = ((MutableText) TextUtils.trans("texts.defaultValue", defaultValue)).formatted(Formatting.GRAY);
+            Component defaults = TextUtils.trans("texts.defaultValue", defaultValue).copy().withStyle(ChatFormatting.GRAY);
 
-            Text keyName = ((MutableText) TextUtils.of(key)).formatted(Formatting.GOLD);
-            Text main = ((MutableText) trans(key + ".@Tooltip")).formatted(Formatting.WHITE);
-            Text type = ((MutableText) TextUtils.trans("texts.variableType", variableType)).formatted(Formatting.GRAY);
-            MutableText tooltip = (MutableText) TextUtils.empty();
+            Component keyName = TextUtils.of(key).copy().withStyle(ChatFormatting.GOLD);
+            Component main = trans(key + ".@Tooltip").copy().withStyle(ChatFormatting.WHITE);
+            Component type = TextUtils.trans("texts.variableType", variableType).copy().withStyle(ChatFormatting.GRAY);
+            MutableComponent tooltip = TextUtils.empty().copy();
             tooltip.append(keyName).append("§r\n").append(main).append("§r\n").append(type).append("§r\n")
                    .append(defaults);
             return tooltip;
@@ -93,9 +93,9 @@ public class ConfigScreenUtils {
     public static TooltipListEntry getEntryBuilder(ConfigEntryBuilder eb, String type, String key, String errorSupplier, int... args) {
         // the `args` are only for `min` and `max` value for int sliders (recently)
         // `errorSuppliers` will only apply to `StringList`s
-        Text tooltip = "FAQ".equals(type) ? getTooltip(key, type, null) : getTooltip(key, type);
+        Component tooltip = "FAQ".equals(type) ? getTooltip(key, type, null) : getTooltip(key, type);
         // display current server (if it can be used)
-        final Text SERVER_LABELED_KEY = trans(key, "§f" + ContextUtils.getSessionIdentifier());
+        final Component SERVER_LABELED_KEY = trans(key, "§f" + ContextUtils.getSessionIdentifier());
         switch (type) {
             case "boolean":
                 return eb.startBooleanToggle(trans(key), (boolean) ConfigUtils.get(key))
@@ -118,18 +118,18 @@ public class ConfigScreenUtils {
                          .setDefaultValue(((Number) ConfigUtils.getDefault(key)).doubleValue()).setTooltip(tooltip)
                          .setSaveConsumer(v -> ConfigUtils.set(key, (Number) v)).build();
             case "keycode":
-                return eb.startKeyCodeField(trans(key), InputUtil.fromTranslationKey((String) ConfigUtils.get(key)))
-                         .setDefaultValue(InputUtil.fromTranslationKey((String) ConfigUtils.getDefault(key)))
+                return eb.startKeyCodeField(trans(key), InputConstants.getKey((String) ConfigUtils.get(key)))
+                         .setDefaultValue(InputConstants.getKey((String) ConfigUtils.getDefault(key)))
                          .setTooltip(tooltip)
                          //#if MC>=11800
-                        .setKeySaveConsumer
-                        //#elseif MC>=11700
-                        // In MC 1.17.X, we use ClothConfig v5, where the discontinued version uses `setSaveConsumer()` method.
-                        //$$ .setSaveConsumer
-                        //#else
-                        //$$ .setKeySaveConsumer
-                        //#endif
-                                (keybind -> ConfigUtils.set(key, keybind.getTranslationKey())).build();
+                         .setKeySaveConsumer
+                         //#elseif MC>=11700
+                         // In MC 1.17.X, we use ClothConfig v5, where the discontinued version uses `setSaveConsumer()` method.
+                         //$$ .setSaveConsumer
+                         //#else
+                         //$$ .setKeySaveConsumer
+                         //#endif
+                                (keybind -> ConfigUtils.set(key, keybind.getName())).build();
             case "StringList":
                 StringListBuilder builder = eb.startStrList(trans(key), (List<String>) ConfigUtils.get(key))
                                               .setDefaultValue((List<String>) ConfigUtils.getDefault(key))
@@ -158,13 +158,13 @@ public class ConfigScreenUtils {
                     (SERVER_LABELED_KEY,
                     SpecialUnits.BubbleRuleUnit.fromList((List) ConfigUtils.get(key)),
                     true,
-                    () -> Optional.of(new net.minecraft.text.Text[]{tooltip}),
+                    () -> Optional.of(new Component[]{tooltip}),
                     v -> ConfigUtils.set(key, v),
                     () -> SpecialUnits.BubbleRuleUnit.fromList((List) ConfigUtils.getDefault(key)),
                     eb.getResetButtonKey(), true, true, (bubbleRuleUnit, ignored) -> {
                         AtomicReference<SpecialUnits.BubbleRuleUnit> bubbleRuleUnitRef = new AtomicReference<>(bubbleRuleUnit);
                         if (bubbleRuleUnit == null) {
-                            Text displayText = trans(key + ".@New");
+                            Component displayText = trans(key + ".@New");
                             SpecialUnits.BubbleRuleUnit defaultRule = new SpecialUnits.BubbleRuleUnit();
                             bubbleRuleUnitRef.set(defaultRule);
                             return new MultiElementListEntry<>(displayText, defaultRule, new ArrayList<AbstractConfigListEntry<?>>() {{
@@ -188,7 +188,7 @@ public class ConfigScreenUtils {
                                     Pattern.compile(bubbleRuleUnit.address)
                                             .matcher(ContextUtils.getSessionIdentifier())
                                             .matches()) ? "§a" : "§6";
-                            Text displayText = trans(key + ".@Display", colorPrefix + bubbleRuleUnit.address, bubbleRuleUnit.fallback ? "§a✔" : "§c✘", bubbleRuleUnit.pattern);
+                            Component displayText = trans(key + ".@Display", colorPrefix + bubbleRuleUnit.address, bubbleRuleUnit.fallback ? "§a✔" : "§c✘", bubbleRuleUnit.pattern);
                             return new MultiElementListEntry<>(displayText, bubbleRuleUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
                                 add(eb.startStrField(trans(key + ".Address"), bubbleRuleUnit.address)
                                       .setTooltip(getTooltip(key + ".Address", "String", new SpecialUnits.BubbleRuleUnit().address))
@@ -213,7 +213,7 @@ public class ConfigScreenUtils {
                     (SERVER_LABELED_KEY,
                         SpecialUnits.ResponderRuleUnit.fromList((List) ConfigUtils.get(key)),
                         true,
-                        () -> Optional.of(new net.minecraft.text.Text[]{tooltip}),
+                        () -> Optional.of(new Component[]{tooltip}),
                         v -> ConfigUtils.set(key, v),
                         () -> SpecialUnits.ResponderRuleUnit.fromList((List) ConfigUtils.getDefault(key)),
                         eb.getResetButtonKey(),
@@ -221,7 +221,7 @@ public class ConfigScreenUtils {
                         true, (responderRuleUnit, ignored) -> {
                             AtomicReference<SpecialUnits.ResponderRuleUnit> responderUnitRef = new AtomicReference<>(new SpecialUnits.ResponderRuleUnit());
                             if (responderRuleUnit == null) {
-                                Text displayText = trans(key + ".@New");
+                                Component displayText = trans(key + ".@New");
                                 SpecialUnits.ResponderRuleUnit defaultRule = new SpecialUnits.ResponderRuleUnit();
                                 responderUnitRef.set(defaultRule);
                                 return new MultiElementListEntry<>(displayText, defaultRule, new ArrayList<AbstractConfigListEntry<?>>() {{
@@ -253,7 +253,7 @@ public class ConfigScreenUtils {
                                         Pattern.compile(responderRuleUnit.address)
                                                 .matcher(ContextUtils.getSessionIdentifier())
                                                 .matches()) ? "§a" : "§6";
-                                Text displayText = trans(key + ".@Display", colorPrefix + responderRuleUnit.address, responderRuleUnit.forceDisableFormatter ? "§a✔" : "§c✘",
+                                Component displayText = trans(key + ".@Display", colorPrefix + responderRuleUnit.address, responderRuleUnit.forceDisableFormatter ? "§a✔" : "§c✘",
                                         responderRuleUnit.delayInMilliseconds, responderRuleUnit.pattern, responderRuleUnit.message);
                                 return new MultiElementListEntry<>(displayText, responderRuleUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
                                     add(eb.startStrField(trans(key + ".Address"), responderRuleUnit.address)
@@ -287,7 +287,7 @@ public class ConfigScreenUtils {
                     (trans(key),
                         SpecialUnits.MacroUnit.fromList((List) ConfigUtils.get(key)),
                         true,
-                        () -> Optional.of(new net.minecraft.text.Text[]{tooltip}),
+                        () -> Optional.of(new Component[]{tooltip}),
                         v -> ConfigUtils.set(key, v),
                         () -> SpecialUnits.MacroUnit.fromList((List) ConfigUtils.getDefault(key)),
                         eb.getResetButtonKey(),
@@ -295,14 +295,14 @@ public class ConfigScreenUtils {
                         true, (macroUnit, ignored) -> {
                             AtomicReference<SpecialUnits.MacroUnit> macroUnitRef = new AtomicReference<>(macroUnit);
                             if (macroUnit == null) {
-                                Text displayText = trans(key + ".@New");
+                                Component displayText = trans(key + ".@New");
                                 SpecialUnits.MacroUnit defaultMacro = new SpecialUnits.MacroUnit();
                                 macroUnitRef.set(defaultMacro); // 设置初始值
                                 return new MultiElementListEntry<>(displayText, defaultMacro, new ArrayList<AbstractConfigListEntry<?>>() {{
                                     add(eb
-                                            .startKeyCodeField(trans(key + ".Key"), InputUtil.fromTranslationKey(defaultMacro.key))
-                                            .setTooltip(getTooltip(key + ".Key", "keycode", InputUtil.fromTranslationKey(defaultMacro.key)))
-                                            .setDefaultValue(InputUtil.fromTranslationKey(defaultMacro.key))
+                                            .startKeyCodeField(trans(key + ".Key"), InputConstants.getKey(defaultMacro.key))
+                                            .setTooltip(getTooltip(key + ".Key", "keycode", InputConstants.getKey(defaultMacro.key)))
+                                            .setDefaultValue(InputConstants.getKey(defaultMacro.key))
                                             //#if MC>=11800
                                             .setKeySaveConsumer
                                             //#elseif MC>=11700
@@ -312,7 +312,7 @@ public class ConfigScreenUtils {
                                             //#else
                                             //$$ .setKeySaveConsumer
                                             //#endif
-                                                    (key -> macroUnitRef.get().key = key.getTranslationKey()).build());
+                                                    (key -> macroUnitRef.get().key = key.getName()).build());
                                     add(eb
                                             .startEnumSelector(trans(key + ".Modifier"), SpecialUnits.KeyModifiers.class, defaultMacro.modifier)
                                             .setTooltip(getTooltip(key + ".Modifier", "EnumKeyModifiers", defaultMacro.modifier))
@@ -329,25 +329,25 @@ public class ConfigScreenUtils {
                                           .setSaveConsumer(v -> macroUnitRef.get().command = v).build());
                                 }}, SHOULD_EXPAND_ALL_RULES);
                             } else {
-                                Text displayText;
-                                if (macroUnit.key.equals(InputUtil.UNKNOWN_KEY.getTranslationKey())) {
+                                Component displayText;
+                                if (macroUnit.key.equals(InputConstants.UNKNOWN.getName())) {
                                     displayText = trans(key + ".@New");
                                 } else if (macroUnit.modifier == SpecialUnits.KeyModifiers.NONE) {
                                     displayText = trans(key + ".@Display",
                                             // such as "[ H ] /home"
-                                            "§6" + InputUtil.fromTranslationKey(macroUnit.key).getLocalizedText()
+                                            "§6" + InputConstants.getKey(macroUnit.key).getDisplayName()
                                                             .getString(), macroUnit.command);
                                 } else {
                                     displayText = trans(key + ".@Display",
                                             // such as "[ Shift + B ] /back"
-                                            "§6" + macroUnit.modifier + " + " + InputUtil.fromTranslationKey(macroUnit.key)
-                                                                                         .getLocalizedText()
+                                            "§6" + macroUnit.modifier + " + " + InputConstants.getKey(macroUnit.key)
+                                                                                         .getDisplayName()
                                                                                          .getString(), macroUnit.command);
                                 }
                                 return new MultiElementListEntry<>(displayText, macroUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
-                                    add(eb.startKeyCodeField(trans(key + ".Key"), InputUtil.fromTranslationKey(macroUnit.key))
-                                          .setTooltip(getTooltip(key + ".Key", "keycode", InputUtil.fromTranslationKey(new SpecialUnits.MacroUnit().key)))
-                                          .setDefaultValue(InputUtil.fromTranslationKey(new SpecialUnits.MacroUnit().key))
+                                    add(eb.startKeyCodeField(trans(key + ".Key"), InputConstants.getKey(macroUnit.key))
+                                          .setTooltip(getTooltip(key + ".Key", "keycode", InputConstants.getKey(new SpecialUnits.MacroUnit().key)))
+                                          .setDefaultValue(InputConstants.getKey(new SpecialUnits.MacroUnit().key))
                                           //#if MC>=11800
                                             .setKeySaveConsumer
                                             //#elseif MC>=11700
@@ -357,7 +357,7 @@ public class ConfigScreenUtils {
                                             //#else
                                             //$$ .setKeySaveConsumer
                                             //#endif
-                                                    (key -> macroUnit.key = key.getTranslationKey()).build());
+                                                    (key -> macroUnit.key = key.getName()).build());
                                     add(eb
                                             .startEnumSelector(trans(key + ".Modifier"), SpecialUnits.KeyModifiers.class, macroUnit.modifier)
                                             .setTooltip(getTooltip(key + ".Modifier", "EnumKeyModifiers", new SpecialUnits.MacroUnit().modifier))
@@ -381,7 +381,7 @@ public class ConfigScreenUtils {
                     (SERVER_LABELED_KEY,
                         SpecialUnits.FormatterUnit.fromList((List) ConfigUtils.get(key)),
                         true,
-                        () -> Optional.of(new net.minecraft.text.Text[]{tooltip}),
+                        () -> Optional.of(new Component[]{tooltip}),
                         v -> ConfigUtils.set(key, v),
                         () -> SpecialUnits.FormatterUnit.fromList((List) ConfigUtils.getDefault(key)),
                         eb.getResetButtonKey(),
@@ -390,7 +390,7 @@ public class ConfigScreenUtils {
                         (formatterUnit, ignored) -> {
                             AtomicReference<SpecialUnits.FormatterUnit> formatterUnitRef = new AtomicReference<>(formatterUnit);
                             if (formatterUnit == null) {
-                                Text displayText = trans(key + ".@New");
+                                Component displayText = trans(key + ".@New");
                                 SpecialUnits.FormatterUnit defaultFormatterRule = new SpecialUnits.FormatterUnit();
                                 formatterUnitRef.set(defaultFormatterRule);
                                 return new MultiElementListEntry<>(displayText, defaultFormatterRule, new ArrayList<AbstractConfigListEntry<?>>() {{
@@ -409,7 +409,7 @@ public class ConfigScreenUtils {
                                         Pattern.compile(formatterUnit.address)
                                                 .matcher(ContextUtils.getSessionIdentifier())
                                                 .matches()) ? "§a" : "§6";
-                                Text displayText = trans(key + ".@Display", colorPrefix + formatterUnit.address, formatterUnit.formatter);
+                                Component displayText = trans(key + ".@Display", colorPrefix + formatterUnit.address, formatterUnit.formatter);
                                 return new MultiElementListEntry<>(displayText, formatterUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
                                     add(eb.startStrField(trans(key + ".Address"), formatterUnit.address)
                                           .setTooltip(getTooltip(key + ".Address", "String", new SpecialUnits.FormatterUnit().address))
@@ -429,7 +429,7 @@ public class ConfigScreenUtils {
                     (SERVER_LABELED_KEY,
                         SpecialUnits.CustomJoinMessageRuleUnit.fromList((List) ConfigUtils.get(key)),
                         true,
-                        () -> Optional.of(new net.minecraft.text.Text[]{tooltip}),
+                        () -> Optional.of(new Component[]{tooltip}),
                         v -> ConfigUtils.set(key, v),
                         () -> SpecialUnits.CustomJoinMessageRuleUnit.fromList((List) ConfigUtils.getDefault(key)),
                         eb.getResetButtonKey(),
@@ -438,7 +438,7 @@ public class ConfigScreenUtils {
                         (customJoinMessageRuleUnit, ignored) -> {
                             AtomicReference<SpecialUnits.CustomJoinMessageRuleUnit> customJoinMessageRuleUnitRef = new AtomicReference<>(customJoinMessageRuleUnit);
                             if (customJoinMessageRuleUnit == null) {
-                                Text displayText = trans(key + ".@New");
+                                Component displayText = trans(key + ".@New");
                                 SpecialUnits.CustomJoinMessageRuleUnit defaultCustomJoinMessageRuleUnit = new SpecialUnits.CustomJoinMessageRuleUnit();
                                 customJoinMessageRuleUnitRef.set(defaultCustomJoinMessageRuleUnit);
                                 return new MultiElementListEntry<>(displayText, defaultCustomJoinMessageRuleUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
@@ -465,7 +465,7 @@ public class ConfigScreenUtils {
                                         Pattern.compile(customJoinMessageRuleUnit.address)
                                                 .matcher(ContextUtils.getSessionIdentifier())
                                                 .matches()) ? "§a" : "§6";
-                                Text displayText = trans(key + ".@Display", colorPrefix + customJoinMessageRuleUnit.address, customJoinMessageRuleUnit.forceDisableFormatter ? "§a✔" : "§c✘",
+                                Component displayText = trans(key + ".@Display", colorPrefix + customJoinMessageRuleUnit.address, customJoinMessageRuleUnit.forceDisableFormatter ? "§a✔" : "§c✘",
                                         customJoinMessageRuleUnit.delayInMilliseconds, customJoinMessageRuleUnit.message);
                                 return new MultiElementListEntry<>(displayText, customJoinMessageRuleUnit, new ArrayList<AbstractConfigListEntry<?>>() {{
                                     add(eb.startStrField(trans(key + ".Address"), customJoinMessageRuleUnit.address)
@@ -507,7 +507,7 @@ public class ConfigScreenUtils {
     }
 
     public static class ErrorSuppliers {
-        public static final Function<String, Optional<Text>> REGEX_COMPILE_ERROR_SUPPLIER = (v) -> {
+        public static final Function<String, Optional<Component>> REGEX_COMPILE_ERROR_SUPPLIER = (v) -> {
             try {
                 Pattern.compile(v);
                 return Optional.empty();
@@ -515,7 +515,7 @@ public class ConfigScreenUtils {
                 return Optional.of(TextUtils.of(e.getDescription()));
             }
         };
-        public static final Function<List<String>, Optional<Text>> REGEX_COMPILE_ERROR_SUPPLIER_FOR_LIST = (v) -> {
+        public static final Function<List<String>, Optional<Component>> REGEX_COMPILE_ERROR_SUPPLIER_FOR_LIST = (v) -> {
             try {
                 for (String s : v) {
                     Pattern.compile(s);
@@ -526,7 +526,7 @@ public class ConfigScreenUtils {
             }
         };
 
-        public static final Function<String, Optional<Text>> REGEX_COMPILE_ERROR_SUPPLIER_ALLOW_STAR = (v) -> {
+        public static final Function<String, Optional<Component>> REGEX_COMPILE_ERROR_SUPPLIER_ALLOW_STAR = (v) -> {
             if ("*".equals(v)) {
                 return Optional.empty();
             }
@@ -537,7 +537,7 @@ public class ConfigScreenUtils {
                 return Optional.of(TextUtils.of(e.getDescription()));
             }
         };
-        public static final Function<List<String>, Optional<Text>> REGEX_COMPILE_ERROR_SUPPLIER_ALLOW_STAR_FOR_LIST = (v) -> {
+        public static final Function<List<String>, Optional<Component>> REGEX_COMPILE_ERROR_SUPPLIER_ALLOW_STAR_FOR_LIST = (v) -> {
 
             try {
                 for (String s : v) {
@@ -552,7 +552,7 @@ public class ConfigScreenUtils {
             }
         };
 
-        public static final Function<String, Optional<Text>> REGEX_COMPILE_ERROR_SUPPLIER_REQUIRE_GROUPS = (v) -> {
+        public static final Function<String, Optional<Component>> REGEX_COMPILE_ERROR_SUPPLIER_REQUIRE_GROUPS = (v) -> {
             try {
                 Pattern.compile(v);
                 if (v.contains("<name>") && v.contains("<message>")) {
@@ -564,7 +564,7 @@ public class ConfigScreenUtils {
                 return Optional.of(TextUtils.of(e.getDescription()));
             }
         };
-        public static final Function<List<String>, Optional<Text>> REGEX_COMPILE_ERROR_SUPPLIER_REQUIRE_GROUPS_FOR_LIST = (v) -> {
+        public static final Function<List<String>, Optional<Component>> REGEX_COMPILE_ERROR_SUPPLIER_REQUIRE_GROUPS_FOR_LIST = (v) -> {
             try {
                 for (String s : v) {
                     Pattern.compile(s);
