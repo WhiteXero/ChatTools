@@ -22,7 +22,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.*;
 import net.minecraft.util.Tuple;
 
-import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -39,12 +38,13 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal;
 //#else
-// fabric v2 begin to work since 1.19
+// Fabric v2 begins to work since 1.19
 //$$ import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 //$$ import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 //
 //$$ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.argument;
 //$$ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
+//$$ import java.util.UUID;
 //#endif
 
 
@@ -153,8 +153,9 @@ public class CommandRegistryUtils {
                 }))
                 // chattools config get
                 .then(literal("get")
-                    // one arg
-                    .then(argument("key", StringArgumentType.string()).executes(t -> {
+                    .then(argument("key", StringArgumentType.string())
+                            .suggests(new ConfigKeysSuggestionProvider(3))
+                            .executes(t -> {
                         String key = StringArgumentType.getString(t, "key");
                         MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.get", key, ConfigUtils.get(key)));
                         return Command.SINGLE_SUCCESS;
@@ -162,7 +163,7 @@ public class CommandRegistryUtils {
                 )
                 // chattools config set
                 .then(literal("set")
-                    .then(argument("key", StringArgumentType.string())
+                    .then(argument("key", StringArgumentType.string()).suggests(new ConfigKeysSuggestionProvider(2))
                         .then(argument("value", StringArgumentType.string()).executes(t -> {
                             String key = StringArgumentType.getString(t, "key");
                             String value = StringArgumentType.getString(t, "value");
@@ -182,7 +183,7 @@ public class CommandRegistryUtils {
                 )
                 // chattools config toggle
                 .then(literal("toggle")
-                        .then(argument("key", StringArgumentType.string())
+                        .then(argument("key", StringArgumentType.string()).suggests(new ConfigKeysSuggestionProvider(1))
                                 .executes(t -> {
                                     String key = StringArgumentType.getString(t, "key");
                                     toggleBooleanConfig(key);
@@ -236,9 +237,6 @@ public class CommandRegistryUtils {
     }
 
     public static void toggleBooleanConfig(String key) {
-        if (!ConfigScreenGenerator.configGuiMapInitialized || ConfigScreenGenerator.getKey2TypeMappings().isEmpty()) {
-            ConfigScreenGenerator.getConfigBuilder(); // let Key2TypeMappings initialize
-        }
         if (ConfigUtils.get(key) == null) {
             MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.toggle.error", key));
             return;
@@ -248,9 +246,6 @@ public class CommandRegistryUtils {
     }
 
     public static void updateConfig(String key, String value) {
-        if (!ConfigScreenGenerator.configGuiMapInitialized || ConfigScreenGenerator.getKey2TypeMappings().isEmpty()) {
-            ConfigScreenGenerator.getConfigBuilder(); // let Key2TypeMappings initialize
-        }
         try {
             if (!ConfigScreenGenerator.getKey2TypeMappings().containsKey(key)) {
                 // if we don't have that key, we consider it as a string

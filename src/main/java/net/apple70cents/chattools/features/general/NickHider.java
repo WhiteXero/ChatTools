@@ -1,6 +1,7 @@
 package net.apple70cents.chattools.features.general;
 
 import net.apple70cents.chattools.utils.ConfigUtils;
+import net.apple70cents.chattools.utils.LoggerUtils;
 import net.apple70cents.chattools.utils.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -31,7 +32,13 @@ public class NickHider {
 
             // not cached, let's deal with it!
             if (TextUtils.wash(message.getString()).contains(playerName)) {
-                Component result = TextUtils.replaceComponent(message.copy(), playerName, nickname);
+                Component result = message.copy();
+                try {
+                    result = TextUtils.replaceComponent(message.copy(), playerName, nickname);
+                } catch (Exception e) {
+                    LoggerUtils.error("[ChatTools] Error occurred on nick-hiding this text: " + result + ", let's show it raw...");
+                    e.printStackTrace();
+                }
                 cache.put(key, result); // put it in cache
                 return result;
             }

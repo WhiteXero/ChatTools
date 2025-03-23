@@ -32,6 +32,9 @@ public class ConfigScreenGenerator {
     private static final Map<String, String> key2TypeMappings = new HashMap<>();
 
     public static Map<String, String> getKey2TypeMappings() {
+        if (!configGuiMapInitialized || key2TypeMappings.isEmpty()) {
+            getConfigBuilder(); // let Key2TypeMappings initialize
+        }
         return key2TypeMappings;
     }
 
@@ -48,11 +51,15 @@ public class ConfigScreenGenerator {
         }
     }
 
-    public static ConfigBuilder getConfigBuilder() {
+    public static void initializeConfigGuiMapIfNecessary() {
         if (!configGuiMapInitialized) {
             loadConfigGuiMap();
             GUI_VERSION = ((Number) configGuiMap.get("version")).intValue();
         }
+    }
+
+    public static ConfigBuilder getConfigBuilder() {
+        initializeConfigGuiMapIfNecessary();
 
         //#if MC>=12100
         ResourceLocation backgroundTexture = ResourceLocation.parse("minecraft:textures/block/oak_planks.png");

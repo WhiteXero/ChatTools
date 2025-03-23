@@ -207,7 +207,12 @@ public class TextUtils {
             for (Map.Entry<String, JsonElement> ele : jsonObject.entrySet()) {
                 String key = ele.getKey();
                 JsonElement value = ele.getValue();
-                if (value.isJsonPrimitive() && value.getAsString().contains(oldValue)) {
+
+                if (isProtectedField(key)) {
+                    continue;
+                }
+
+                if (isTextField(key) && value.isJsonPrimitive() && value.getAsString().contains(oldValue)) {
                     jsonObject.addProperty(key, value.getAsString().replace(oldValue, newValue));
                 } else {
                     replaceFieldValue(value, oldValue, newValue);
@@ -219,5 +224,13 @@ public class TextUtils {
                 replaceFieldValue(element, oldValue, newValue);
             }
         }
+    }
+
+    private static boolean isProtectedField(String key) {
+        return key.contains("enchantments") || key.contains("tag");
+    }
+
+    private static boolean isTextField(String key) {
+        return key.contains("text") || key.contains("value") || key.contains("translate");
     }
 }
