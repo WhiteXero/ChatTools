@@ -4,7 +4,6 @@ import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
 import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.Component;
 
@@ -36,7 +35,12 @@ public class ChatFilter {
         if (!(boolean) ConfigUtils.get("filter.FilteredPlaceholderEnabled")) {
             return;
         }
-        Style style = Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextUtils.trans("texts.filterPlaceholder.@Tooltip")));
+        Style style = Style.EMPTY.withHoverEvent(
+                new HoverEvent.ShowText(
+                //#else
+                //#$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                //#endif
+                TextUtils.trans("texts.filterPlaceholder.@Tooltip")));
         Component placeholder = TextUtils.trans("texts.filterPlaceholder").copy().setStyle(style);
         MessageUtils.sendToNonPublicChat(placeholder);
     }

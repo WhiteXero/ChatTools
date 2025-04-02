@@ -10,6 +10,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.serialization.JavaOps;
 import net.apple70cents.chattools.config.ConfigScreenGenerator;
 import net.apple70cents.chattools.config.ConfigStorage;
 import net.apple70cents.chattools.config.SpecialUnits;
@@ -19,6 +20,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.nbt.SnbtGrammar;
 import net.minecraft.network.chat.*;
 import net.minecraft.util.Tuple;
 
@@ -323,12 +325,14 @@ public class CommandRegistryUtils {
         @Override
         public Component parse(final StringReader stringReader) throws CommandSyntaxException {
             try {
-                //#if MC>=12004
-                return ParserUtils.parseJson(
-                        //#if MC>=12006
-                        this.holderLookupProvider,
-                        //#endif
-                        stringReader, ComponentSerialization.CODEC);
+                //#if MC>=12105
+                return SnbtGrammar.createParser(JavaOps.INSTANCE).withCodec(
+                        this.holderLookupProvider.createSerializationContext(JavaOps.INSTANCE), SnbtGrammar.createParser(JavaOps.INSTANCE), ComponentSerialization.CODEC, INVALID_COMPONENT_EXCEPTION
+                ).parseForCommands(stringReader);
+                //#elseif MC>=12006
+                //#$$ return ParserUtils.parseJson(this.holderLookupProvider, stringReader, ComponentSerialization.CODEC);
+                //#elseif MC>=12004
+                //#$$ return ParserUtils.parseJson(stringReader, ComponentSerialization.CODEC);
                 //#else
                 //$$ Component component = Component.Serializer.fromJson(stringReader);
                 //$$ if (component == null) { throw INVALID_COMPONENT_EXCEPTION.createWithContext(stringReader, "empty"); }

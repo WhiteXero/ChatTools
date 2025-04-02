@@ -11,6 +11,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.regex.Pattern;
 
+//#if MC>=12105
+import java.net.URI;
+//#endif
+
 //#if MC>=12005
 import net.minecraft.data.registries.VanillaRegistries;
 //#endif
@@ -20,8 +24,20 @@ import net.minecraft.data.registries.VanillaRegistries;
  */
 public class TextUtils {
     public static final Style WEBSITE_URL_STYLE = Style.EMPTY.withUnderlined(true)
-                                                             .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://70centsapple.top/blogs/#/chat-tools-faq"))
-                                                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ConfigScreenUtils.getTooltip("general.FAQ", "FAQ", null)));
+                                                             .withClickEvent(
+                                                                     //#if MC>=12105
+                                                                     new ClickEvent.OpenUrl(URI.create("https://70centsapple.top/blogs/#/chat-tools-faq"))
+                                                                     //#else
+                                                                     //$$ new ClickEvent(ClickEvent.Action.OPEN_URL, "https://70centsapple.top/blogs/#/chat-tools-faq")
+                                                                     //#endif
+                                                                             )
+                                                             .withHoverEvent(
+                                                                     //#if MC>=12105
+                                                                     new HoverEvent.ShowText(
+                                                                     //#else
+                                                                     //#$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                                                     //#endif
+                                                                         ConfigScreenUtils.getTooltip("general.FAQ", "FAQ", null)));
     public static final String PREFIX = "key.chattools.";
     public static final Component SPACER = literal("").copy().setStyle(Style.EMPTY);
 
