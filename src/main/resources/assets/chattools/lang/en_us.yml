@@ -219,7 +219,11 @@ key:
           §6Experimental: Please note that if the message cannot
           be processed properly, the original text will be displayed.
           
-          A large amount of messages may be too expensive to processed, resulting in huge lag!
+          A large amount of messages may be too expensive
+          to process, resulting in huge lag!
+        Enabled:
+          .: Enable Override Chat Color
+          '@Tooltip': Toggles whether we should override your chat colors.
     notifier:
       Toast:
         .: System Toast

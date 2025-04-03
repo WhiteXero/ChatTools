@@ -1,17 +1,19 @@
 ## Chinese (Simplified)
-### v2.3.8
-- 修复 `{pos}` 在自动响应中被错误地解析成组名称的问题
-- 优化 在聊天记录搜索屏幕默认快速滚动，按住 Shift 滚动一行
+### v2.3.9
+- 更新 1.21.5
+- 修复 独占聊天栏现在使用线程安全的列表
+- 优化 `/chattools config` 相关命令提示
 - 新增 聊天提醒“高亮前缀插入到时间戳前”选项
-- 新增 聊天提醒“从相机位置播放音效”选项
-- 修复 从复制菜单返回聊天记录搜索菜单时，若消息已过时则抛出空指针错误的问题
-- 新增 `/chatools send_to_client actionbar` 命令现在可以接受持续时间（以毫秒为单位）参数（仅在独占动作栏启用时生效）
+- 修复 昵称隐藏处理失败时会被踢出世界的问题
+- 新增 聊天注入渐变语法
+- 新增 覆盖聊天颜色样式
 
 ## English
-### v2.3.8
-- Fixed: `{pos}` was incorrectly parsed as a group name in Responder.
-- Optimization: Scroll faster on Chat History Navigator screen by default, while you can hold Shift to scroll by one line.
-- Added: Option `Notifier` - `Highlight` - `Insert Before Timestamps`.
-- Added: Option `Notifier` - `Sound` - `Play Sound From Camera Position`.
-- Fixed: NullPointerException was thrown when returning to Chat History Navigator from Copy Screen if the message is outdated.
-- Added: `/chatools send_to_client actionbar` command now accepts a duration (in milliseconds) parameter (will only work if exclusive actionbar is enabled).
+### v2.3.9
+- Update: Bumped to 1.21.5
+- Fixed: Exclusive Actionbar is now more thread-safe.
+- Optimization: `/chattools config` command now suggested config keys.
+- Added: Highlight Prefixes `Insert Before Timestamps` option.
+- Fixed: Players would disconnect if the nick-hider failed to work.
+- Added: Formatter Gradient syntax
+- Added: Override Chat Color option
