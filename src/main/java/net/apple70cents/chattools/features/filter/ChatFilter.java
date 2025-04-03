@@ -36,9 +36,10 @@ public class ChatFilter {
             return;
         }
         Style style = Style.EMPTY.withHoverEvent(
+                //#if MC>=12105
                 new HoverEvent.ShowText(
                 //#else
-                //#$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                //$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 //#endif
                 TextUtils.trans("texts.filterPlaceholder.@Tooltip")));
         Component placeholder = TextUtils.trans("texts.filterPlaceholder").copy().setStyle(style);

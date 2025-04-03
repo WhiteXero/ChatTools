@@ -10,7 +10,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import com.mojang.serialization.JavaOps;
 import net.apple70cents.chattools.config.ConfigScreenGenerator;
 import net.apple70cents.chattools.config.ConfigStorage;
 import net.apple70cents.chattools.config.SpecialUnits;
@@ -20,16 +19,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.CommandSource;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.nbt.SnbtGrammar;
 import net.minecraft.network.chat.*;
 import net.minecraft.util.Tuple;
 
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-//#if MC>=12004
-import net.minecraft.commands.ParserUtils;
+//#if MC>=12105
+import com.mojang.serialization.JavaOps;
+import net.minecraft.nbt.SnbtGrammar;
 import net.minecraft.core.HolderLookup;
+//#elseif MC>=12004
+//$$ import net.minecraft.commands.ParserUtils;
+//$$ import net.minecraft.core.HolderLookup;
 //#endif
 
 //#if MC>=11900
@@ -330,9 +332,9 @@ public class CommandRegistryUtils {
                         this.holderLookupProvider.createSerializationContext(JavaOps.INSTANCE), SnbtGrammar.createParser(JavaOps.INSTANCE), ComponentSerialization.CODEC, INVALID_COMPONENT_EXCEPTION
                 ).parseForCommands(stringReader);
                 //#elseif MC>=12006
-                //#$$ return ParserUtils.parseJson(this.holderLookupProvider, stringReader, ComponentSerialization.CODEC);
+                //$$ return ParserUtils.parseJson(this.holderLookupProvider, stringReader, ComponentSerialization.CODEC);
                 //#elseif MC>=12004
-                //#$$ return ParserUtils.parseJson(stringReader, ComponentSerialization.CODEC);
+                //$$ return ParserUtils.parseJson(stringReader, ComponentSerialization.CODEC);
                 //#else
                 //$$ Component component = Component.Serializer.fromJson(stringReader);
                 //$$ if (component == null) { throw INVALID_COMPONENT_EXCEPTION.createWithContext(stringReader, "empty"); }

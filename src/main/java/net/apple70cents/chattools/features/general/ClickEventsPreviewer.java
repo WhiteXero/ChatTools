@@ -44,7 +44,7 @@ public class ClickEventsPreviewer {
                     //#if MC>=12105
                     new HoverEvent.ShowText(
                     //#else
-                    //#$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    //$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                     //#endif
                     textToAppend));
         } else {
@@ -52,7 +52,7 @@ public class ClickEventsPreviewer {
                     //#if MC>=12105
                     "show_text".equals(hoverEvent.action().getSerializedName()) ? ((HoverEvent.ShowText) hoverEvent).value() : null;
                     //#else
-                    //#$$ hoverEvent.getValue(HoverEvent.Action.SHOW_TEXT);
+                    //$$ hoverEvent.getValue(HoverEvent.Action.SHOW_TEXT);
                     //#endif
             // Has Actions.SHOW_TEXT
             if (oldHoverComponent != null && !oldHoverComponent.getString().isBlank()) {
@@ -95,7 +95,7 @@ public class ClickEventsPreviewer {
                             //#if MC>=12105
                             new HoverEvent.ShowText(
                             //#else
-                            //#$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                            //$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                             //#endif
                                     newHoverComponent));
                 } else {
@@ -103,7 +103,7 @@ public class ClickEventsPreviewer {
                             //#if MC>=12105
                             new HoverEvent.ShowText(
                             //#else
-                            //#$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                            //$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                             //#endif
                              textToAppendWithTwoEmptyLinesInFront));
                 }
@@ -153,7 +153,7 @@ public class ClickEventsPreviewer {
             }
             Component valueComponent = TextUtils.of(value).copy().withStyle(ChatFormatting.GREEN);
             String action = clickEvent.action().getSerializedName();
-            //#if MC>=12002
+            //#elseif MC>=12002
             //$$ Component valueComponent = TextUtils.of(clickEvent.getValue()).copy().withStyle(ChatFormatting.GREEN);
             //$$ String action = clickEvent.getAction().getSerializedName();
             //#else
@@ -204,7 +204,7 @@ public class ClickEventsPreviewer {
         //#if MC>=12105
         Component tooltip = "show_text".equals(hoverEvent.action().getSerializedName()) ? ((HoverEvent.ShowText) hoverEvent).value() : null;
         //#else
-        //#$$ Component tooltip = hoverEvent.getValue(HoverEvent.Action.SHOW_TEXT);
+        //$$ Component tooltip = hoverEvent.getValue(HoverEvent.Action.SHOW_TEXT);
         //#endif
         if (tooltip == null || tooltip.getString().isBlank()) {
             return false;

@@ -27,7 +27,7 @@ public class Timestamp {
                     //#if MC>=12105
                     new HoverEvent.ShowText(
                     //#else
-                    //#$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    //$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                     //#endif
                     longTimeDisplay.copy().append("\n\n").append(TextUtils.trans("texts.copy.launch")));
             ClickEvent clickEvent =
@@ -45,7 +45,7 @@ public class Timestamp {
                     //#if MC>=12105
                     new HoverEvent.ShowText(
                     //#else
-                    //#$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    //$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                     //#endif
                     longTimeDisplay);
             MutableComponent timestampText = shortTimeDisplay.copy().setStyle(Style.EMPTY.withHoverEvent(hoverEvent));

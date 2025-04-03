@@ -35,7 +35,7 @@ public class TextUtils {
                                                                      //#if MC>=12105
                                                                      new HoverEvent.ShowText(
                                                                      //#else
-                                                                     //#$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                                                     //$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                                                      //#endif
                                                                          ConfigScreenUtils.getTooltip("general.FAQ", "FAQ", null)));
     public static final String PREFIX = "key.chattools.";
