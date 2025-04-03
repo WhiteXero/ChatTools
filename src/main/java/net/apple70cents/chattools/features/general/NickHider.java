@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * @author 70CentsApple
@@ -34,7 +35,7 @@ public class NickHider {
             if (TextUtils.wash(message.getString()).contains(playerName)) {
                 Component result = message.copy();
                 try {
-                    result = TextUtils.replaceComponent(message.copy(), playerName, nickname);
+                    result = TextUtils.replaceComponentText(message.copy(), Pattern.compile(Pattern.quote(playerName)), nickname);
                 } catch (Exception e) {
                     LoggerUtils.error("[ChatTools] Error occurred on nick-hiding this text: " + result + ", let's show it raw...");
                     e.printStackTrace();

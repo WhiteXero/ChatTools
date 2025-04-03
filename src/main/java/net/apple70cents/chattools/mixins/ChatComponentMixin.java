@@ -3,10 +3,7 @@ package net.apple70cents.chattools.mixins;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.apple70cents.chattools.features.bubble.BubbleRenderer;
 import net.apple70cents.chattools.features.filter.ChatFilter;
-import net.apple70cents.chattools.features.general.ChatCompactor;
-import net.apple70cents.chattools.features.general.ClickEventsPreviewer;
-import net.apple70cents.chattools.features.general.NickHider;
-import net.apple70cents.chattools.features.general.Timestamp;
+import net.apple70cents.chattools.features.general.*;
 import net.apple70cents.chattools.features.notifier.BasicNotifier;
 import net.apple70cents.chattools.features.responder.Responder;
 import net.apple70cents.chattools.utils.ConfigUtils;
@@ -114,9 +111,14 @@ public abstract class ChatComponentMixin {
         }
         // This is not the only attempt that we try to activate the responder.
         // When filtering a message with `responder.respondToFilteredMessages` option on, responder will also try to work.
-        if ((boolean) ConfigUtils.get("responder.Enabled") && !MessageUtils.hadJustSentMessage()) {
-            // obviously, we don't respond to our own messages
+        if ((boolean) ConfigUtils.get("responder.Enabled") &&
+                // obviously, we should not respond to our own messages
+                !MessageUtils.hadJustSentMessage()
+            ) {
             Responder.work(message);
+        }
+        if ((boolean) ConfigUtils.get("general.OverrideChatColor.Enabled")) {
+            message = ChatColorEraser.work(message);
         }
         if ((boolean) ConfigUtils.get("general.NickHider.Enabled")) {
             message = NickHider.work(message);

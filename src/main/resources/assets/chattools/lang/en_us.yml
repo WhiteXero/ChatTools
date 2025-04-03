@@ -132,8 +132,12 @@ key:
           .: Size
           '@Tooltip': The size of the text.
       NickHider:
-        .: Nickname Hider
-        '@Tooltip': It replaces your name, but only on your client-side.
+        .: Nickname Hider §6(Experimental)
+        '@Tooltip': |-
+          It replaces your name, but only on your client-side.
+          
+          §6Experimental: Please note that if the message cannot
+          be processed properly, the original text will be displayed.
         Enabled:
           .: Enable Nickname Hider
           '@Tooltip': Toggles whether your nickname should be replaced.
@@ -207,6 +211,15 @@ key:
         '@Tooltip': |-
           Unfixes MC-130244.
           §6(Requires Minecraft ≥ 1.20.5)§r
+      OverrideChatColor:
+        .: Override Chat Color §6(Experimental)
+        '@Tooltip': |-
+          Changes the colors in chat messages into white.
+          
+          §6Experimental: Please note that if the message cannot
+          be processed properly, the original text will be displayed.
+          
+          A large amount of messages may be too expensive to processed, resulting in huge lag!
     notifier:
       Toast:
         .: System Toast
@@ -272,7 +285,7 @@ key:
           .: Prefix
           '@Tooltip': The prefix that is going to be inserted.
         OverwriteEnabled:
-          .: Enable Overwrite
+          .: Enable Overwriting
           '@Tooltip': |-
             Toggles whether the message should be overwritten. 
             The property attributes of the text will be erased and overwritten.
@@ -321,6 +334,7 @@ key:
             The pattern for formatting.
             {text} -> Original Text
             {pos} -> (X,Y,Z)
+            <gradient> -> Gradients, please refer to FAQ
       DisableOnMatchList:
         .: Disable-on-match List
         '@Tooltip': |-
@@ -438,6 +452,7 @@ key:
           '@Tooltip': |-
             An automatic response of a message.
             {pos} -> (X,Y,Z)
+            <gradient> -> Gradients, please refer to FAQ
             {$GROUP} -> The Content of the matched group `$GROUP`
         DelayInMilliseconds:
           .: Delay (in milliseconds)

@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 //#if MC>=12105
@@ -196,20 +197,20 @@ public class TextUtils {
     }
 
     /**
-     * replace a {@link MutableComponent}
+     * replace keywords in a {@link MutableComponent}
      *
      * @param text      the text
-     * @param oldString old string
+     * @param oldStringPattern the RegEx pattern of the old string
      * @param newString new string
      * @return text after replacement
      */
-    public static MutableComponent replaceComponent(MutableComponent text, String oldString, String newString) {
+    public static MutableComponent replaceComponentText(MutableComponent text, Pattern oldStringPattern, String newString) {
         //#if MC>=12005
         JsonElement jsonElement = new Component.SerializerAdapter(VanillaRegistries.createLookup()).serialize(text, null, null);
         //#else
         //$$ JsonElement jsonElement = Component.Serializer.toJsonTree(text);
         //#endif
-        replaceFieldValue(jsonElement, oldString, newString);
+        replaceTextFieldValue(jsonElement, oldStringPattern, newString);
         //#if MC>=12005
         return new Component.SerializerAdapter(VanillaRegistries.createLookup()).deserialize(jsonElement, null, null);
         //#else
@@ -217,7 +218,7 @@ public class TextUtils {
         //#endif
     }
 
-    private static void replaceFieldValue(JsonElement jsonElement, String oldValue, String newValue) {
+    private static void replaceTextFieldValue(JsonElement jsonElement, Pattern oldValuePattern, String newValue) {
         if (jsonElement.isJsonObject()) {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             for (Map.Entry<String, JsonElement> ele : jsonObject.entrySet()) {
@@ -228,16 +229,66 @@ public class TextUtils {
                     continue;
                 }
 
-                if (isTextField(key) && value.isJsonPrimitive() && value.getAsString().contains(oldValue)) {
-                    jsonObject.addProperty(key, value.getAsString().replace(oldValue, newValue));
+                if (isTextField(key) && value.isJsonPrimitive()) {
+                    Matcher matcher = oldValuePattern.matcher(value.getAsString());
+                    if (matcher.find()) {
+                        jsonObject.addProperty(key, matcher.replaceAll(newValue));
+                    }
                 } else {
-                    replaceFieldValue(value, oldValue, newValue);
+                    replaceTextFieldValue(value, oldValuePattern, newValue);
                 }
             }
         } else if (jsonElement.isJsonArray()) {
             JsonArray jsonArray = jsonElement.getAsJsonArray();
             for (JsonElement element : jsonArray) {
-                replaceFieldValue(element, oldValue, newValue);
+                replaceTextFieldValue(element, oldValuePattern, newValue);
+            }
+        }
+    }
+
+    /**
+     * replace the colors of a {@link MutableComponent} into white
+     *
+     * @param text  the text
+     * @return text after replacement
+     */
+    public static MutableComponent replaceComponentColor(MutableComponent text) {
+        //#if MC>=12005
+        JsonElement jsonElement = new Component.SerializerAdapter(VanillaRegistries.createLookup()).serialize(text, null, null);
+        //#else
+        //$$ JsonElement jsonElement = Component.Serializer.toJsonTree(text);
+        //#endif
+        replaceColorFieldValue(jsonElement);
+        //#if MC>=12005
+        return new Component.SerializerAdapter(VanillaRegistries.createLookup()).deserialize(jsonElement, null, null);
+        //#else
+        //$$ return Component.Serializer.fromJson(jsonElement);
+        //#endif
+    }
+
+    private static void replaceColorFieldValue(JsonElement jsonElement) {
+        if (jsonElement.isJsonObject()) {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            for (Map.Entry<String, JsonElement> ele : jsonObject.entrySet()) {
+                String key = ele.getKey();
+                JsonElement value = ele.getValue();
+
+                if (isProtectedField(key)) {
+                    continue;
+                }
+
+                if (isTextField(key) && value.isJsonPrimitive()) {
+                    jsonObject.addProperty(key, value.getAsString().replaceAll("§.",""));
+                } else if (isColorField(key) && value.isJsonPrimitive()) {
+                    jsonObject.addProperty(key, "white");
+                } else {
+                    replaceColorFieldValue(value);
+                }
+            }
+        } else if (jsonElement.isJsonArray()) {
+            JsonArray jsonArray = jsonElement.getAsJsonArray();
+            for (JsonElement element : jsonArray) {
+                replaceColorFieldValue(element);
             }
         }
     }
@@ -247,6 +298,10 @@ public class TextUtils {
     }
 
     private static boolean isTextField(String key) {
-        return key.contains("text") || key.contains("value") || key.contains("translate");
+        return key.contains("text") || key.contains("value");
+    }
+
+    private static boolean isColorField(String key) {
+        return key.contains("color");
     }
 }
