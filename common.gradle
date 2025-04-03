@@ -57,9 +57,9 @@ JavaVersion JAVA_COMPATIBILITY =
                                 JavaVersion.VERSION_1_8
 
 java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(JAVA_COMPATIBILITY.majorVersion))
-    }
+    // These define the java compatibility of the artifacts
+    sourceCompatibility = JAVA_COMPATIBILITY
+    targetCompatibility = JAVA_COMPATIBILITY
 }
 
 String versionSuffix = ''
