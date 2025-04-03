@@ -39,6 +39,7 @@ public class Formatter {
         if (player != null) {
             message = message.replace("{pos}", String.format("(%d,%d,%d)", (int) player.getX(), (int) player.getY(), (int) player.getZ()));
         }
+        message = GradientParser.parse(message);
         return message;
     }
 }
