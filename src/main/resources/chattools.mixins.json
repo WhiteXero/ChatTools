@@ -6,13 +6,14 @@
   "mixins": [
     "BookViewScreenMixin",
     "ChatComponentMixin",
-    "ServerboundChatPacketMixin",
     "ChatScreenMixin",
     "ClientHandshakePacketListenerImplMixin",
     "ClientPacketListenerMixin",
     "EntityRendererMixin",
+    "FriendlyByteBufMixin",
+    "GuiMixinForExclusiveActionbar",
     "GuiMixinForRestoreMessages",
-    "GuiMixinForExclusiveActionbar"
+    "ServerboundChatPacketMixin"
   ],
   "injectors": {
     "defaultRequire": 1
