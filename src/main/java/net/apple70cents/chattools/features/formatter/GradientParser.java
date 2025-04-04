@@ -107,6 +107,7 @@ public class GradientParser {
         List<Color> colors = parseColors(colorsStr);
         if (colors.isEmpty() || text.isEmpty()) return text;
 
+        // get grapheme clusters
         List<String> graphemes = new ArrayList<>();
         BreakIterator boundary = BreakIterator.getCharacterInstance();
         boundary.setText(text);
@@ -115,22 +116,33 @@ public class GradientParser {
             graphemes.add(text.substring(start, end));
         }
 
+        // don't count whitespaces when dividing groups, but they should remain in the final output
         List<String> segments = new ArrayList<>();
-        for (int i = 0; i < graphemes.size(); i += segmentLength) {
-            int end = Math.min(i + segmentLength, graphemes.size());
-            StringBuilder segment = new StringBuilder();
-            for (int j = i; j < end; j++) {
-                segment.append(graphemes.get(j));
+        StringBuilder currentSegment = new StringBuilder();
+        int colorableCount = 0;
+
+        for (int i = 0; i < graphemes.size(); i++) {
+            String grapheme = graphemes.get(i);
+            if (!grapheme.trim().isEmpty()) { // whitespaces won't contribute to colorableCount
+                colorableCount++;
             }
-            segments.add(segment.toString());
+            currentSegment.append(grapheme);
+
+            if (colorableCount == segmentLength || i == graphemes.size() - 1) { // reach length or at the end
+                segments.add(currentSegment.toString()); // add to segments list
+                currentSegment.setLength(0); // clear currentSegment
+                colorableCount = 0;
+            }
         }
 
+        // apply colors to them!!
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < segments.size(); i++) {
             double ratio = (segments.size() == 1) ? 0.0 : (double) i / (segments.size() - 1);
             Color color = interpolate(colors, ratio);
             result.append(format.apply(color, segments.get(i)));
         }
+
         return result.toString();
     }
 
