@@ -1,5 +1,6 @@
 package net.apple70cents.chattools.features.formatter;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -106,13 +107,25 @@ public class GradientParser {
         List<Color> colors = parseColors(colorsStr);
         if (colors.isEmpty() || text.isEmpty()) return text;
 
-        List<String> segments = new ArrayList<>();
-        for (int i = 0; i < text.length(); i += segmentLength) {
-            int end = Math.min(i + segmentLength, text.length());
-            segments.add(text.substring(i, end));
+        List<String> graphemes = new ArrayList<>();
+        BreakIterator boundary = BreakIterator.getCharacterInstance();
+        boundary.setText(text);
+        int start = boundary.first();
+        for (int end = boundary.next(); end != BreakIterator.DONE; start = end, end = boundary.next()) {
+            graphemes.add(text.substring(start, end));
         }
-        StringBuilder result = new StringBuilder();
 
+        List<String> segments = new ArrayList<>();
+        for (int i = 0; i < graphemes.size(); i += segmentLength) {
+            int end = Math.min(i + segmentLength, graphemes.size());
+            StringBuilder segment = new StringBuilder();
+            for (int j = i; j < end; j++) {
+                segment.append(graphemes.get(j));
+            }
+            segments.add(segment.toString());
+        }
+
+        StringBuilder result = new StringBuilder();
         for (int i = 0; i < segments.size(); i++) {
             double ratio = (segments.size() == 1) ? 0.0 : (double) i / (segments.size() - 1);
             Color color = interpolate(colors, ratio);
