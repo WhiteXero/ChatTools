@@ -14,6 +14,24 @@
         },
         {
           "type": "sub",
+          "key": "general.CircuitBreaker",
+          "content": [
+            {
+              "type": "intField",
+              "key": "general.CircuitBreaker.ToastThreshold"
+            },
+            {
+              "type": "intField",
+              "key": "general.CircuitBreaker.NickHiderThreshold"
+            },
+            {
+              "type": "intField",
+              "key": "general.CircuitBreaker.OverrideChatColorThreshold"
+            }
+          ]
+        },
+        {
+          "type": "sub",
           "key": "general.Timestamp",
           "content": [
             {

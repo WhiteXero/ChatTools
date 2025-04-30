@@ -1,14 +1,31 @@
 package net.apple70cents.chattools.features.general;
 
-import net.apple70cents.chattools.utils.LoggerUtils;
-import net.apple70cents.chattools.utils.TextUtils;
+import net.apple70cents.chattools.utils.*;
 import net.minecraft.network.chat.Component;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class ChatColorEraser {
     private static final Map<String, Component> cache = new LinkedHashMap<>();
+    private static Component text;
+
+    private static final CircuitBreakerExecutor executor = CircuitBreakerExecutor.of(() -> {
+        try {
+            text = TextUtils.replaceComponentColor(text.copy());
+        } catch (Exception e) {
+            LoggerUtils.error("[ChatTools] Error occurred on erasing the color of this text: " + text + ", let's show it raw...");
+            e.printStackTrace();
+        }
+    }).setMaxLimitPerSecond(() -> ((Number) ConfigUtils.get("general.CircuitBreaker.OverrideChatColorThreshold")).intValue())
+    .setFailsafeFunction(() -> {
+        int threshold = ((Number) ConfigUtils.get("general.CircuitBreaker.OverrideChatColorThreshold")).intValue();
+        MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.CircuitBreaker.exceed.OverrideChatColor", threshold));
+        MessageUtils.sendToActionbar(TextUtils.trans("texts.CircuitBreaker.exceed.OverrideChatColor", threshold));
+        LoggerUtils.warn(TextUtils.trans("texts.CircuitBreaker.exceed.OverrideChatColor", threshold).getString());
+        ConfigUtils.set("general.OverrideChatColor.Enabled", false);
+    }).setFailsafeJudgement(() -> (Boolean) ConfigUtils.get("general.OverrideChatColor.Enabled"));
 
     public static Component work(Component message) {
         String key = message.toString();
@@ -17,15 +34,9 @@ public class ChatColorEraser {
             return cache.get(key); // get from cache
         }
 
-        Component result = message.copy();
-        try {
-            result = TextUtils.replaceComponentColor(message.copy());
-        } catch (Exception e) {
-            LoggerUtils.error("[ChatTools] Error occurred on erasing the color of this text: " + result + ", let's show it raw...");
-            e.printStackTrace();
-            return message;
-        }
-        cache.put(key, result);
-        return result;
+        text = message;
+        executor.run();
+        cache.put(key, text);
+        return text;
     }
 }

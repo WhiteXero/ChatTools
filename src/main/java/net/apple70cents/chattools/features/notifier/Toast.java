@@ -15,9 +15,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Toast {
-    private static final ExecutorService TOAST_EXECUTOR = Executors.newCachedThreadPool();
-
-    public static void work(String text) {
+    private static final ExecutorService TOAST_EXECUTOR_THREAD_POOL = Executors.newCachedThreadPool();
+    private static String text;
+    private static final CircuitBreakerExecutor toastExecutor = CircuitBreakerExecutor.of(() -> {
         final String TITLE = TextUtils.trans("texts.toast.title").getString();
         switch ((String) ConfigUtils.get("notifier.Toast.Mode")) {
             case "AWT":
@@ -35,6 +35,18 @@ public class Toast {
             default:
                 return;
         }
+    }).setMaxLimitPerSecond(() -> ((Number) ConfigUtils.get("general.CircuitBreaker.ToastThreshold")).intValue())
+    .setFailsafeFunction(() -> {
+        int threshold = ((Number) ConfigUtils.get("general.CircuitBreaker.ToastThreshold")).intValue();
+        MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.CircuitBreaker.exceed.Toast", threshold));
+        MessageUtils.sendToActionbar(TextUtils.trans("texts.CircuitBreaker.exceed.Toast", threshold));
+        LoggerUtils.warn(TextUtils.trans("texts.CircuitBreaker.exceed.Toast", threshold).getString());
+        ConfigUtils.set("notifier.Toast.Enabled", false);
+    }).setFailsafeJudgement(() -> (Boolean) ConfigUtils.get("notifier.Toast.Enabled"));
+
+    public static void work(String text1) {
+        text = text1;
+        toastExecutor.run();
     }
 
     public static void toastWithAddon(String caption, String text) {
@@ -43,7 +55,7 @@ public class Toast {
             return;
         }
         LoggerUtils.info("[ChatTools] Trying to toast with addon.");
-        TOAST_EXECUTOR.submit(() -> {
+        TOAST_EXECUTOR_THREAD_POOL.submit(() -> {
             Map<String, String> map = DownloadUtils.getFileNamesMap();
             if (map == null || map.isEmpty()) {
                 return;
@@ -91,7 +103,7 @@ public class Toast {
     }
 
     public static void toastWithPowershell(String caption, String text) {
-        TOAST_EXECUTOR.submit(() -> {
+        TOAST_EXECUTOR_THREAD_POOL.submit(() -> {
             try {
                 LoggerUtils.info("[ChatTools] Toast Notified with Powershell.");
                 final String COMMAND_TEMPLATE = "powershell.exe -ExecutionPolicy Bypass -Command \"" + "[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] > $null;" + "$template = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02);" + "$xml = New-Object Windows.Data.Xml.Dom.XmlDocument;" + "$xml.LoadXml($template.GetXml());" + "$texts = $xml.GetElementsByTagName('text');" + "$texts.Item(0).AppendChild($xml.CreateTextNode('%s')) > $null;" + "$texts.Item(1).AppendChild($xml.CreateTextNode('%s')) > $null;" + "$toast = [Windows.UI.Notifications.ToastNotification]::new($xml);" + "$notifier = [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('%s');" + "$notifier.Show($toast);\"";
@@ -114,7 +126,7 @@ public class Toast {
     public static void toastWithTwoSlices(String caption, String text) {
         LoggerUtils.info("[ChatTools] Toast Notified with Two-Slices.");
         System.setProperty("java.awt.headless", "false");
-        TOAST_EXECUTOR.submit(() -> {
+        TOAST_EXECUTOR_THREAD_POOL.submit(() -> {
             com.sshtools.twoslices.Toast.toast(ToastType.INFO, caption, text);
         });
     }

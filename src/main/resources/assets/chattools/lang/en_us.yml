@@ -19,6 +19,11 @@ key:
       welcomeMessage: New to Chat Tools? Check out FAQs here!
       toast.title: 'From Minecraft:'
       actionbar.title: §a§lReceived messages!
+      CircuitBreaker:
+        exceed:
+          Toast: '§6[Chat Tools] Toast overloaded (requests ≥ %s§6/s), automatically disabled'
+          NickHider: '§6[Chat Tools] Nickname Hider overloaded (requests ≥ %s§6/s), automatically disabled'
+          OverrideChatColor: '§6[Chat Tools] Override Chat Color overloaded (requests ≥ %s§6/s), automatically disabled'
       repeat:
         failure:
           empty: §6§lNo messages!
@@ -88,6 +93,18 @@ key:
         Enabled:
           .: Enable Chat Tools
           '@Tooltip': Toggles the entire mod.
+      CircuitBreaker:
+        .: Circuit Breaker
+        '@Tooltip': Circuit Breaker threshold settings for the relevant features.
+        ToastThreshold:
+          .: Toast Threshold
+          '@Tooltip': Toast will be disabled when Toast requests are received within a one-second time window that exceeds this threshold.
+        NickHiderThreshold:
+          .: Nickname Hider Threshold
+          '@Tooltip': Nickname Hider will be disabled when new Nickname Hider requests are received within a one-second time window that exceeds this threshold.
+        OverrideChatColorThreshold:
+          .: Override Chat Color Threshold
+          '@Tooltip': Override Chat Color will be disabled when new Override Chat Color requests are received within a one-second time window that exceeds this threshold.
       Timestamp:
         .: Timestamp
         '@Tooltip': Inserts a timestamp before messages.

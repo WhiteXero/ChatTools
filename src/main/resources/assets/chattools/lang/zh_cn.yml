@@ -19,6 +19,11 @@ key:
       welcomeMessage: 第一次使用 Chat Tools ？点击这里查看常见问题解答！
       toast.title: 来自 Minecraft 的关注信息
       actionbar.title: §a§l聊天栏中有您关注的信息
+      CircuitBreaker:
+        exceed:
+          Toast: '§6[Chat Tools] 后台通知过载（请求速度超过每秒%s§6次），已自动禁用'
+          NickHider: '§6[Chat Tools] 隐藏昵称过载（请求速度超过每秒%s§6次），已自动禁用'
+          OverrideChatColor: '§6[Chat Tools] 覆盖聊天颜色样式过载（请求速度超过每秒%s§6次），已自动禁用'
       repeat:
         failure:
           empty: §6§l复读失败：不存在上一条消息
@@ -86,6 +91,18 @@ key:
         Enabled:
           .: 启用 Chat Tools [聊天工具箱]
           '@Tooltip': 切换整个模组的开关。
+      CircuitBreaker:
+        .: 熔断器
+        '@Tooltip': 相关功能熔断阈值设置
+        ToastThreshold:
+          .: 后台通知 熔断阈值
+          '@Tooltip': 当在一秒的时间窗口内接收到超过此阈值的后台通知请求时，后台通知会被禁用
+        NickHiderThreshold:
+          .: 隐藏昵称 熔断阈值
+          '@Tooltip': 当在一秒的时间窗口内接收到超过此阈值的隐藏昵称处理请求时，隐藏昵称会被禁用
+        OverrideChatColorThreshold:
+          .: 覆盖聊天颜色样式 熔断阈值
+          '@Tooltip': 当在一秒的时间窗口内接收到超过此阈值的覆盖聊天颜色样式请求时，覆盖聊天颜色样式会被禁用
       Timestamp:
         .: 时间戳
         '@Tooltip': 在消息前插入时间戳。
