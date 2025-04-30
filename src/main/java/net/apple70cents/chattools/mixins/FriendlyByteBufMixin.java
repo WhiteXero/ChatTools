@@ -16,7 +16,7 @@ public abstract class FriendlyByteBufMixin {
         if (!(boolean) ConfigUtils.get("general.IncreaseChatFieldMaxLength")) {
             return i;
         }
-        return Integer.MAX_VALUE;
+        return Short.MAX_VALUE;
     }
 
     @ModifyVariable(method = "writeUtf(Ljava/lang/String;I)Lnet/minecraft/network/FriendlyByteBuf;", at = @At(value = "HEAD"), argsOnly = true)
@@ -27,6 +27,6 @@ public abstract class FriendlyByteBufMixin {
         if (!(boolean) ConfigUtils.get("general.IncreaseChatFieldMaxLength")) {
             return i;
         }
-        return Integer.MAX_VALUE;
+        return Short.MAX_VALUE;
     }
 }
