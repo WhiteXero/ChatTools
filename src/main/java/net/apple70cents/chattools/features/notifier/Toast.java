@@ -7,13 +7,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Toast {
+    private static final ExecutorService TOAST_EXECUTOR = Executors.newCachedThreadPool();
+
     public static void work(String text) {
         final String TITLE = TextUtils.trans("texts.toast.title").getString();
         switch ((String) ConfigUtils.get("notifier.Toast.Mode")) {
@@ -40,7 +43,7 @@ public class Toast {
             return;
         }
         LoggerUtils.info("[ChatTools] Trying to toast with addon.");
-        Runnable runnable = () -> {
+        TOAST_EXECUTOR.submit(() -> {
             Map<String, String> map = DownloadUtils.getFileNamesMap();
             if (map == null || map.isEmpty()) {
                 return;
@@ -52,12 +55,8 @@ public class Toast {
             String command = String.format("%s %s %s %s", '"' + toastExeFile.toString() + '"', '"' + caption + '"', '"' + text.replace("\n", "\\n") + '"', '"' + iconFile.toString() + '"');
             ProcessBuilder builder = new ProcessBuilder(command);
             builder.redirectErrorStream(true);
-            try {
-                Process process = builder.start();
-                // get input stream of the process
-                InputStream inputStream = process.getInputStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-                // logs the results
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(builder.start()
+                                                                                         .getInputStream(), StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     LoggerUtils.info(line);
@@ -66,9 +65,7 @@ public class Toast {
                 MessageUtils.sendToActionbar(TextUtils.trans("texts.toast.failure"));
                 e.printStackTrace();
             }
-        };
-        Thread thread = new Thread(runnable, "ChatTools-Toast-Thread");
-        thread.start();
+        });
     }
 
     public static void toastWithAWT(String caption, String text) {
@@ -94,48 +91,31 @@ public class Toast {
     }
 
     public static void toastWithPowershell(String caption, String text) {
-        try {
-            LoggerUtils.info("[ChatTools] Toast Notified with Powershell.");
-            // @formatter:off
-            final String COMMAND_TEMPLATE = "powershell.exe -ExecutionPolicy Bypass -Command \"" +
-                    "[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] > $null;" +
-                    "$template = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02);" +
-                    "$xml = New-Object Windows.Data.Xml.Dom.XmlDocument;" +
-                    "$xml.LoadXml($template.GetXml());" +
-                    "$texts = $xml.GetElementsByTagName('text');" +
-                    "$texts.Item(0).AppendChild($xml.CreateTextNode('%s')) > $null;" +
-                    "$texts.Item(1).AppendChild($xml.CreateTextNode('%s')) > $null;" +
-                    "$toast = [Windows.UI.Notifications.ToastNotification]::new($xml);" +
-                    "$notifier = [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('%s');" +
-                    "$notifier.Show($toast);\"";
-            // @formatter:on
-            String command = String.format(COMMAND_TEMPLATE, caption, text.replace("\n", "'+\\\"`r`n\\\"+'"), "Chat Tools Toast");
-            ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", command);
-            builder.redirectErrorStream(true);
-            // start process
-            Process process = builder.start();
-
-            // gets input stream
-            InputStream inputStream = process.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-
-            // reads and logs the result
-            String line;
-            while ((line = reader.readLine()) != null) {
-                LoggerUtils.info(line);
+        TOAST_EXECUTOR.submit(() -> {
+            try {
+                LoggerUtils.info("[ChatTools] Toast Notified with Powershell.");
+                final String COMMAND_TEMPLATE = "powershell.exe -ExecutionPolicy Bypass -Command \"" + "[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] > $null;" + "$template = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02);" + "$xml = New-Object Windows.Data.Xml.Dom.XmlDocument;" + "$xml.LoadXml($template.GetXml());" + "$texts = $xml.GetElementsByTagName('text');" + "$texts.Item(0).AppendChild($xml.CreateTextNode('%s')) > $null;" + "$texts.Item(1).AppendChild($xml.CreateTextNode('%s')) > $null;" + "$toast = [Windows.UI.Notifications.ToastNotification]::new($xml);" + "$notifier = [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('%s');" + "$notifier.Show($toast);\"";
+                String command = String.format(COMMAND_TEMPLATE, caption, text.replace("\n", "'+\\\"`r`n\\\"+'"), "Chat Tools Toast");
+                ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", command);
+                builder.redirectErrorStream(true);
+                Process process = builder.start();
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        LoggerUtils.info(line);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
     }
 
     public static void toastWithTwoSlices(String caption, String text) {
         LoggerUtils.info("[ChatTools] Toast Notified with Two-Slices.");
         System.setProperty("java.awt.headless", "false");
-        // starts a new thread for this
-        Thread thread = new Thread(() -> {
+        TOAST_EXECUTOR.submit(() -> {
             com.sshtools.twoslices.Toast.toast(ToastType.INFO, caption, text);
-        }, "ChatTools-Toast-Thread");
-        thread.start();
+        });
     }
 }
