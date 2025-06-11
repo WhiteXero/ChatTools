@@ -7,6 +7,10 @@
 - 优化 自动响应现在会模拟从聊天栏发出，而不是直接发包
 - 新增 指令 `/chattools config reload` 来重载配置
 
+### v2.3.10.1
+- 修复 模拟聊天窗口失败
+- 新增 通过发送数据包来执行命令或发送文字
+
 ## English
 ### v2.3.10
 - Added: Spanish(es_es) translations. @pilahito
@@ -15,3 +19,6 @@
 - Added: Circuit Breaker for several features.
 - Optimization: Responder now simulates sending text from Chat Screen, instead of just sending packets.
 - Added: Command `/chattools config reload` to reload configurations.
+## v2.3.10.1
+- Fixed: Failed to simulate Chat Screen
+- Added: Option "Use Data Packets For Sending Messages"
