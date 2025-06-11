@@ -4,6 +4,7 @@ key:
   chattools:
     texts:
       config:
+        reload: '§6[Chat Tools] Reloaded!'
         get: '§6[Chat Tools] Got value of "%s§6" as %s'
         set:
           .: '§a[Chat Tools] Set value of "%s§a" to %s'
@@ -71,7 +72,7 @@ key:
           copyToClipboard: "§c - §rCopy To Clipboard: %s"
       'on': Enable Chat Tools
       'off': Disable Chat Tools
-      requireRestart: Restart Minecraft to apply changes!
+      requireReload: Use command §6/chattools config reload§r to apply changes!
       defaultValue: 'Default: %s'
       variableType: 'Variable Type: %s'
     gui:

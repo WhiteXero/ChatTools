@@ -57,7 +57,7 @@ key:
           copyToClipboard: "§c - §rCopy 2 meowboard: %s"
       'on': Chatz Stuffz on
       'off': Now its off
-      requireRestart: dont forget 2 restart Meowcraft later, yo.
+      requireReload: 'dont forget 2 reload by meowing:''/chattools config reload'''
       defaultValue: 'deefolt: %s'
       variableType: 'var type: %s'
     gui:

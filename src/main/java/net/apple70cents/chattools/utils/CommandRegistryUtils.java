@@ -152,7 +152,13 @@ public class CommandRegistryUtils {
                 // chattools config openfile
                 .then(literal("openfile").executes(t -> {
                     Util.getPlatform().openFile(ConfigStorage.FILE);
-                    MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.requireRestart"));
+                    MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.requireReload"));
+                    return Command.SINGLE_SUCCESS;
+                }))
+                // chattools config reload
+                .then(literal("reload").executes(t -> {
+                    ConfigUtils.init();
+                    MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.config.reload"));
                     return Command.SINGLE_SUCCESS;
                 }))
                 // chattools config get

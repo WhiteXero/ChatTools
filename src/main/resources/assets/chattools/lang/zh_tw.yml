@@ -55,7 +55,7 @@ key:
           copyToClipboard: §c - §r複製到剪切板：%s
       'on': 啟用 Chat Tools [聊天工具箱]
       'off': 停用 Chat Tools [聊天工具箱]
-      requireRestart: 請在更改後重啟 Minecraft 以應用更改
+      requireReload: 請在更改後執行指令 §6/chattools config reload§r 以應用更改
       defaultValue: 默認：%s
       variableType: 類型：%s
     gui:

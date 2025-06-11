@@ -4,6 +4,7 @@ key:
   chattools:
     texts:
       config:
+        reload: '§6[Chat Tools] 已从文件重新加载配置'
         get: '§6[Chat Tools] 读取到 "%s§6" 的值为 %s'
         set:
           .: '§a[Chat Tools] 已设置 "%s§a" 的值为 %s'
@@ -69,7 +70,7 @@ key:
           copyToClipboard: §c - §r复制到剪切板：%s
       'on': 启用 Chat Tools [聊天工具箱]
       'off': 禁用 Chat Tools [聊天工具箱]
-      requireRestart: 请在更改后重启 Minecraft 以应用更改
+      requireReload: 请在更改后输入 §6/chattools config reload§r 应用更改
       defaultValue: 默认：%s
       variableType: 类型：%s
     gui:

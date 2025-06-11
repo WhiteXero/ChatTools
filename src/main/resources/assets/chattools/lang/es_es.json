@@ -48,7 +48,7 @@
   "key.chattools.texts.PreviewClickEvents.clickEvent.copyToClipboard": "§c - §rCopiar al Portapapeles: %s",
   "key.chattools.texts.on": "Activar Herramientas de Chat",
   "key.chattools.texts.off": "Desactivar Herramientas de Chat",
-  "key.chattools.texts.requireRestart": "¡Reinicia Minecraft para aplicar los cambios!",
+  "key.chattools.texts.requireReload": "¡Reinicia Minecraft para aplicar los cambios!",
   "key.chattools.texts.defaultValue": "Predeterminado: %s",
   "key.chattools.texts.variableType": "Tipo de Variable: %s",
   "key.chattools.gui.title": "Configuración de Herramientas de Chat",
