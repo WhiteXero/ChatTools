@@ -1,12 +1,13 @@
 package net.apple70cents.chattools.utils;
 
 import net.apple70cents.chattools.features.general.ExclusiveActionbarHandler;
+import net.apple70cents.chattools.mixins.ScreenAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author 70CentsApple
@@ -67,18 +68,24 @@ public class MessageUtils {
         setJustSentMessage(true);
 
         //#if MC>=11900
-        Minecraft mc = Minecraft.getInstance();
-        mc.execute(() -> {
-            Screen oldScreen = mc.screen;
-            mc.setScreen(new ChatScreen(text));
-            mc.mouseHandler.grabMouse();
-            if (mc.screen != null) {
-                ((ChatScreen) mc.screen).handleChatInput(text, false);
-            } else {
-                LoggerUtils.warn("[ChatTools] Failed to send message to public chat: " + text);
+        if ((boolean) ConfigUtils.get("general.UseSendPacketsForSendingMessages")) {
+            Minecraft mc = Minecraft.getInstance();
+            mc.execute(() -> {
+                ChatScreen tempChatScreen = new ChatScreen(text);
+                ((ScreenAccessor) tempChatScreen).invokeInit(mc, 1, 1);
+                tempChatScreen.handleChatInput(text, false);
+            });
+        } else {
+            String text2 = StringUtils.normalizeSpace(text.trim());
+            if (!text2.isEmpty()) {
+                Minecraft.getInstance().gui.getChat().addRecentChat(text);
+                if (text2.startsWith("/")) {
+                    player.connection.sendCommand(text2.substring(1));
+                } else {
+                    player.connection.sendChat(text2);
+                }
             }
-            mc.setScreen(oldScreen);
-        });
+        }
         //#else
         //$$ player.chat(text);
         //#endif

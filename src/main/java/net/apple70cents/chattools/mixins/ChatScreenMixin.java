@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -29,9 +30,15 @@ import java.util.List;
  * @author 70CentsApple
  */
 @Mixin(ChatScreen.class)
-public class ChatScreenMixin {
+public abstract class ChatScreenMixin {
     @Shadow
     protected EditBox input;
+
+    @Shadow protected abstract void init();
+
+    public void initScreen() {
+        init();
+    }
 
     @Inject(method = "init", at = @At("TAIL"))
     private void increaseChatFieldMaxLength(CallbackInfo ci) {

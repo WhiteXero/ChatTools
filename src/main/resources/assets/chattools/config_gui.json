@@ -173,6 +173,10 @@
               "key": "general.OverrideChatColor.Enabled"
             }
           ]
+        },
+        {
+          "type": "boolean",
+          "key": "general.UseSendPacketsForSendingMessages"
         }
       ]
     },

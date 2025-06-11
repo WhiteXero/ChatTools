@@ -232,6 +232,12 @@ key:
         Enabled:
           .: 启用覆盖聊天颜色样式
           '@Tooltip': 切换是否启用覆盖聊天颜色样式。
+      UseSendPacketsForSendingMessages:
+        .: 通过发送数据包来执行命令或发送文字
+        '@Tooltip': |-
+          当它启用时，聊天工具箱的所有“发送消息”功能将直接发包到服务器
+          当它禁用时，聊天工具箱的所有“发送消息”功能会模拟打开聊天栏发送文本
+          §6（需要 Minecraft 版本≥1.19）§r
     notifier:
       Toast:
         .: 后台通知

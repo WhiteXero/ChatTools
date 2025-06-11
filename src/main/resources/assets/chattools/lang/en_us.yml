@@ -242,6 +242,12 @@ key:
         Enabled:
           .: Enable Override Chat Color
           '@Tooltip': Toggles whether we should override your chat colors.
+      UseSendPacketsForSendingMessages:
+        .: Use Data Packets For Sending Messages
+        '@Tooltip': |-
+          When enabled, if Chat Tools is to send a message, it will send through a data packet directly.
+          When disabled, if Chat Tools is to send a message, it will simulate a Chat Screen and send it.
+          §6(Requires Minecraft ≥ 1.19)§r
     notifier:
       Toast:
         .: System Toast

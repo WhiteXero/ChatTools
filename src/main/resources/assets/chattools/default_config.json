@@ -29,6 +29,7 @@
   "general.IncreaseChatFieldMaxLength": false,
   "general.HideChatHistoryInF1Mode": false,
   "general.OverrideChatColor.Enabled": false,
+  "general.UseSendPacketsForSendingMessages": false,
   "notifier.Toast.Enabled": false,
   "notifier.Toast.Mode": "ADDON",
   "notifier.Sound.Enabled": true,
