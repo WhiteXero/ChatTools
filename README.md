@@ -20,7 +20,8 @@ Chat Tools 是一个可以高度自定义各种功能的 Minecraft 客户端 mod
 - `/chattools regex_checker <模式串> [<测试内容>]` - 若无测试内容：测试模式串是否符合正则表达式规则；若有测试内容：测试模式串是否符合正则表达式规则，并测试测试内容能否被模式串匹配。
 - `/chattools send_to_client text <文本JSON组件>` - 将特定文本发送至客户端聊天栏
 - `/chattools send_to_client actionbar <文本JSON组件>` - 将特定文本显示在客户端动作栏
-- `/chattools config openfile` - 打开配置文件（编辑后需要重启游戏以生效）
+- `/chattools config openfile` - 打开配置文件（编辑后需要重载配置）
+- `/chattools config reload` - 重载配置
 - `/chattools config get <键名>` - 获取当前实例某配置键的值
 - `/chattools config set <键名> <值> [<保存>]` - 设置当前实例某配置键的值，如果保存为 true，则一并保存到文件
 - `/chattools config toggle <键名> [<保存>]` - 切换当前实例某布尔类型配置键的启用状态，如果保存为 true，则一并保存到文件

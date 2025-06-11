@@ -20,7 +20,8 @@ Chat Tools is a highly customizable Minecraft client mod that supports various f
 - `/chattools regex_checker <pattern> [<test_content>]` - Without test content: check if the pattern is a valid regex. With test content: validate the pattern and test if it matches the content.
 - `/chattools send_to_client text <text_JSON_component>` - Send specific text to the client chat bar.
 - `/chattools send_to_client actionbar <text_JSON_component>` - Display specific text on the client actionbar.
-- `/chattools config openfile` - Open the configuration file (editing requires a game restart to apply changes).
+- `/chattools config openfile` - Open the configuration file (editing requires a reload to apply changes).
+- `/chattools config reload` - Reload the configurations.
 - `/chattools config get <key>` - Retrieve the value of a specific configuration key for the current session.
 - `/chattools config set <key> <value> [<save>]` - Set the value of a specific configuration key. If save is set to true, the changes will also be saved to the file.
 - `/chattools config toggle <key> [<save>]` - Toggle the state of a boolean-type configuration key. If save is set to true, the changes will also be saved to the file.
