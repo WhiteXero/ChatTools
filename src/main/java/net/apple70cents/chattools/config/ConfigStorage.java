@@ -7,6 +7,7 @@ import net.apple70cents.chattools.utils.LoggerUtils;
 import net.minecraft.client.Minecraft;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -42,16 +43,16 @@ public class ConfigStorage {
         return this;
     }
 
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     public void readConfigFile(boolean loadDefault) {
         try {
             Reader reader;
             if (loadDefault) {
                 reader = new InputStreamReader(Minecraft.getInstance().getClass().getClassLoader()
-                                                              .getResourceAsStream("assets/chattools/default_config.json"));
+                                                        .getResourceAsStream("assets/chattools/default_config.json"));
             } else {
-                reader = new BufferedReader(new FileReader(FILE));
+                reader = new InputStreamReader(new FileInputStream(FILE), StandardCharsets.UTF_8);
             }
             configMap = GSON.fromJson(reader, Map.class);
         } catch (Exception e) {
@@ -60,9 +61,9 @@ public class ConfigStorage {
     }
 
     public Object get(String key) {
-        if (this.hasKey(key)){
+        if (this.hasKey(key)) {
             return configMap.get(key);
-        } else if (ConfigUtils.DEFAULT_CONFIG.hasKey(key)){
+        } else if (ConfigUtils.DEFAULT_CONFIG.hasKey(key)) {
             return ConfigUtils.DEFAULT_CONFIG.get(key);
         } else {
             LoggerUtils.error("[ChatTools] Error occurred when getting variable \"" + key + "\", no such key!");
@@ -75,7 +76,7 @@ public class ConfigStorage {
         }
     }
 
-    public boolean hasKey(String key){
+    public boolean hasKey(String key) {
         return this.configMap.get(key) != null;
     }
 
@@ -89,7 +90,7 @@ public class ConfigStorage {
         ((List<String>) get("formatter.DisableOnMatchList")).removeIf(String::isBlank);
         ((List<String>) get("filter.List")).removeIf(String::isBlank);
         LoggerUtils.info("[ChatTools] Saving configs.");
-        try (FileWriter writer = new FileWriter(FILE)) {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(FILE), StandardCharsets.UTF_8)) {
             GSON.toJson(configMap, writer);
         } catch (Exception e) {
             LoggerUtils.error("[ChatTools] Couldn't save config.");
