@@ -210,7 +210,7 @@ public class TextUtils {
      * @return text after replacement
      */
     public static MutableComponent replaceComponentText(MutableComponent text, Pattern oldStringPattern, String newString) {
-        //#if MC>=12005
+        //#if MC>=12106
         JsonElement jsonElement = ComponentSerialization.CODEC.encode(text, RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), null).result().orElse(null);
         //#elseif MC>=12005
         //$$ JsonElement jsonElement = new Component.SerializerAdapter(VanillaRegistries.createLookup()).serialize(text, null, null);
@@ -218,7 +218,7 @@ public class TextUtils {
         //$$ JsonElement jsonElement = Component.Serializer.toJsonTree(text);
         //#endif
         replaceTextFieldValue(jsonElement, oldStringPattern, newString);
-        //#if MC>=12005
+        //#if MC>=12106
         return ComponentSerialization.CODEC
                 .parse(RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), jsonElement).result()
                 .orElse(null).copy();
@@ -264,7 +264,7 @@ public class TextUtils {
      * @return text after replacement
      */
     public static MutableComponent replaceComponentColor(MutableComponent text) {
-        //#if MC>=12005
+        //#if MC>=12106
         JsonElement jsonElement = ComponentSerialization.CODEC.encode(text, RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), null).result().orElse(null);
         //#elseif MC>=12005
         //$$ JsonElement jsonElement = new Component.SerializerAdapter(VanillaRegistries.createLookup()).serialize(text, null, null);
@@ -272,7 +272,7 @@ public class TextUtils {
         //$$ JsonElement jsonElement = Component.Serializer.toJsonTree(text);
         //#endif
         replaceColorFieldValue(jsonElement);
-        //#if MC>=12005
+        //#if MC>=12106
         return ComponentSerialization.CODEC
                 .parse(RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), jsonElement).result()
                 .orElse(null).copy();

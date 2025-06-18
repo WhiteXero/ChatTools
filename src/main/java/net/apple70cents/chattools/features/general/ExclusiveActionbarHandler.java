@@ -59,7 +59,7 @@ public class ExclusiveActionbarHandler {
             int opacity = calculateOpacity(ele.startTime, ele.lifeTimeInMillis);
             yOffset += calculateOffset(ele.startTime, ele.lifeTimeInMillis);
             if (opacity > 2) {
-                //#if MC>=12000
+                //#if MC>=12106
                 context.pose().pushMatrix();
                 context.pose().translate(context.guiWidth() / 2.0F, context.guiHeight() - 68.0F - 4.0F);
                 context.pose().scale(size, size);

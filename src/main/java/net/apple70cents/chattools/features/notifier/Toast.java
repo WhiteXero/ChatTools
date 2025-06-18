@@ -37,11 +37,11 @@ public class Toast {
         }
     }).setMaxLimitPerSecond(() -> ((Number) ConfigUtils.get("general.CircuitBreaker.ToastThreshold")).intValue())
     .setFailsafeFunction(() -> {
+        ConfigUtils.set("notifier.Toast.Enabled", false);
         int threshold = ((Number) ConfigUtils.get("general.CircuitBreaker.ToastThreshold")).intValue();
         MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.CircuitBreaker.exceed.Toast", threshold));
         MessageUtils.sendToActionbar(TextUtils.trans("texts.CircuitBreaker.exceed.Toast", threshold));
         LoggerUtils.warn(TextUtils.trans("texts.CircuitBreaker.exceed.Toast", threshold).getString());
-        ConfigUtils.set("notifier.Toast.Enabled", false);
     }).setFailsafeJudgement(() -> (Boolean) ConfigUtils.get("notifier.Toast.Enabled"));
 
     public static void work(String text1) {

@@ -20,11 +20,11 @@ public class ChatColorEraser {
         }
     }).setMaxLimitPerSecond(() -> ((Number) ConfigUtils.get("general.CircuitBreaker.OverrideChatColorThreshold")).intValue())
     .setFailsafeFunction(() -> {
+        ConfigUtils.set("general.OverrideChatColor.Enabled", false);
         int threshold = ((Number) ConfigUtils.get("general.CircuitBreaker.OverrideChatColorThreshold")).intValue();
         MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.CircuitBreaker.exceed.OverrideChatColor", threshold));
         MessageUtils.sendToActionbar(TextUtils.trans("texts.CircuitBreaker.exceed.OverrideChatColor", threshold));
         LoggerUtils.warn(TextUtils.trans("texts.CircuitBreaker.exceed.OverrideChatColor", threshold).getString());
-        ConfigUtils.set("general.OverrideChatColor.Enabled", false);
     }).setFailsafeJudgement(() -> (Boolean) ConfigUtils.get("general.OverrideChatColor.Enabled"));
 
     public static Component work(Component message) {

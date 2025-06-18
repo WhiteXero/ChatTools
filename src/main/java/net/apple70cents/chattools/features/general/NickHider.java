@@ -27,11 +27,11 @@ public class NickHider {
         }
     }).setMaxLimitPerSecond(() -> ((Number) ConfigUtils.get("general.CircuitBreaker.NickHiderThreshold")).intValue())
     .setFailsafeFunction(() -> {
+        ConfigUtils.set("general.NickHider.Enabled", false);
         int threshold = ((Number) ConfigUtils.get("general.CircuitBreaker.NickHiderThreshold")).intValue();
         MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.CircuitBreaker.exceed.NickHider", threshold));
         MessageUtils.sendToActionbar(TextUtils.trans("texts.CircuitBreaker.exceed.NickHider", threshold));
         LoggerUtils.warn(TextUtils.trans("texts.CircuitBreaker.exceed.NickHider", threshold).getString());
-        ConfigUtils.set("general.NickHider.Enabled", false);
     }).setFailsafeJudgement(() -> (Boolean) ConfigUtils.get("general.NickHider.Enabled"));
 
     public static Component work(Component message) {
