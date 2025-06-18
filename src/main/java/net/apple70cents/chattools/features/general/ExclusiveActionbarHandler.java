@@ -60,12 +60,17 @@ public class ExclusiveActionbarHandler {
             yOffset += calculateOffset(ele.startTime, ele.lifeTimeInMillis);
             if (opacity > 2) {
                 //#if MC>=12000
-                context.pose().pushPose();
-                context.pose()
-                       .translate(context.guiWidth() / 2.0F, context.guiHeight() - 68.0F - 4.0F, 0.0F);
-                context.pose().scale(size, size, 1);
+                context.pose().pushMatrix();
+                context.pose().translate(context.guiWidth() / 2.0F, context.guiHeight() - 68.0F - 4.0F);
+                context.pose().scale(size, size);
                 context.drawCenteredString(font, ele.text, xOffset, yOffset + index * 12, opacity << 24 | 16777215);
-                context.pose().popPose();
+                context.pose().popMatrix();
+                //#elseif MC>=12000
+                //$$ context.pose().pushPose();
+                //$$ context.pose().translate(context.guiWidth() / 2.0F, context.guiHeight() - 68.0F - 4.0F, 0.0F);
+                //$$ context.pose().scale(size, size, 1);
+                //$$ context.drawCenteredString(font, ele.text, xOffset, yOffset + index * 12, opacity << 24 | 16777215);
+                //$$ context.pose().popPose();
                 //#else
                 //$$ pose.pushPose();
                 //$$ pose.translate(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2.0F, Minecraft

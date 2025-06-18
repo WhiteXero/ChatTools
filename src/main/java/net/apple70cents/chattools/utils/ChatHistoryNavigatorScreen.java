@@ -145,8 +145,10 @@ public class ChatHistoryNavigatorScreen extends Screen {
             } catch (PatternSyntaxException e) {
                 Component errorText = TextUtils.literal(e.getDescription()).copy()
                                           .setStyle(Style.EMPTY.applyFormat(ChatFormatting.RED));
-                //#if MC>=12000
-                context.renderTooltip(font, errorText, mouseX, mouseY);
+                //#if MC>=12106
+                context.setTooltipForNextFrame(font, errorText, mouseX, mouseY);
+                //#elseif MC>=12000
+                //$$ context.renderTooltip(font, errorText, mouseX, mouseY);
                 //#else
                 //$$ renderTooltip(context, errorText, mouseX, mouseY);
                 //#endif
@@ -213,14 +215,18 @@ public class ChatHistoryNavigatorScreen extends Screen {
                 //#endif
                 , int index, int y, int x, int itemWidth, int itemHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             //#if MC>=12000
-            context.drawString(font, this.getText(), x, y, 16777215);
+            context.drawString(font, this.getText(), x, y, 0xffffffff);
+            //#elseif MC>=12000
+            //$$ context.drawString(font, this.getText(), x, y, 16777215);
             //#else
             //$$ drawString(context, font, this.getText(), x, y, 16777215);
             //#endif
             if (hovered) {
                 List<Component> timestamps = Arrays.stream(this.getTooltip().getString().split("\n")).map(TextUtils::of).collect(Collectors.toList());
-                //#if MC>=12000
-                context.renderComponentTooltip(font, timestamps, mouseX, mouseY);
+                //#if MC>=12106
+                context.setComponentTooltipForNextFrame(font, timestamps, mouseX, mouseY);
+                //#elseif MC>=12000
+                //$$ context.renderComponentTooltip(font, timestamps, mouseX, mouseY);
                 //#else
                 //$$ renderComponentTooltip(context, timestamps, mouseX, mouseY);
                 //#endif
@@ -229,7 +235,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
     }
 
     public enum SearchModes {
-        CASE_INSENSITIVE, CASE_SENSITIVE, REGEX;
+        CASE_INSENSITIVE, CASE_SENSITIVE, REGEX
     }
 
     protected class ChatUnitListWidget extends AbstractSelectionList<ChatUnitEntry> {

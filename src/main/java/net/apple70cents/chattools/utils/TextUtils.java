@@ -12,10 +12,13 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//#if MC>=12106
+import com.mojang.serialization.JsonOps;
+import net.minecraft.core.RegistryAccess;
+//#endif
 //#if MC>=12105
 import java.net.URI;
 //#endif
-
 //#if MC>=12005
 import net.minecraft.data.registries.VanillaRegistries;
 //#endif
@@ -169,6 +172,7 @@ public class TextUtils {
     /**
      * turn '&' into REAL color codes in the string
      * it will not modify '\&'
+     *
      * @param str the string
      * @return string with color codes
      */
@@ -178,6 +182,7 @@ public class TextUtils {
 
     /**
      * turn REAL color codes into '&' in the string
+     *
      * @param str the string
      * @return a string, in which color codes are turned into '&'
      */
@@ -199,20 +204,26 @@ public class TextUtils {
     /**
      * replace keywords in a {@link MutableComponent}
      *
-     * @param text      the text
+     * @param text             the text
      * @param oldStringPattern the RegEx pattern of the old string
-     * @param newString new string
+     * @param newString        new string
      * @return text after replacement
      */
     public static MutableComponent replaceComponentText(MutableComponent text, Pattern oldStringPattern, String newString) {
         //#if MC>=12005
-        JsonElement jsonElement = new Component.SerializerAdapter(VanillaRegistries.createLookup()).serialize(text, null, null);
+        JsonElement jsonElement = ComponentSerialization.CODEC.encode(text, RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), null).result().orElse(null);
+        //#elseif MC>=12005
+        //$$ JsonElement jsonElement = new Component.SerializerAdapter(VanillaRegistries.createLookup()).serialize(text, null, null);
         //#else
         //$$ JsonElement jsonElement = Component.Serializer.toJsonTree(text);
         //#endif
         replaceTextFieldValue(jsonElement, oldStringPattern, newString);
         //#if MC>=12005
-        return new Component.SerializerAdapter(VanillaRegistries.createLookup()).deserialize(jsonElement, null, null);
+        return ComponentSerialization.CODEC
+                .parse(RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), jsonElement).result()
+                .orElse(null).copy();
+        //#elseif MC>=12005
+        //$$ return new Component.SerializerAdapter(VanillaRegistries.createLookup()).deserialize(jsonElement, null, null);
         //#else
         //$$ return Component.Serializer.fromJson(jsonElement);
         //#endif
@@ -249,18 +260,24 @@ public class TextUtils {
     /**
      * replace the colors of a {@link MutableComponent} into white
      *
-     * @param text  the text
+     * @param text the text
      * @return text after replacement
      */
     public static MutableComponent replaceComponentColor(MutableComponent text) {
         //#if MC>=12005
-        JsonElement jsonElement = new Component.SerializerAdapter(VanillaRegistries.createLookup()).serialize(text, null, null);
+        JsonElement jsonElement = ComponentSerialization.CODEC.encode(text, RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), null).result().orElse(null);
+        //#elseif MC>=12005
+        //$$ JsonElement jsonElement = new Component.SerializerAdapter(VanillaRegistries.createLookup()).serialize(text, null, null);
         //#else
         //$$ JsonElement jsonElement = Component.Serializer.toJsonTree(text);
         //#endif
         replaceColorFieldValue(jsonElement);
         //#if MC>=12005
-        return new Component.SerializerAdapter(VanillaRegistries.createLookup()).deserialize(jsonElement, null, null);
+        return ComponentSerialization.CODEC
+                .parse(RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), jsonElement).result()
+                .orElse(null).copy();
+        //#elseif MC>=12005
+        //$$ return new Component.SerializerAdapter(VanillaRegistries.createLookup()).deserialize(jsonElement, null, null);
         //#else
         //$$ return Component.Serializer.fromJson(jsonElement);
         //#endif
@@ -278,7 +295,7 @@ public class TextUtils {
                 }
 
                 if (isTextField(key) && value.isJsonPrimitive()) {
-                    jsonObject.addProperty(key, value.getAsString().replaceAll("§.",""));
+                    jsonObject.addProperty(key, value.getAsString().replaceAll("§.", ""));
                 } else if (isColorField(key) && value.isJsonPrimitive()) {
                     jsonObject.addProperty(key, "white");
                 } else {
