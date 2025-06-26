@@ -51,31 +51,38 @@ public class MessageUtils {
         Minecraft.getInstance().gui.getChat().addMessage(text);
     }
 
-    public static void sendToPublicChat(String text, boolean forceDisableFormatter) {
-        boolean oldStatus = (boolean) ConfigUtils.get("formatter.Enabled");
-        if (forceDisableFormatter) {
-            ConfigUtils.set("formatter.Enabled", false);
-        }
-        sendToPublicChat(text);
-        ConfigUtils.set("formatter.Enabled", oldStatus);
+    public static void sendToPublicChat(String text) {
+        sendToPublicChat(text, false);
     }
 
-    public static void sendToPublicChat(String text) {
+    public static void sendToPublicChat(String text, boolean forceDisableFormatter) {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) {
             return;
         }
         setJustSentMessage(true);
 
+        boolean oldStatus = (boolean) ConfigUtils.get("formatter.Enabled");
+
         //#if MC>=11900
         if ((boolean) ConfigUtils.get("general.UseSendPacketsForSendingMessages")) {
             Minecraft mc = Minecraft.getInstance();
             mc.execute(() -> {
+                if (forceDisableFormatter) {
+                    ConfigUtils.set("formatter.Enabled", false);
+                }
+
                 ChatScreen tempChatScreen = new ChatScreen(text);
                 ((ScreenAccessor) tempChatScreen).invokeInit(mc, 1, 1);
                 tempChatScreen.handleChatInput(text, false);
+
+                ConfigUtils.set("formatter.Enabled", oldStatus);
             });
         } else {
+            if (forceDisableFormatter) {
+                ConfigUtils.set("formatter.Enabled", false);
+            }
+
             String text2 = StringUtils.normalizeSpace(text.trim());
             if (!text2.isEmpty()) {
                 Minecraft.getInstance().gui.getChat().addRecentChat(text);
@@ -85,9 +92,13 @@ public class MessageUtils {
                     player.connection.sendChat(text2);
                 }
             }
+
+            ConfigUtils.set("formatter.Enabled", oldStatus);
         }
         //#else
+        //$$ if (forceDisableFormatter) {ConfigUtils.set("formatter.Enabled", false);}
         //$$ player.chat(text);
+        //$$ ConfigUtils.set("formatter.Enabled", oldStatus);
         //#endif
     }
 
