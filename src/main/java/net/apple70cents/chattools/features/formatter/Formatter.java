@@ -14,32 +14,34 @@ import java.util.regex.Pattern;
  * @author 70CentsApple
  */
 public class Formatter {
-    public static String work(String message) {
+    public static String work(String msg) {
         LocalPlayer player = Minecraft.getInstance().player;
         for (String s : (List<String>) ConfigUtils.get("formatter.DisableOnMatchList")) {
-            if (Pattern.compile(s, Pattern.MULTILINE).matcher(message).matches()) {
+            if (Pattern.compile(s, Pattern.MULTILINE).matcher(msg).matches()) {
                 // return in advance, and don't work with it.
-                return message;
+                return msg;
             }
         }
         boolean matched = false;
         String formatter = "{text}";
         for (SpecialUnits.FormatterUnit unit : SpecialUnits.FormatterUnit.fromList((List) ConfigUtils.get("formatter.List"))) {
-            if ("*".equals(unit.address) || Pattern.compile(unit.address).matcher(ContextUtils.getSessionIdentifier()).matches()) {
+            if ("*".equals(unit.address) || Pattern.compile(unit.address).matcher(ContextUtils.getSessionIdentifier())
+                                                   .matches()) {
                 matched = true;
                 formatter = unit.formatter;
                 // we just need the first match result, break immediately.
                 break;
             }
         }
+        String modifiedMsg = msg;
         if (matched) {
             LoggerUtils.info("[ChatTools] Chat Formatted.");
-            message = formatter.replace("{text}", message);
+            modifiedMsg = formatter.replace("{text}", modifiedMsg);
         }
         if (player != null) {
-            message = message.replace("{pos}", String.format("(%d,%d,%d)", (int) player.getX(), (int) player.getY(), (int) player.getZ()));
+            modifiedMsg = modifiedMsg.replace("{pos}", String.format("(%d,%d,%d)", (int) player.getX(), (int) player.getY(), (int) player.getZ()));
         }
-        message = GradientParser.parse(message);
-        return message;
+        modifiedMsg = GradientParser.parse(modifiedMsg);
+        return modifiedMsg.length() > ((Number) ConfigUtils.get("formatter.DisableThreshold")).intValue() ? msg : modifiedMsg;
     }
 }

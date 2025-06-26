@@ -73,6 +73,7 @@
     }
   ],
   "responder.Enabled": false,
+  "formatter.DisableThreshold": 256,
   "responder.RespondToFilteredMessages": false,
   "responder.List": [
     {

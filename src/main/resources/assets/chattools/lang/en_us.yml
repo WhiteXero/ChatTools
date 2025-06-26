@@ -344,6 +344,11 @@ key:
         '@Tooltip': |-
           Formatter allows you to format your message according to your rules.
           Toggles whether Formatter should work.
+      DisableThreshold:
+        .: Auto-disable Threshold
+        '@Tooltip': |-
+          If the length of the formatted message exceeds this value,
+          Formatter will be automatically disabled.
       List:
         .: 'Rules §6(Current Session Identifier: %s §6)§r'
         '@Tooltip': |-
