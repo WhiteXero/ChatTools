@@ -248,6 +248,10 @@ key:
           When enabled, if Chat Tools is to send a message, it will send through a data packet directly.
           When disabled, if Chat Tools is to send a message, it will simulate a Chat Screen and send it.
           §6(Requires Minecraft ≥ 1.19)§r
+      DisableTextObfuscation:
+        Enabled:
+          .: Disable Text Obfuscation
+          '@Tooltip': Toggles whether we should disable text obfuscations.
     notifier:
       Toast:
         .: System Toast

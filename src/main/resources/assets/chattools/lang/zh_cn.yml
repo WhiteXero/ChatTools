@@ -238,6 +238,10 @@ key:
           当它启用时，聊天工具箱的所有“发送消息”功能将直接发包到服务器
           当它禁用时，聊天工具箱的所有“发送消息”功能会模拟打开聊天栏发送文本
           §6（需要 Minecraft 版本≥1.19）§r
+      DisableTextObfuscation:
+        Enabled:
+          .: 禁用文本混淆样式
+          '@Tooltip': 切换是否禁用文本混淆样式渲染
     notifier:
       Toast:
         .: 后台通知

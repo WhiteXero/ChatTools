@@ -177,6 +177,10 @@
         {
           "type": "boolean",
           "key": "general.UseSendPacketsForSendingMessages"
+        },
+        {
+          "type": "boolean",
+          "key": "general.DisableTextObfuscation.Enabled"
         }
       ]
     },

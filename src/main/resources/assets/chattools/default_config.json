@@ -30,6 +30,7 @@
   "general.HideChatHistoryInF1Mode": false,
   "general.OverrideChatColor.Enabled": false,
   "general.UseSendPacketsForSendingMessages": false,
+  "general.DisableTextObfuscation.Enabled": false,
   "notifier.Toast.Enabled": false,
   "notifier.Toast.Mode": "ADDON",
   "notifier.Sound.Enabled": true,

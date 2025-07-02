@@ -14,7 +14,8 @@
     "GuiMixinForExclusiveActionbar",
     "GuiMixinForRestoreMessages",
     "ScreenAccessor",
-    "ServerboundChatPacketMixin"
+    "ServerboundChatPacketMixin",
+    "StyleMixin"
   ],
   "injectors": {
     "defaultRequire": 1
