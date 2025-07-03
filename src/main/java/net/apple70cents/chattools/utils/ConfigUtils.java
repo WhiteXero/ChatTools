@@ -7,11 +7,7 @@ public class ConfigUtils {
     public static ConfigStorage CONFIG;
 
     public static void init(){
-        if (ConfigStorage.configFileExists()) {
-            // Check and migrate if the config file is out of date.
-            // This should be done before the config is loaded.
-            ConfigMigrationUtils.checkAndMigrate();
-        } else {
+        if (!ConfigStorage.configFileExists()) {
             // if the config file doesn't exist, create a new one with the default settings.
             DEFAULT_CONFIG.save();
         }
