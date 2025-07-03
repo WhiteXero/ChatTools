@@ -110,9 +110,9 @@ jobs:
             formatted_version_name: "1.21.5"
             delay: 10
 
-          - game_version: "1.21.6"
-            target_game_versions: "1.21.6"
-            formatted_version_name: "1.21.6"
+          - game_version: "1.21.7"
+            target_game_versions: "1.21.6,1.21.7"
+            formatted_version_name: "1.21.6(7)"
             delay: 0
     steps:
       - uses: actions/checkout@v4
