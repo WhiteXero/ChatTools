@@ -1,5 +1,6 @@
 package net.apple70cents.chattools.utils;
 
+import net.apple70cents.chattools.features.notifier.BasicNotifier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.*;
@@ -235,7 +236,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
     }
 
     public enum SearchModes {
-        CASE_INSENSITIVE, CASE_SENSITIVE, REGEX
+        CASE_INSENSITIVE, CASE_SENSITIVE, SUBSCRIBED, REGEX
     }
 
     protected class ChatUnitListWidget extends AbstractSelectionList<ChatUnitEntry> {
@@ -247,7 +248,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
                 hashcodeResultList = new ArrayList<>();
             }
             hashcodeResultList.clear();
-            if (keyword == null || keyword.trim().isEmpty()) {
+            if ((keyword == null || keyword.trim().isEmpty()) && searchMode != SearchModes.SUBSCRIBED) {
                 return;
             }
 
@@ -261,11 +262,14 @@ public class ChatHistoryNavigatorScreen extends Screen {
             Predicate<Map.Entry<String, TextUtils.MessageUnit>> filter = null;
             switch (searchMode) {
                 case CASE_INSENSITIVE:
-                    filter = entry -> TextUtils.wash(entry.getValue().message.getString().toUpperCase())
-                                               .contains(keyword.toUpperCase());
+                    filter = entry -> TextUtils.wash(entry.getValue().message.getString().toLowerCase())
+                                               .contains(keyword.toLowerCase());
                     break;
                 case CASE_SENSITIVE:
                     filter = entry -> TextUtils.wash(entry.getValue().message.getString()).contains(keyword);
+                    break;
+                case SUBSCRIBED:
+                    filter = entry -> BasicNotifier.shouldWork(entry.getValue().message);
                     break;
                 case REGEX:
                     try {
@@ -299,6 +303,8 @@ public class ChatHistoryNavigatorScreen extends Screen {
             if (this.searchMode == SearchModes.CASE_INSENSITIVE) {
                 this.searchMode = SearchModes.CASE_SENSITIVE;
             } else if (this.searchMode == SearchModes.CASE_SENSITIVE) {
+                this.searchMode = SearchModes.SUBSCRIBED;
+            } else if (this.searchMode == SearchModes.SUBSCRIBED) {
                 this.searchMode = SearchModes.REGEX;
             } else if (this.searchMode == SearchModes.REGEX) {
                 this.searchMode = SearchModes.CASE_INSENSITIVE;

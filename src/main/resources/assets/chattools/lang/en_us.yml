@@ -59,6 +59,9 @@ key:
             '@Tooltip': |-
               Using RegEx(Regular Expressions) to match.
               e.g. '\d' will match any digit character (0-9)
+          SUBSCRIBED:
+            .: Subscribed
+            '@Tooltip': Subscribed messages by Notifier.
       PreviewClickEvents:
         overall: "§6Events:"
         insertion: "§c- §rShift + Click Insertion: %s"

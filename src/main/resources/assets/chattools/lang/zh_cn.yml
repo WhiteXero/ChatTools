@@ -57,6 +57,9 @@ key:
           REGEX:
             .: 正则表达式
             '@Tooltip': 使用正则表达式
+          SUBSCRIBED:
+            .: 聊天提醒
+            '@Tooltip': 被聊天提醒关注的消息
       PreviewClickEvents:
         overall: §6文本组件互动信息：
         insertion: §c- §rShift + 单击填入文字：%s
