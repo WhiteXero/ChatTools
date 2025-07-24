@@ -125,8 +125,18 @@
           ]
         },
         {
-          "type": "boolean",
-          "key": "general.ChatHistoryNavigator.Enabled"
+          "type": "sub",
+          "key": "general.ChatHistoryNavigator",
+          "content": [
+            {
+              "type": "boolean",
+              "key": "general.ChatHistoryNavigator.Enabled"
+            },
+            {
+              "type": "boolean",
+              "key": "general.ChatHistoryNavigator.ShowTimestampsEnabled"
+            }
+          ]
         },
         {
           "type": "boolean",

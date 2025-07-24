@@ -53,12 +53,15 @@ public class Timestamp {
         }
     }
 
-    private static String timeInFormat(String formatter) {
+    public static String timeInFormat(String formatter, LocalDateTime time) {
         formatter = TextUtils.encodeColorCodes(formatter);
-        LocalDateTime time = LocalDateTime.now();
         formatter = formatter.replace("{hour}", String.format("%02d", time.getHour()))
                              .replace("{minute}", String.format("%02d", time.getMinute()))
                              .replace("{second}", String.format("%02d", time.getSecond()));
         return formatter;
+    }
+
+    public static String timeInFormat(String formatter) {
+        return timeInFormat(formatter, LocalDateTime.now());
     }
 }

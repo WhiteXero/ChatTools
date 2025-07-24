@@ -1,5 +1,6 @@
 package net.apple70cents.chattools.utils;
 
+import net.apple70cents.chattools.features.general.Timestamp;
 import net.apple70cents.chattools.features.notifier.BasicNotifier;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -99,7 +100,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
         };
         //#if MC>=11900
         this.modeSelectorWidget = Button.builder(modeSelectorButtonText, pressAction)
-                                              .bounds(this.width - 120, 35, 90, 20).build();
+                                        .bounds(this.width - 120, 35, 90, 20).build();
         this.addRenderableWidget(modeSelectorWidget);
         //#elseif MC>=11700
         //$$ this.modeSelectorWidget = new Button(this.width - 120, 35, 90, 20, modeSelectorButtonText, pressAction, (button, poseStack, mouseX, mouseY) -> renderTooltip(poseStack, TextUtils.trans("texts.ChatHistoryNavigator.modes." + this.chatUnitListWidget.getSearchMode() + ".@Tooltip"), mouseX, mouseY));
@@ -132,10 +133,12 @@ public class ChatHistoryNavigatorScreen extends Screen {
             , int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         // this draws the title
-        //#if MC>=12000
-        context.drawCenteredString(this.font, this.title, this.width / 2, 15, 16777215);
+        //#if MC>=12106
+        context.drawCenteredString(this.font, this.title, this.width / 2, 15, -1);
+        //#elseif MC>=12000
+        //$$ context.drawCenteredString(this.font, this.title, this.width / 2, 15, 16777215);
         //#else
-        //$$ drawCenteredString(context,this.font, this.title, this.width / 2, 15, 16777215);
+        //$$ drawCenteredString(context, this.font, this.title, this.width / 2, 15, 16777215);
         //#endif
 
         if (this.chatUnitListWidget.searchMode == SearchModes.REGEX) {
@@ -145,7 +148,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
                 }
             } catch (PatternSyntaxException e) {
                 Component errorText = TextUtils.literal(e.getDescription()).copy()
-                                          .setStyle(Style.EMPTY.applyFormat(ChatFormatting.RED));
+                                               .setStyle(Style.EMPTY.applyFormat(ChatFormatting.RED));
                 //#if MC>=12106
                 context.setTooltipForNextFrame(font, errorText, mouseX, mouseY);
                 //#elseif MC>=12000
@@ -182,7 +185,13 @@ public class ChatHistoryNavigatorScreen extends Screen {
             if (this.messageUnit == null) {
                 return TextUtils.literal("§lOutdated message! It should NOT be here!");
             }
-            return this.messageUnit.message;
+            if (!(boolean) ConfigUtils.get("general.ChatHistoryNavigator.ShowTimestampsEnabled")) {
+                return this.messageUnit.message;
+            } else {
+                LocalDateTime time = LocalDateTime.ofEpochSecond(this.messageUnit.unixTimestamp, 0, ZoneId.systemDefault().getRules().getOffset(Instant.now()));
+                Component timestamp = TextUtils.of(Timestamp.timeInFormat((String) ConfigUtils.get("general.Timestamp.Pattern"), time));
+                return (TextUtils.SPACER.copy().append(timestamp)).append(this.messageUnit.message);
+            }
         }
 
         public Component getTooltip() {
@@ -223,7 +232,8 @@ public class ChatHistoryNavigatorScreen extends Screen {
             //$$ drawString(context, font, this.getText(), x, y, 16777215);
             //#endif
             if (hovered) {
-                List<Component> timestamps = Arrays.stream(this.getTooltip().getString().split("\n")).map(TextUtils::of).collect(Collectors.toList());
+                List<Component> timestamps = Arrays.stream(this.getTooltip().getString().split("\n")).map(TextUtils::of)
+                                                   .collect(Collectors.toList());
                 //#if MC>=12106
                 context.setComponentTooltipForNextFrame(font, timestamps, mouseX, mouseY);
                 //#elseif MC>=12000
@@ -344,13 +354,13 @@ public class ChatHistoryNavigatorScreen extends Screen {
         @Override
         protected int
             //#if MC>=12102
-            scrollBarX()
-            //#elseif MC>=12006
-            //$$ getDefaultScrollbarPosition()
-            //#else
-            //$$ getScrollbarPosition()
-            //#endif
-            {
+        scrollBarX()
+        //#elseif MC>=12006
+        //$$ getDefaultScrollbarPosition()
+        //#else
+        //$$ getScrollbarPosition()
+        //#endif
+        {
             //#if MC>=12002
             int x = this.getX();
             //#else
@@ -397,7 +407,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
         }
         //#endif
 
-    //#if MC>=11700
+        //#if MC>=11700
         //#if MC>=12004
         protected void updateWidgetNarration
         //#else
@@ -408,6 +418,6 @@ public class ChatHistoryNavigatorScreen extends Screen {
                 builder.add(NarratedElementType.TITLE, getHovered().getText());
             }
         }
-    //#endif
+        //#endif
     }
 }

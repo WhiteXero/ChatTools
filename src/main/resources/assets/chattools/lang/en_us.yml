@@ -188,9 +188,14 @@ key:
             Each time a chat is compacted, it's counter will increase by 1.
             This controls the maximum number of the counter.
       ChatHistoryNavigator:
+        .: Chat History Navigator
+        '@Tooltip': Use Ctrl + F in chat to start navigating!
         Enabled:
           .: Enable Chat History Navigator
-          '@Tooltip': Use Ctrl + F to start navigating in chat!
+          '@Tooltip': Toggles whether you can use Ctrl + F to start the Chat History Navigator screen.
+        ShowTimestampsEnabled:
+          .: Enable Timestamps
+          '@Tooltip': Toggles whether timestamps should be inserted before chat results in the Chat History Navigator screen.
       PreviewClickEvents:
         Enabled:
           .: Enable Click Events Preview

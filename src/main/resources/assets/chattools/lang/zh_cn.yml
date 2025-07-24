@@ -183,9 +183,14 @@ key:
             每次压缩信息时，会使消息的计数器自增1。
             若计数器超出此计数上限则不再自增。
       ChatHistoryNavigator:
+        .: 聊天搜索
+        '@Tooltip': 在聊天栏中按下 Ctrl + F 搜索聊天历史记录。
         Enabled:
           .: 启用聊天搜索
-          '@Tooltip': 在聊天栏中按下 Ctrl + F 搜索聊天历史记录。
+          '@Tooltip': 切换是否启用聊天搜索功能。
+        ShowTimestampsEnabled:
+          .: 启用时间戳显示
+          '@Tooltip': 切换是否在搜索结果前添加时间戳。
       PreviewClickEvents:
         Enabled:
           .: 启用预览点击事件

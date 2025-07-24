@@ -106,7 +106,13 @@ public class Toast {
         TOAST_EXECUTOR_THREAD_POOL.submit(() -> {
             try {
                 LoggerUtils.info("[ChatTools] Toast Notified with Powershell.");
-                final String COMMAND_TEMPLATE = "powershell.exe -ExecutionPolicy Bypass -Command \"" + "[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] > $null;" + "$template = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02);" + "$xml = New-Object Windows.Data.Xml.Dom.XmlDocument;" + "$xml.LoadXml($template.GetXml());" + "$texts = $xml.GetElementsByTagName('text');" + "$texts.Item(0).AppendChild($xml.CreateTextNode('%s')) > $null;" + "$texts.Item(1).AppendChild($xml.CreateTextNode('%s')) > $null;" + "$toast = [Windows.UI.Notifications.ToastNotification]::new($xml);" + "$notifier = [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('%s');" + "$notifier.Show($toast);\"";
+                final String COMMAND_TEMPLATE = "powershell.exe -ExecutionPolicy Bypass -Command \"" +
+                        "[Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] > $null;" +
+                        "$template = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02);" +
+                        "$xml = New-Object Windows.Data.Xml.Dom.XmlDocument;" + "$xml.LoadXml($template.GetXml());" +
+                        "$texts = $xml.GetElementsByTagName('text');" + "$texts.Item(0).AppendChild($xml.CreateTextNode('%s')) > $null;" +
+                        "$texts.Item(1).AppendChild($xml.CreateTextNode('%s')) > $null;" + "$toast = [Windows.UI.Notifications.ToastNotification]::new($xml);" +
+                        "$notifier = [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('%s');" + "$notifier.Show($toast);\"";
                 String command = String.format(COMMAND_TEMPLATE, caption, text.replace("\n", "'+\\\"`r`n\\\"+'"), "Chat Tools Toast");
                 ProcessBuilder builder = new ProcessBuilder("cmd.exe", "/c", command);
                 builder.redirectErrorStream(true);
