@@ -110,7 +110,7 @@ public class CopyFeatureScreen extends Screen {
             , int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
         // this draws the title
-        // context.drawCenteredString(this.font, this.title, this.width / 2, this.getTitleY(), 16777215);
+        // context.drawCenteredString(this.font, this.title, this.width / 2, this.getTitleY(), 0xffffff);
         // this draws the message
         this.messageSplit.renderCentered(context, this.width / 2, this.getMessageY());
         // this draws the content preview

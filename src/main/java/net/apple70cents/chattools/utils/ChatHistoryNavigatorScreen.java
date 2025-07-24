@@ -134,11 +134,11 @@ public class ChatHistoryNavigatorScreen extends Screen {
         super.render(context, mouseX, mouseY, delta);
         // this draws the title
         //#if MC>=12106
-        context.drawCenteredString(this.font, this.title, this.width / 2, 15, -1);
+        context.drawCenteredString(this.font, this.title, this.width / 2, 15, 0xffffffff);
         //#elseif MC>=12000
-        //$$ context.drawCenteredString(this.font, this.title, this.width / 2, 15, 16777215);
+        //$$ context.drawCenteredString(this.font, this.title, this.width / 2, 15, 0xffffff);
         //#else
-        //$$ drawCenteredString(context, this.font, this.title, this.width / 2, 15, 16777215);
+        //$$ drawCenteredString(context, this.font, this.title, this.width / 2, 15, 0xffffff);
         //#endif
 
         if (this.chatUnitListWidget.searchMode == SearchModes.REGEX) {
@@ -226,10 +226,8 @@ public class ChatHistoryNavigatorScreen extends Screen {
                 , int index, int y, int x, int itemWidth, int itemHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             //#if MC>=12000
             context.drawString(font, this.getText(), x, y, 0xffffffff);
-            //#elseif MC>=12000
-            //$$ context.drawString(font, this.getText(), x, y, 16777215);
             //#else
-            //$$ drawString(context, font, this.getText(), x, y, 16777215);
+            //$$ drawString(context, font, this.getText(), x, y, 0xffffff);
             //#endif
             if (hovered) {
                 List<Component> timestamps = Arrays.stream(this.getTooltip().getString().split("\n")).map(TextUtils::of)
@@ -353,7 +351,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
 
         @Override
         protected int
-            //#if MC>=12102
+        //#if MC>=12102
         scrollBarX()
         //#elseif MC>=12006
         //$$ getDefaultScrollbarPosition()

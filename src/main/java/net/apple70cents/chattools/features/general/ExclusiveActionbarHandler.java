@@ -63,13 +63,13 @@ public class ExclusiveActionbarHandler {
                 context.pose().pushMatrix();
                 context.pose().translate(context.guiWidth() / 2.0F, context.guiHeight() - 68.0F - 4.0F);
                 context.pose().scale(size, size);
-                context.drawCenteredString(font, ele.text, xOffset, yOffset + index * 12, opacity << 24 | 16777215);
+                context.drawCenteredString(font, ele.text, xOffset, yOffset + index * 12, opacity << 24 | 0xffffff);
                 context.pose().popMatrix();
                 //#elseif MC>=12000
                 //$$ context.pose().pushPose();
                 //$$ context.pose().translate(context.guiWidth() / 2.0F, context.guiHeight() - 68.0F - 4.0F, 0.0F);
                 //$$ context.pose().scale(size, size, 1);
-                //$$ context.drawCenteredString(font, ele.text, xOffset, yOffset + index * 12, opacity << 24 | 16777215);
+                //$$ context.drawCenteredString(font, ele.text, xOffset, yOffset + index * 12, opacity << 24 | 0xffffff);
                 //$$ context.pose().popPose();
                 //#else
                 //$$ pose.pushPose();
@@ -77,7 +77,7 @@ public class ExclusiveActionbarHandler {
                 //$$         .getInstance().getWindow().getGuiScaledHeight() - 68.0F - 4.0F, 0.0F);
                 //$$ pose.scale(size, size, 1);
                 //$$ int textWidth = font.width(ele.text);
-                //$$ font.drawShadow(pose, ele.text, (-textWidth / 2.0F) + xOffset, yOffset + index * 12, opacity << 24 | 16777215);
+                //$$ font.drawShadow(pose, ele.text, (-textWidth / 2.0F) + xOffset, yOffset + index * 12, opacity << 24 | 0xffffff);
                 //$$ pose.popPose();
                 //#endif
                 index++;
