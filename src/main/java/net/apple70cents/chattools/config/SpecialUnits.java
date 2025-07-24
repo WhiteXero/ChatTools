@@ -57,6 +57,11 @@ public class SpecialUnits {
             }
             return arr;
         }
+
+        @Override
+        public String toString() {
+            return "BubbleRuleUnit{address='" + address + "', pattern='" + pattern + "', fallback=" + fallback + '}';
+        }
     }
 
     public static class ResponderRuleUnit {
@@ -103,6 +108,11 @@ public class SpecialUnits {
                 arr.add(ResponderRuleUnit.of(ele));
             }
             return arr;
+        }
+
+        @Override
+        public String toString() {
+            return "ResponderRuleUnit{address='" + address + "', pattern='" + pattern + "', message='" + message + "', delayInMilliseconds=" + delayInMilliseconds + ", forceDisableFormatter=" + forceDisableFormatter + '}';
         }
     }
 
@@ -164,6 +174,11 @@ public class SpecialUnits {
         public int hashCode() {
             return Objects.hash(key, modifier, mode, command);
         }
+
+        @Override
+        public String toString() {
+            return "MacroUnit{key='" + key + "', modifier=" + modifier + ", mode=" + mode + ", command='" + command + "'}";
+        }
     }
 
     public static class FormatterUnit {
@@ -198,6 +213,11 @@ public class SpecialUnits {
                 arr.add(FormatterUnit.of(ele));
             }
             return arr;
+        }
+
+        @Override
+        public String toString() {
+            return "FormatterUnit{address='" + address + "', formatter='" + formatter + "'}";
         }
     }
 
@@ -241,6 +261,11 @@ public class SpecialUnits {
                 arr.add(CustomJoinMessageRuleUnit.of(ele));
             }
             return arr;
+        }
+
+        @Override
+        public String toString() {
+            return "CustomJoinMessageRuleUnit{address='" + address + "', message='" + message + "', delayInMilliseconds=" + delayInMilliseconds + ", forceDisableFormatter=" + forceDisableFormatter + '}';
         }
     }
 }
