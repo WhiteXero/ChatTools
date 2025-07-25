@@ -37,6 +37,7 @@ key:
       copy:
         launch: Click to open the Copy Menu.
         title: Copy Menu
+        copyTextComponent: Copy Text Component (Raw JSON Text)
         copyObjectData: Copy Object Data
         copyRaw: Copy Raw
         copyWithColorCodeEscaped: Copy With Color Codes Escaped

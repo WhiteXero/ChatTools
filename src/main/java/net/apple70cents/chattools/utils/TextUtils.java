@@ -201,15 +201,7 @@ public class TextUtils {
         return result;
     }
 
-    /**
-     * replace keywords in a {@link MutableComponent}
-     *
-     * @param text             the text
-     * @param oldStringPattern the RegEx pattern of the old string
-     * @param newString        new string
-     * @return text after replacement
-     */
-    public static MutableComponent replaceComponentText(MutableComponent text, Pattern oldStringPattern, String newString) {
+    public static JsonElement component2JsonElement(MutableComponent text){
         //#if MC>=12106
         JsonElement jsonElement = ComponentSerialization.CODEC.encode(text, RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), null).result().orElse(null);
         //#elseif MC>=12005
@@ -217,7 +209,10 @@ public class TextUtils {
         //#else
         //$$ JsonElement jsonElement = Component.Serializer.toJsonTree(text);
         //#endif
-        replaceTextFieldValue(jsonElement, oldStringPattern, newString);
+        return jsonElement;
+    }
+
+    public static MutableComponent jsonElement2Component(JsonElement jsonElement) {
         //#if MC>=12106
         return ComponentSerialization.CODEC
                 .parse(RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), jsonElement).result()
@@ -227,6 +222,20 @@ public class TextUtils {
         //#else
         //$$ return Component.Serializer.fromJson(jsonElement);
         //#endif
+    }
+
+    /**
+     * replace keywords in a {@link MutableComponent}
+     *
+     * @param text             the text
+     * @param oldStringPattern the RegEx pattern of the old string
+     * @param newString        new string
+     * @return text after replacement
+     */
+    public static MutableComponent replaceComponentText(MutableComponent text, Pattern oldStringPattern, String newString) {
+        JsonElement jsonElement = component2JsonElement(text);
+        replaceTextFieldValue(jsonElement, oldStringPattern, newString);
+        return jsonElement2Component(jsonElement);
     }
 
     private static void replaceTextFieldValue(JsonElement jsonElement, Pattern oldValuePattern, String newValue) {
@@ -264,23 +273,9 @@ public class TextUtils {
      * @return text after replacement
      */
     public static MutableComponent replaceComponentColor(MutableComponent text) {
-        //#if MC>=12106
-        JsonElement jsonElement = ComponentSerialization.CODEC.encode(text, RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), null).result().orElse(null);
-        //#elseif MC>=12005
-        //$$ JsonElement jsonElement = new Component.SerializerAdapter(VanillaRegistries.createLookup()).serialize(text, null, null);
-        //#else
-        //$$ JsonElement jsonElement = Component.Serializer.toJsonTree(text);
-        //#endif
+        JsonElement jsonElement = component2JsonElement(text);
         replaceColorFieldValue(jsonElement);
-        //#if MC>=12106
-        return ComponentSerialization.CODEC
-                .parse(RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), jsonElement).result()
-                .orElse(null).copy();
-        //#elseif MC>=12005
-        //$$ return new Component.SerializerAdapter(VanillaRegistries.createLookup()).deserialize(jsonElement, null, null);
-        //#else
-        //$$ return Component.Serializer.fromJson(jsonElement);
-        //#endif
+        return jsonElement2Component(jsonElement);
     }
 
     private static void replaceColorFieldValue(JsonElement jsonElement) {

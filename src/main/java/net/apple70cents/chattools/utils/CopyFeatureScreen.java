@@ -28,11 +28,13 @@ public class CopyFeatureScreen extends Screen {
     private MultiLineLabel previewTextSplit;
 
     protected static class ButtonData {
-        public int index;
+        public int row;
+        public int column;
         public String content;
 
-        public ButtonData(int index, String content) {
-            this.index = index;
+        public ButtonData(int row, int column, String content) {
+            this.row = row;
+            this.column = column;
             this.content = content;
         }
     }
@@ -51,12 +53,13 @@ public class CopyFeatureScreen extends Screen {
         super.init();
         this.messageSplit = MultiLineLabel.create(this.font, unit.message, this.width - 50);
 
-        this.buttonDatas.put("copyObjectData", new ButtonData(-3, unit.message.toString()));
-        this.buttonDatas.put("copyRaw", new ButtonData(-2, unit.message.getString()));
-        this.buttonDatas.put("copyWithColorCodeEscaped", new ButtonData(-1, TextUtils.decodeColorCodes(unit.message.getString())));
-        this.buttonDatas.put("copyWithNoColorCode", new ButtonData(0, TextUtils.wash(unit.message.getString())));
-        this.buttonDatas.put("copyUnixTimestamp", new ButtonData(1, String.valueOf(unit.unixTimestamp)));
-        this.buttonDatas.put("copyTimestamp", new ButtonData(2, this.getLongTimeDisplay(unit.unixTimestamp)));
+        this.buttonDatas.put("copyTextComponent", new ButtonData(-2, -1, TextUtils.component2JsonElement(unit.message.copy()).toString()));
+        this.buttonDatas.put("copyObjectData", new ButtonData(-2, 1, unit.message.toString()));
+        this.buttonDatas.put("copyRaw", new ButtonData(-1, -1, unit.message.getString()));
+        this.buttonDatas.put("copyWithColorCodeEscaped", new ButtonData(-1, 1, TextUtils.decodeColorCodes(unit.message.getString())));
+        this.buttonDatas.put("copyWithNoColorCode", new ButtonData(0, -1, TextUtils.wash(unit.message.getString())));
+        this.buttonDatas.put("copyUnixTimestamp", new ButtonData(0, 1, String.valueOf(unit.unixTimestamp)));
+        this.buttonDatas.put("copyTimestamp", new ButtonData(1, 0, this.getLongTimeDisplay(unit.unixTimestamp)));
 
         this.addButtons();
     }
@@ -64,11 +67,12 @@ public class CopyFeatureScreen extends Screen {
     protected void addButtons() {
         int midH = this.height / 2;
         for (Map.Entry<String, ButtonData> buttonData : buttonDatas.entrySet()) {
-            buttons.put(buttonData.getKey(), addCenterButton(buttonData.getKey(), midH + 21 * buttonData.getValue().index, (button -> {
+            int y = midH + 21 * buttonData.getValue().row;
+            int xOffset = buttonData.getValue().column * 100;
+            buttons.put(buttonData.getKey(), addCenterButton(buttonData.getKey(), y, xOffset, 20, 200, (button -> {
                 Minecraft.getInstance().keyboardHandler.setClipboard(buttonData.getValue().content);
             })));
-        }
-        addCenterButton("cancel", this.height - 30, (button) -> {
+        } addCenterButton("cancel", this.height - 30, 0, 20, 200, (button) -> {
             if (oldScreen instanceof ChatHistoryNavigatorScreen) {
                 if (((ChatHistoryNavigatorScreen) oldScreen).keywordField != null) {
                     ((ChatHistoryNavigatorScreen) oldScreen).chatUnitListWidget.setKeyword(((ChatHistoryNavigatorScreen) oldScreen).keywordField.getValue());
@@ -80,15 +84,13 @@ public class CopyFeatureScreen extends Screen {
         });
     }
 
-    protected Button addCenterButton(String translationKey, int y, Button.OnPress func) {
-        int buttonW = 200;
-        int buttonH = 20;
+    protected Button addCenterButton(String translationKey, int y, int xOffset, int buttonH, int buttonW, Button.OnPress func) {
         //#if MC>=11900
         Button buttonWidget = Button.builder(TextUtils.trans("texts.copy." + translationKey), func)
-                                                .pos(this.width / 2 - buttonW / 2, y - buttonH / 2)
-                                                .size(buttonW, buttonH).build();
+                                    .pos(this.width / 2 - buttonW / 2 + xOffset, y - buttonH / 2).size(buttonW, buttonH)
+                                    .build();
         //#else
-        //$$ Button buttonWidget = new Button(this.width / 2 - buttonW / 2, y - buttonH / 2, buttonW, buttonH, TextUtils.trans("texts.copy." + translationKey), func);
+        //$$ Button buttonWidget = new Button(this.width/2 - buttonW/2 + xOffset,y - buttonH/2, buttonW, buttonH, TextUtils.trans("texts.copy." + translationKey), func);
         //#endif
 
         //#if MC>=11700
@@ -121,7 +123,7 @@ public class CopyFeatureScreen extends Screen {
             }
         }
         this.previewTextSplit = MultiLineLabel.create(this.font, previewText, this.width - 50);
-        this.previewTextSplit.renderCentered(context, this.width / 2, this.height / 2 + 60);
+        this.previewTextSplit.renderCentered(context, this.width / 2, this.height / 2 + 50);
     }
 
     private int getTitleY() {
