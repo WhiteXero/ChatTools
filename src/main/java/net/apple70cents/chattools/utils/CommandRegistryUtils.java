@@ -101,7 +101,7 @@ public class CommandRegistryUtils {
             .then(literal("download").executes(t -> {
                 LoggerUtils.info("[ChatTools] Command Executed: Trying to download Addon Toast dependencies");
                 DownloadUtils.startDownloadWithCallback((file, progress, nowKB, totalKB) -> {
-                    MessageUtils.sendToActionbar(TextUtils.trans("texts.download.process", file, progress, nowKB, totalKB));
+                    MessageUtils.sendToOriginalActionbar(TextUtils.trans("texts.download.process", file, progress, nowKB, totalKB));
                 });
                 if (DownloadUtils.checkIfFullyReady()){
                     MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.download.success"));

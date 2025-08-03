@@ -24,12 +24,19 @@ public class MessageUtils {
         justSentMessage = bl;
     }
 
+    public static void sendToOriginalActionbar(Component text) {
+        if (Minecraft.getInstance().player == null) {
+            return;
+        }
+        Minecraft.getInstance().player.displayClientMessage(text, true);
+    }
+
     public static void sendToActionbar(Component text) {
         if (Minecraft.getInstance().player == null) {
             return;
         }
         if (!(boolean) ConfigUtils.get("general.ExclusiveActionbar.Enabled")) {
-            Minecraft.getInstance().player.displayClientMessage(text, true);
+            sendToOriginalActionbar(text);
         } else {
             ExclusiveActionbarHandler.addToRenderQueue(text, 4000);
         }
