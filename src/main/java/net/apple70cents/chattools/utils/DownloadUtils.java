@@ -1,11 +1,10 @@
 package net.apple70cents.chattools.utils;
 
-import net.apple70cents.chattools.ChatTools;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.DigestInputStream;
@@ -18,10 +17,10 @@ import java.util.Map;
  * @author 70CentsApple
  */
 public class DownloadUtils {
-    private static final String DOWNLOAD_SITE = "https://70centsapple.top/download/chat_tools/download.php?";
+    private static final String DOWNLOAD_SITE = "https://70centsapple.top/download/chat_tools/download.php?version=250805&file=";
     public static final Path STORAGE_DIR = Path.of(FabricLoader.getInstance().getGameDir().toString(), "chattools");
     private static final Map<String, String> WIN_7_FILENAMES = Map.of("icon", "icon.ico", "toastExe", "toast-win7.exe");
-    private static final Map<String, String> WIN_10_11_FILENAMES = Map.of("icon", "icon.ico", "toastExe", "toast-win10-and-win11.exe");
+    private static final Map<String, String> WIN_10_FILENAMES = Map.of("icon", "icon.ico", "toastExe", "toast-win10.exe");
     private static final String OS = System.getProperty("os.name");
     // whether it is the first scan, or we have no successful scans.
     private static boolean shouldCheckMD5OnJudgingReadiness = true;
@@ -67,7 +66,7 @@ public class DownloadUtils {
                 return WIN_7_FILENAMES;
             case "Windows 10":
             case "Windows 11":
-                return WIN_10_11_FILENAMES;
+                return WIN_10_FILENAMES;
             default:
                 return null;
         }
@@ -86,7 +85,7 @@ public class DownloadUtils {
                     return;
                 case "Windows 10":
                 case "Windows 11":
-                    downloadAndCheckFiles(WIN_10_11_FILENAMES.values().stream().toList(), STORAGE_DIR, processSupplier);
+                    downloadAndCheckFiles(WIN_10_FILENAMES.values().stream().toList(), STORAGE_DIR, processSupplier);
                     return;
                 default:
                     LoggerUtils.warn(String.format("[ChatTools] Addon toast is not available on %s", OS));
@@ -131,26 +130,32 @@ public class DownloadUtils {
 
     private static void downloadFile(String fileName, Path targetPath, QuadConsumer<String, Integer, Integer, Integer> processSupplier) throws IOException {
         URL url = new URL(DOWNLOAD_SITE + fileName);
-        URLConnection connection = url.openConnection();
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("User-Agent", "Chrome/138.0.0.0");
+
         int fileSize = connection.getContentLength();
         try (InputStream in = connection.getInputStream(); FileOutputStream fos = new FileOutputStream(targetPath.toFile())) {
+
             byte[] buffer = new byte[4096];
             int bytesRead;
             long totalBytesRead = 0;
             int prevPercentage = 0;
+
             while ((bytesRead = in.read(buffer)) != -1) {
                 fos.write(buffer, 0, bytesRead);
                 totalBytesRead += bytesRead;
-                int percentage = (int) (totalBytesRead * 100 / fileSize);
 
+                int percentage = (int) (totalBytesRead * 100 / fileSize);
                 if (percentage != prevPercentage) {
                     System.out.print("\rDownloading " + fileName + ": " + percentage + "%");
                     prevPercentage = percentage;
                 }
+
                 if (processSupplier != null) {
                     processSupplier.accept(fileName, percentage, (int) totalBytesRead / 1024, fileSize / 1024);
                 }
             }
+
             System.out.println("\rDownloading " + fileName + ": Completed");
         }
     }
@@ -158,7 +163,9 @@ public class DownloadUtils {
 
     private static String downloadMD5(String md5Url) throws IOException {
         URL url = new URL(md5Url);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("User-Agent", "Chrome/138.0.0.0");
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
             return reader.readLine();
         }
     }

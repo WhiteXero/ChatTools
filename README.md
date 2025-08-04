@@ -128,3 +128,6 @@ Chat Tools的默认正则表达式字串 `^\d+$|^[.#%$/].*|\ball\b` 即可满足
 - 聊天回应规则列表（Responder Rules）  
 在不同的服务器应用不同的聊天回应规则
 </details>
+
+# 🔗 致谢
+- [ChatToolsAddon](https://github.com/litwak913/ChatToolsAddon)：该项目的 Toast 通知外部程序实现

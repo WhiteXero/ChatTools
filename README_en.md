@@ -128,3 +128,6 @@ Response to other's messages automatically.
 - Responder Rules  
 Apply different responder rules on different servers.
 </details>
+
+# 🔗 Credits
+- [ChatToolsAddon](https://github.com/litwak913/ChatToolsAddon): The Toast notification external program implementation of Chat Tools.
