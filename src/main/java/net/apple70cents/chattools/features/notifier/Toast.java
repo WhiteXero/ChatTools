@@ -19,18 +19,19 @@ public class Toast {
     private static String text;
     private static final CircuitBreakerExecutor toastExecutor = CircuitBreakerExecutor.of(() -> {
         final String TITLE = TextUtils.trans("texts.toast.title").getString();
+        String truncatedText = truncateWithEllipsis(text, 250);
         switch ((String) ConfigUtils.get("notifier.Toast.Mode")) {
             case "AWT":
-                toastWithAWT(TITLE, text);
+                toastWithAWT(TITLE, truncatedText);
                 break;
             case "POWERSHELL":
-                toastWithPowershell(TITLE, text);
+                toastWithPowershell(TITLE, truncatedText);
                 break;
             case "ADDON":
-                toastWithAddon(TITLE, text);
+                toastWithAddon(TITLE, truncatedText);
                 break;
             case "TWO_SLICES":
-                toastWithTwoSlices(TITLE, text);
+                toastWithTwoSlices(TITLE, truncatedText);
                 break;
             default:
                 return;
@@ -135,5 +136,12 @@ public class Toast {
         TOAST_EXECUTOR_THREAD_POOL.submit(() -> {
             com.sshtools.twoslices.Toast.toast(ToastType.INFO, caption, text);
         });
+    }
+
+    private static String truncateWithEllipsis(String input, int maxLength) {
+        if (input == null || input.length() <= maxLength) {
+            return input;
+        }
+        return input.substring(0, maxLength - 3) + "...";
     }
 }
