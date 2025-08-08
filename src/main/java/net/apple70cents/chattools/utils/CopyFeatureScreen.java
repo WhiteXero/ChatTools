@@ -3,6 +3,7 @@ package net.apple70cents.chattools.utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.client.gui.components.ComponentRenderUtils;
 import net.minecraft.client.gui.components.MultiLineLabel;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -95,7 +96,7 @@ public class CopyFeatureScreen extends Screen {
                 if (msg.occurrenceCount > 1) {
                     continue; // skip compacted messages
                 }
-                lines += mc.font.split(msg.message, maxLineLength).size();
+                lines += ComponentRenderUtils.wrapComponents(msg.visualMessage, maxLineLength, mc.font).size();
             }
             mc.gui.getChat().scrollChat(lines);
         });

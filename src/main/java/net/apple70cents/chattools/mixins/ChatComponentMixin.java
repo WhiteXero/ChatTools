@@ -40,7 +40,9 @@ public abstract class ChatComponentMixin {
     public abstract void rescaleChat();
 
 
-    @Shadow @Final private List<GuiMessage> allMessages;
+    @Shadow
+    @Final
+    private List<GuiMessage> allMessages;
 
     @ModifyExpressionValue(method =
             //#if MC>=12005
@@ -113,8 +115,7 @@ public abstract class ChatComponentMixin {
         // When filtering a message with `responder.respondToFilteredMessages` option on, responder will also try to work.
         if ((boolean) ConfigUtils.get("responder.Enabled") &&
                 // obviously, we should not respond to our own messages
-                !MessageUtils.hadJustSentMessage()
-            ) {
+                !MessageUtils.hadJustSentMessage()) {
             Responder.work(message);
         }
         if ((boolean) ConfigUtils.get("general.OverrideChatColor.Enabled")) {
@@ -131,7 +132,9 @@ public abstract class ChatComponentMixin {
                 this.rescaleChat();
             }
         }
-        String hashcode = TextUtils.putMessageMap(message, Instant.now().getEpochSecond(), occurrenceCount);
+
+        Component msgWithoutAdditionalAffixes = message;
+        String hashcode = TextUtils.generateHashcode(message);
 
         if ((boolean) ConfigUtils.get("notifier.Highlight.InsertBeforeTimestamps")) {
             if ((boolean) ConfigUtils.get("general.Timestamp.Enabled")) {
@@ -152,6 +155,11 @@ public abstract class ChatComponentMixin {
         if ((boolean) ConfigUtils.get("general.ChatCompactor.Enabled")) {
             message = ChatCompactor.appendTrailing(message, occurrenceCount);
         }
+
+        TextUtils.MessageUnit messageUnit = new TextUtils.MessageUnit(msgWithoutAdditionalAffixes, message, Instant
+                .now().getEpochSecond(), occurrenceCount);
+        TextUtils.putMessageMapWithHashcode(hashcode, messageUnit);
+
         // we need to reset `justSentMessage` status, since it might be that this message received was sent by us
         MessageUtils.setJustSentMessage(false);
         args.set(MESSAGE_IDX, message);

@@ -20,7 +20,7 @@ import net.minecraft.core.RegistryAccess;
 import java.net.URI;
 //#endif
 //#if MC>=12005
-import net.minecraft.data.registries.VanillaRegistries;
+
 //#endif
 
 /**
@@ -47,11 +47,13 @@ public class TextUtils {
 
     public static class MessageUnit {
         public Component message;
+        public Component visualMessage;
         public long unixTimestamp;
         public int occurrenceCount;
 
-        public MessageUnit(Component message, long unixTimestamp, int occurrenceCount) {
+        public MessageUnit(Component message, Component visualMessage, long unixTimestamp, int occurrenceCount) {
             this.message = message;
+            this.visualMessage = visualMessage;
             this.unixTimestamp = unixTimestamp;
             this.occurrenceCount = occurrenceCount;
         }
@@ -86,23 +88,25 @@ public class TextUtils {
         latestMessage = unit;
     }
 
-    public static String putMessageMap(Component text, long unixTimestamp, int occurrenceCount) {
+    public static void putMessageMapWithHashcode(String hashcode, MessageUnit messageUnit) {
         int maxSize = ((Number) ConfigUtils.get("general.MaxHistoryLength")).intValue();
         while (messageMap.size() > maxSize) {
             // pops the first element
             messageMap.remove(messageMap.keySet().iterator().next());
         }
 
-        // The `hashcode` is NOT REALLY a hashcode, but actually just a random string
+        messageMap.put(hashcode, messageUnit);
+        setLatestMessage(messageUnit);
+    }
+
+    public static String generateHashcode(Component message) {
+        // TODO The `hashcode` is NOT REALLY a hashcode, but actually just a random string
         String hashcode = generateRandomString(6);
         int retries = 0;
         while (messageMap.containsKey(hashcode) && retries < 10) {
             hashcode = generateRandomString(6);
             retries++;
         }
-        MessageUnit messageUnit = new MessageUnit(text, unixTimestamp, occurrenceCount);
-        messageMap.put(hashcode, messageUnit);
-        setLatestMessage(messageUnit);
         return hashcode;
     }
 
