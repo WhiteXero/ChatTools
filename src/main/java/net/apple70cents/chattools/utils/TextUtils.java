@@ -15,12 +15,12 @@ import java.util.regex.Pattern;
 //#if MC>=12106
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.RegistryAccess;
-//#endif
-//#if MC>=12105
 import java.net.URI;
-//#endif
-//#if MC>=12005
-
+//#elseif MC>=12105
+//$$ import net.minecraft.data.registries.VanillaRegistries;
+//$$ import java.net.URI;
+//#elseif MC>=12005
+//$$ import net.minecraft.data.registries.VanillaRegistries;
 //#endif
 
 /**
@@ -206,26 +206,36 @@ public class TextUtils {
     }
 
     public static JsonElement component2JsonElement(MutableComponent text){
-        //#if MC>=12106
-        JsonElement jsonElement = ComponentSerialization.CODEC.encode(text, RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), null).result().orElse(null);
-        //#elseif MC>=12005
-        //$$ JsonElement jsonElement = new Component.SerializerAdapter(VanillaRegistries.createLookup()).serialize(text, null, null);
-        //#else
-        //$$ JsonElement jsonElement = Component.Serializer.toJsonTree(text);
-        //#endif
-        return jsonElement;
+        try {
+            //#if MC>=12106
+            JsonElement jsonElement = ComponentSerialization.CODEC.encode(text, RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), null).result().orElse(null);
+            //#elseif MC>=12005
+            //$$ JsonElement jsonElement = new Component.SerializerAdapter(VanillaRegistries.createLookup()).serialize(text, null, null);
+            //#else
+            //$$ JsonElement jsonElement = Component.Serializer.toJsonTree(text);
+            //#endif
+            return jsonElement;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static MutableComponent jsonElement2Component(JsonElement jsonElement) {
-        //#if MC>=12106
-        return ComponentSerialization.CODEC
-                .parse(RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), jsonElement).result()
-                .orElse(null).copy();
-        //#elseif MC>=12005
-        //$$ return new Component.SerializerAdapter(VanillaRegistries.createLookup()).deserialize(jsonElement, null, null);
-        //#else
-        //$$ return Component.Serializer.fromJson(jsonElement);
-        //#endif
+        try {
+            //#if MC>=12106
+            return ComponentSerialization.CODEC
+                    .parse(RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), jsonElement).result()
+                    .orElse(null).copy();
+            //#elseif MC>=12005
+            //$$ return new Component.SerializerAdapter(VanillaRegistries.createLookup()).deserialize(jsonElement, null, null);
+            //#else
+            //$$ return Component.Serializer.fromJson(jsonElement);
+            //#endif
+        } catch (Exception e) {
+            e.printStackTrace();
+            return TextUtils.literal("ERROR").copy();
+        }
     }
 
     /**

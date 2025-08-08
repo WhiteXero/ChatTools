@@ -1,5 +1,6 @@
 package net.apple70cents.chattools.utils;
 
+import com.google.gson.JsonElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ChatComponent;
@@ -58,8 +59,9 @@ public class CopyFeatureScreen extends Screen {
         super.init();
         this.messageSplit = MultiLineLabel.create(this.font, unit.message, this.width - 50);
 
-        this.buttonDatas.put("copyTextComponent", new ButtonData(-2, -1, TextUtils
-                .component2JsonElement(unit.message.copy()).toString()));
+        JsonElement jsonElement = TextUtils.component2JsonElement(unit.message.copy());
+        String textComponent = jsonElement != null ? jsonElement.toString() : "ERROR";
+        this.buttonDatas.put("copyTextComponent", new ButtonData(-2, -1, textComponent));
         this.buttonDatas.put("copyObjectData", new ButtonData(-2, 1, unit.message.toString()));
         this.buttonDatas.put("copyRaw", new ButtonData(-1, -1, unit.message.getString()));
         this.buttonDatas.put("copyWithColorCodeEscaped", new ButtonData(-1, 1, TextUtils.decodeColorCodes(unit.message.getString())));
