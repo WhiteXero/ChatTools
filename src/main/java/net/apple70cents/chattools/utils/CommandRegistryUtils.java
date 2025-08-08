@@ -136,7 +136,7 @@ public class CommandRegistryUtils {
             .then(literal("get_message").then(argument("hash",StringArgumentType.string()).executes(t -> {
                 String hash = StringArgumentType.getString(t,"hash");
                 LoggerUtils.info("[ChatTools] Getting message by hash: " + hash);
-                TextUtils.MessageUnit messageUnit = TextUtils.getMessageMap(hash);
+                TextUtils.MessageUnit messageUnit = TextUtils.getMessageUnitByHash(hash);
                 if (messageUnit != null) {
                     LoggerUtils.info(String.format("Time:%d Text:%s", messageUnit.unixTimestamp, messageUnit.message));
                     Minecraft.getInstance().setScreen(new CopyFeatureScreen(messageUnit));

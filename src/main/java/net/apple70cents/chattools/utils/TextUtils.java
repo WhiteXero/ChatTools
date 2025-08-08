@@ -106,7 +106,7 @@ public class TextUtils {
         return hashcode;
     }
 
-    public static MessageUnit getMessageMap(String hash) {
+    public static MessageUnit getMessageUnitByHash(String hash) {
         try {
             return messageMap.get(hash);
         } catch (Exception e) {

@@ -44,6 +44,7 @@ key:
         copyWithNoColorCode: 复制无颜色代码文本
         copyUnixTimestamp: 复制 Unix 时间戳
         copyTimestamp: 复制时间戳文本
+        jumpTo: 跳转
         cancel: 取消
       ChatHistoryNavigator:
         title: 聊天搜索

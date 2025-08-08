@@ -44,6 +44,7 @@ key:
         copyWithNoColorCode: Copy With No Color Code
         copyUnixTimestamp: Copy Unix Timestamp
         copyTimestamp: Copy Timestamp
+        jumpTo: Jump To
         cancel: Cancel
       ChatHistoryNavigator:
         title: Chat History Navigator

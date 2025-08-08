@@ -2,7 +2,9 @@ package net.apple70cents.chattools.utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.client.gui.components.MultiLineLabel;
+import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -10,7 +12,9 @@ import net.minecraft.util.Mth;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 //#if MC>=12000
@@ -53,7 +57,8 @@ public class CopyFeatureScreen extends Screen {
         super.init();
         this.messageSplit = MultiLineLabel.create(this.font, unit.message, this.width - 50);
 
-        this.buttonDatas.put("copyTextComponent", new ButtonData(-2, -1, TextUtils.component2JsonElement(unit.message.copy()).toString()));
+        this.buttonDatas.put("copyTextComponent", new ButtonData(-2, -1, TextUtils
+                .component2JsonElement(unit.message.copy()).toString()));
         this.buttonDatas.put("copyObjectData", new ButtonData(-2, 1, unit.message.toString()));
         this.buttonDatas.put("copyRaw", new ButtonData(-1, -1, unit.message.getString()));
         this.buttonDatas.put("copyWithColorCodeEscaped", new ButtonData(-1, 1, TextUtils.decodeColorCodes(unit.message.getString())));
@@ -72,7 +77,29 @@ public class CopyFeatureScreen extends Screen {
             buttons.put(buttonData.getKey(), addCenterButton(buttonData.getKey(), y, xOffset, 20, 200, (button -> {
                 Minecraft.getInstance().keyboardHandler.setClipboard(buttonData.getValue().content);
             })));
-        } addCenterButton("cancel", this.height - 30, 0, 20, 200, (button) -> {
+        }
+        addCenterButton("jumpTo", this.height - 50, 0, 20, 200, (button) -> {
+            Minecraft mc = Minecraft.getInstance();
+            ChatScreen chatScreen = new ChatScreen("");
+            mc.setScreen(chatScreen);
+
+            List<TextUtils.MessageUnit> messages = new ArrayList<>(TextUtils.messageMap.values());
+            List<TextUtils.MessageUnit> messagesAfter = messages.stream().skip(messages.indexOf(unit) + 1L).toList();
+            int lines = 0;
+            //#if MC>=11904
+            int maxLineLength = Mth.floor((double) ChatComponent.getWidth(mc.options.chatWidth().get()) / mc.options.chatScale().get());
+            //#else
+            //$$ int maxLineLength = Mth.floor((double) ChatComponent.getWidth(mc.options.chatWidth) / mc.options.chatScale);
+            //#endif
+            for (TextUtils.MessageUnit msg : messagesAfter) {
+                if (msg.occurrenceCount > 1) {
+                    continue; // skip compacted messages
+                }
+                lines += mc.font.split(msg.message, maxLineLength).size();
+            }
+            mc.gui.getChat().scrollChat(lines);
+        });
+        addCenterButton("cancel", this.height - 30, 0, 20, 200, (button) -> {
             if (oldScreen instanceof ChatHistoryNavigatorScreen) {
                 if (((ChatHistoryNavigatorScreen) oldScreen).keywordField != null) {
                     ((ChatHistoryNavigatorScreen) oldScreen).chatUnitListWidget.setKeyword(((ChatHistoryNavigatorScreen) oldScreen).keywordField.getValue());

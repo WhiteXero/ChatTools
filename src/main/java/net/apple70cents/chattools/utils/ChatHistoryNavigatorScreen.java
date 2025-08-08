@@ -168,7 +168,7 @@ public class ChatHistoryNavigatorScreen extends Screen {
         TextUtils.MessageUnit messageUnit;
 
         public ChatUnitEntry(String hashcode) {
-            this.messageUnit = TextUtils.getMessageMap(hashcode);
+            this.messageUnit = TextUtils.getMessageUnitByHash(hashcode);
         }
 
         @Override
