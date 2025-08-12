@@ -24,7 +24,10 @@ import java.util.regex.Pattern;
 //#if MC>=12100
 import net.minecraft.world.entity.EntityAttachment;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.renderer.RenderType;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 //#endif
+
 //#if MC>=11900
 import org.joml.Matrix4f;
 //#else
@@ -35,8 +38,6 @@ import org.joml.Matrix4f;
  * @author 70CentsApple
  */
 public class BubbleRenderer {
-    static Minecraft mc = Minecraft.getInstance();
-    static Font font = mc.font;
 
     protected static class BubbleUnit {
         Component text;
@@ -66,6 +67,8 @@ public class BubbleRenderer {
         }
 
         public void render(Entity entity, PoseStack poseStack, MultiBufferSource multiBufferSource, float tickDelta) {
+            Minecraft mc = Minecraft.getInstance();
+            Font font = mc.font;
             if (mc.player == null) {
                 return;
             }
@@ -76,7 +79,6 @@ public class BubbleRenderer {
             int yOffset = ((Number) ConfigUtils.get("bubble.YOffset")).intValue();
             EntityRenderDispatcher renderDispatcher = mc.getEntityRenderDispatcher();
             poseStack.pushPose();
-            // getNameLabelHeight() -> getHeight() + 0.5F
 
             //#if MC>=12100
             Vec3 vec3d = entity.getAttachments().getNullable(EntityAttachment.NAME_TAG, 0, entity.getYRot());
@@ -97,26 +99,48 @@ public class BubbleRenderer {
             Matrix4f matrix4f = poseStack.last().pose();
             int maxLineWidth = ((Number) ConfigUtils.get("bubble.MaxLineWidth")).intValue();
             List<FormattedCharSequence> lines = font.split(renderComponent, maxLineWidth);
-            int lines_amount = lines.size();
-            for (int i = 0; i < lines_amount; i++) {
-                int y = 9 * (i - lines_amount);
+            int linesAmount = lines.size();
+
+            // draw text
+            for (int i = 0; i < linesAmount; i++) {
+                int y = 9 * (i - linesAmount);
                 FormattedCharSequence line = lines.get(i);
                 float xOffset = -font.width(line) / 2.0F;
-                font.drawInBatch(line, xOffset, y, 553648127, false, matrix4f, multiBufferSource,
-                        //#if MC>=11900
-                        Font.DisplayMode.SEE_THROUGH
-                        //#else
-                        //$$ true
-                        //#endif
-                        , 1056964608, 15728640);
-                font.drawInBatch(line, xOffset, y, -1, false, matrix4f, multiBufferSource,
+
+                // draw text background for versions 1.16 ~ 1.20.6
+                //#if MC>=12100
+                //#elseif MC>=11900
+                //$$ font.drawInBatch(line, xOffset, y, 553648127, false, matrix4f, multiBufferSource, Font.DisplayMode.SEE_THROUGH, 1056964608, 15728640);
+                //#else
+                //$$ font.drawInBatch(line, xOffset, y, 553648127, false, matrix4f, multiBufferSource, true, 1056964608, 15728640);
+                //#endif
+
+                font.drawInBatch(line, xOffset, y, 0xFFFFFFFF, false, matrix4f, multiBufferSource,
                         //#if MC>=11900
                         Font.DisplayMode.NORMAL
                         //#else
                         //$$ false
                         //#endif
-                        , 0, 15728640);
+                        , 0, 0xF00000);
             }
+
+            //#if MC>=12100
+            // draw background
+            int maxWidth = 0;
+            for (FormattedCharSequence line : lines) {
+                maxWidth = Math.max(maxWidth, font.width(line));
+            }
+            float x1 = -maxWidth / 2.0F - 3;
+            float y1 = -linesAmount * 9 - 3;
+            float x2 = maxWidth / 2.0F + 3;
+            float y2 = 1;
+            VertexConsumer bgBuffer = multiBufferSource.getBuffer(RenderType.textBackgroundSeeThrough());
+            bgBuffer.addVertex(matrix4f, x1, y1, -0.1F).setColor(0F, 0F, 0F, 0.18F).setUv2(15, 15);
+            bgBuffer.addVertex(matrix4f, x1, y2, -0.1F).setColor(0F, 0F, 0F, 0.18F).setUv2(15, 15);
+            bgBuffer.addVertex(matrix4f, x2, y2, -0.1F).setColor(0F, 0F, 0F, 0.18F).setUv2(15, 15);
+            bgBuffer.addVertex(matrix4f, x2, y1, -0.1F).setColor(0F, 0F, 0F, 0.18F).setUv2(15, 15);
+            //#endif
+
             poseStack.popPose();
         }
     }
@@ -124,6 +148,7 @@ public class BubbleRenderer {
     private static Map<String, BubbleUnit> bubbleMap = new HashMap<>();
 
     public static void render(Entity entity, PoseStack poseStack, MultiBufferSource multiBufferSource, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (bubbleMap.isEmpty()) {
             return;
         } else if (mc.level == null) {
@@ -156,7 +181,7 @@ public class BubbleRenderer {
 
     public static void addChatBubble(Component text) {
         String message = TextUtils.wash(text.getString());
-        if (mc.level == null) {
+        if (Minecraft.getInstance().level == null) {
             return;
         }
         String pattern = "";
