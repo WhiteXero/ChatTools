@@ -20,6 +20,10 @@ public class SpecialUnits {
         LAZY, GREEDY
     }
 
+    public enum TranslatorModes {
+        BUILTIN, BAIDU
+    }
+
     public static class BubbleRuleUnit {
         public String address;
         public String pattern;

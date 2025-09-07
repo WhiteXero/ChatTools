@@ -279,6 +279,9 @@ public class CommandRegistryUtils {
                     case "EnumToastModes":
                         ConfigUtils.set(key, SpecialUnits.ToastModes.valueOf(value));
                         break;
+                    case "EnumTranslators":
+                        ConfigUtils.set(key, SpecialUnits.TranslatorModes.valueOf(value));
+                        break;
                     case "EnumKeyModifiers":
                         ConfigUtils.set(key, SpecialUnits.KeyModifiers.valueOf(value));
                         break;
