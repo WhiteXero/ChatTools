@@ -250,6 +250,7 @@ key:
           '@Tooltip': |-
             §6BUILTIN§r: 使用自定义 API 请求翻译
             §6BAIDU§r: 使用百度翻译 API 进行翻译
+            §6GOOGLE_FREE§r: 模拟 Google 网页翻译
         Builtin:
           .: 自定义翻译（BUILTIN）
           '@Tooltip': |-
@@ -282,6 +283,17 @@ key:
           to:
             .: 目标语言（to）
             '@Tooltip': 目标语言，例如英文为 en ，请参阅百度翻译语种对照表
+        GoogleFree:
+          .: Google 免费翻译（GOOGLE_FREE）
+          '@Tooltip': |-
+            模拟 Google 网页翻译进行翻译。
+            可能会因为 Google 的反爬虫机制而偶尔失效。
+          sl:
+            .: 源语言（sl）
+            '@Tooltip': 源语言，建议设置为 auto 以自动识别，请参阅 Google 翻译语种对照表
+          tl:
+            .: 目标语言（tl）
+            '@Tooltip': 目标语言，例如英文为 en ，请参阅 Google 翻译语种对照表
     notifier:
       Toast:
         .: 后台通知

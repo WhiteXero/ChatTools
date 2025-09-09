@@ -259,6 +259,7 @@ key:
           '@Tooltip': |-
             §6BUILTIN§r: Use custom API for translation
             §6BAIDU§r: Use Baidu Translate API for translation
+            §6GOOGLE_FREE§r: Use Google translator website for translation
         Builtin:
           .: Custom Translation (BUILTIN)
           '@Tooltip': |-
@@ -295,6 +296,21 @@ key:
             '@Tooltip': |-
               Target language (e.g., 'en' for English).
               Refer to Baidu Translate language list.
+        GoogleFree:
+          .: Google Free (GOOGLE_FREE)
+          '@Tooltip': |-
+            Use Google translator website for translation.
+            This is very unstable.
+          from:
+            .: Source Language (sl)
+            '@Tooltip': |-
+              Source language; recommended to set to 'auto' for auto-detection.
+              Refer to Google Translate language list.
+          to:
+            .: Target Language (tl)
+            '@Tooltip': |-
+              Target language (e.g., 'en' for English).
+              Refer to Google Translate language list.
 
     notifier:
       Toast:

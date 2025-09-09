@@ -222,6 +222,19 @@
               "key": "translator.Translator.Baidu.to"
             }
           ]
+        },{
+          "type": "sub",
+          "key": "translator.Translator.GoogleFree",
+          "content": [
+            {
+              "type": "String",
+              "key": "translator.Translator.GoogleFree.sl"
+            },
+            {
+              "type": "String",
+              "key": "translator.Translator.GoogleFree.tl"
+            }
+          ]
         }
       ]
     },

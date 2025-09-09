@@ -36,6 +36,11 @@ public class Translator {
                 String to = (String) ConfigUtils.get("translator.Translator.Baidu.to");
                 new BaiduTranslator(chat, appId, key, from, to).work();
                 break;
+            case "GOOGLE_FREE":
+                String sl = (String) ConfigUtils.get("translator.Translator.GoogleFree.sl");
+                String tl = (String) ConfigUtils.get("translator.Translator.GoogleFree.tl");
+                new GoogleFreeTranslator(chat, sl, tl).work();
+                break;
             default:
                 return;
         }

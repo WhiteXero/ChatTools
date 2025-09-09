@@ -30,6 +30,7 @@ public class BaiduTranslator extends AbstractTranslator {
         this.to = to;
     }
 
+    @Override
     public String translate(String text) throws Exception {
         if (appId.isBlank()) {
             throw new Exception("appId required");
@@ -46,7 +47,7 @@ public class BaiduTranslator extends AbstractTranslator {
         return getTransResult(text, appId, key, from, to);
     }
 
-    public static String getTransResult(String query, String appId, String key, String from, String to) throws Exception {
+    protected static String getTransResult(String query, String appId, String key, String from, String to) throws Exception {
         Map<String, String> params = buildParams(query, appId, key, from, to);
         String jsonResponse = sendPost(params);
         return parseJsonResponse(jsonResponse);
@@ -79,14 +80,13 @@ public class BaiduTranslator extends AbstractTranslator {
         }
     }
 
-    private static String sendPost(Map<String, String> params) throws Exception{
+    private static String sendPost(Map<String, String> params) throws Exception {
         String form = params.entrySet().stream()
                 .map(e -> URLEncoder.encode(e.getKey(), StandardCharsets.UTF_8) + "="
                         + URLEncoder.encode(e.getValue(), StandardCharsets.UTF_8))
                 .collect(Collectors.joining("&"));
 
         HttpClient client = HttpClient.newHttpClient();
-
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(ENDPOINT))
                 .header("Content-Type", "application/x-www-form-urlencoded")
@@ -98,8 +98,7 @@ public class BaiduTranslator extends AbstractTranslator {
     }
 
     private static String parseJsonResponse(String jsonResponse) throws Exception {
-        Gson gson = new Gson();
-        JsonObject json = gson.fromJson(jsonResponse, com.google.gson.JsonObject.class);
+        JsonObject json = new Gson().fromJson(jsonResponse, com.google.gson.JsonObject.class);
 
         if (json.has("trans_result")) {
             JsonArray transResult = json.get("trans_result").getAsJsonArray();
