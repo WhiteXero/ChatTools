@@ -31,11 +31,10 @@ public class MicrosoftFreeTranslator extends AbstractTranslator {
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(TOKEN_ENDPOINT)).GET().build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() == 200) {
-            return response.body();
-        } else {
+        if (response.statusCode() != 200) {
             throw new RuntimeException("Failed to refresh translation token: " + response.statusCode());
         }
+        return response.body();
     }
 
     @Override
@@ -88,10 +87,7 @@ public class MicrosoftFreeTranslator extends AbstractTranslator {
 
     private static String parseJsonResponse(String jsonResponse) throws Exception {
         JsonArray translations = new Gson().fromJson(jsonResponse, JsonArray.class);
-        if (!translations.isEmpty()) {
-            JsonObject translation = translations.get(0).getAsJsonObject();
-            return translation.getAsJsonArray("translations").get(0).getAsJsonObject().get("text").getAsString();
-        }
-        throw new Exception("Empty translation response");
+        JsonObject translation = translations.get(0).getAsJsonObject();
+        return translation.getAsJsonArray("translations").get(0).getAsJsonObject().get("text").getAsString();
     }
 }
