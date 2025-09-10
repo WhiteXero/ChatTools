@@ -21,7 +21,7 @@ public class SpecialUnits {
     }
 
     public enum TranslatorModes {
-        BUILTIN, BAIDU, GOOGLE_FREE
+        BUILTIN, BAIDU, MICROSOFT_FREE, GOOGLE_FREE
     }
 
     public static class BubbleRuleUnit {

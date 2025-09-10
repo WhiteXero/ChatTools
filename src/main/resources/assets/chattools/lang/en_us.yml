@@ -259,6 +259,7 @@ key:
           '@Tooltip': |-
             §6BUILTIN§r: Use custom API for translation
             §6BAIDU§r: Use Baidu Translate API for translation
+            §6MICROSOFT_FREE§r: Use Microsoft Translator via Edge for translation
             §6GOOGLE_FREE§r: Use Google translator website for translation
         Builtin:
           .: Custom Translation (BUILTIN)
@@ -296,6 +297,19 @@ key:
             '@Tooltip': |-
               Target language (e.g., 'en' for English).
               Refer to Baidu Translate language list.
+        Microsoft Free:
+          .: Microsoft Free (MICROSOFT_FREE)
+          '@Tooltip': Use Microsoft Translator via Edge for translation.
+          from:
+            .: Source Language (from)
+            '@Tooltip': |-
+              Source language; recommended to unset for auto-detection.
+              Refer to Microsoft Translate language list.
+          to:
+            .: Target Language (to)
+            '@Tooltip': |-
+              Target language (e.g., 'en' for English).
+              Refer to Microsoft Translate language list.
         GoogleFree:
           .: Google Free (GOOGLE_FREE)
           '@Tooltip': |-

@@ -37,6 +37,8 @@
   "translator.Translator.Baidu.Appkey": "",
   "translator.Translator.Baidu.from": "auto",
   "translator.Translator.Baidu.to": "",
+  "translator.Translator.MicrosoftFree.from": "",
+  "translator.Translator.MicrosoftFree.to": "",
   "translator.Translator.GoogleFree.sl": "auto",
   "translator.Translator.GoogleFree.tl": "",
   "notifier.Toast.Enabled": false,

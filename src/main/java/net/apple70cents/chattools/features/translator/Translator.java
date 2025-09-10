@@ -30,16 +30,21 @@ public class Translator {
                 new BuiltinTranslator(chat, api, usePost).work();
                 break;
             case "BAIDU":
-                String appId = (String) ConfigUtils.get("translator.Translator.Baidu.Appid");
-                String key = (String) ConfigUtils.get("translator.Translator.Baidu.Appkey");
-                String from = (String) ConfigUtils.get("translator.Translator.Baidu.from");
-                String to = (String) ConfigUtils.get("translator.Translator.Baidu.to");
-                new BaiduTranslator(chat, appId, key, from, to).work();
+                String baiduAppId = (String) ConfigUtils.get("translator.Translator.Baidu.Appid");
+                String baiduKey = (String) ConfigUtils.get("translator.Translator.Baidu.Appkey");
+                String baiduFrom = (String) ConfigUtils.get("translator.Translator.Baidu.from");
+                String baiduTo = (String) ConfigUtils.get("translator.Translator.Baidu.to");
+                new BaiduTranslator(chat, baiduAppId, baiduKey, baiduFrom, baiduTo).work();
+                break;
+            case "MICROSOFT_FREE":
+                String microsoftFreeFrom = (String) ConfigUtils.get("translator.Translator.MicrosoftFree.from");
+                String microsoftFreeTo = (String) ConfigUtils.get("translator.Translator.MicrosoftFree.to");
+                new MicrosoftFreeTranslator(chat, microsoftFreeFrom, microsoftFreeTo).work();
                 break;
             case "GOOGLE_FREE":
-                String sl = (String) ConfigUtils.get("translator.Translator.GoogleFree.sl");
-                String tl = (String) ConfigUtils.get("translator.Translator.GoogleFree.tl");
-                new GoogleFreeTranslator(chat, sl, tl).work();
+                String googleFreeSl = (String) ConfigUtils.get("translator.Translator.GoogleFree.sl");
+                String googleFreeTl = (String) ConfigUtils.get("translator.Translator.GoogleFree.tl");
+                new GoogleFreeTranslator(chat, googleFreeSl, googleFreeTl).work();
                 break;
             default:
                 return;

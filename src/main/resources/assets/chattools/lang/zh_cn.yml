@@ -250,6 +250,7 @@ key:
           '@Tooltip': |-
             §6BUILTIN§r: 使用自定义 API 请求翻译
             §6BAIDU§r: 使用百度翻译 API 进行翻译
+            §6MICROSOFT_FREE§r: 模拟 Edge 调用微软翻译
             §6GOOGLE_FREE§r: 模拟 Google 网页翻译
         Builtin:
           .: 自定义翻译（BUILTIN）
@@ -283,6 +284,15 @@ key:
           to:
             .: 目标语言（to）
             '@Tooltip': 目标语言，例如英文为 en ，请参阅百度翻译语种对照表
+        MicrosoftFree:
+          .: 微软免费翻译（MICROSOFT_FREE）
+          '@Tooltip': 模拟 Edge 浏览器调用的网页翻译进行翻译。
+          from:
+            .: 源语言（from）
+            '@Tooltip': 源语言，建议留空以自动识别，请参阅微软翻译语种对照表
+          to:
+            .: 目标语言（to）
+            '@Tooltip': 目标语言，例如英文为 en ，请参阅微软翻译语种对照表
         GoogleFree:
           .: Google 免费翻译（GOOGLE_FREE）
           '@Tooltip': |-

@@ -222,7 +222,22 @@
               "key": "translator.Translator.Baidu.to"
             }
           ]
-        },{
+        },
+        {
+          "type": "sub",
+          "key": "translator.Translator.MicrosoftFree",
+          "content": [
+            {
+              "type": "String",
+              "key": "translator.Translator.MicrosoftFree.from"
+            },
+            {
+              "type": "String",
+              "key": "translator.Translator.MicrosoftFree.to"
+            }
+          ]
+        },
+        {
           "type": "sub",
           "key": "translator.Translator.GoogleFree",
           "content": [
