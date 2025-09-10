@@ -30,7 +30,7 @@
   "general.UseSendPacketsForSendingMessages": false,
   "general.DisableTextObfuscation.Enabled": false,
   "translator.Translator.Enabled": false,
-  "translator.Translator.Mode": "BUILTIN",
+  "translator.Translator.Mode": "MICROSOFT_FREE",
   "translator.Translator.Builtin.API": "",
   "translator.Translator.Builtin.PostInstead": false,
   "translator.Translator.Baidu.Appid": "",
