@@ -79,7 +79,7 @@ public class GoogleFreeTranslator extends AbstractTranslator {
     }
 
     private static String parseJsonResponse(String jsonResponse) throws Exception {
-        JsonObject json = new Gson().fromJson(jsonResponse, com.google.gson.JsonObject.class);
+        JsonArray json = new Gson().fromJson(jsonResponse, com.google.gson.JsonArray.class).getAsJsonArray();
         JsonArray results = json.getAsJsonArray().get(0).getAsJsonArray();
 
         StringBuilder translatedText = new StringBuilder();
