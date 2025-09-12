@@ -297,7 +297,7 @@ key:
             '@Tooltip': |-
               Target language (e.g., 'en' for English).
               Refer to Baidu Translate language list.
-        Microsoft Free:
+        MicrosoftFree:
           .: Microsoft Free (MICROSOFT_FREE)
           '@Tooltip': Use Microsoft Translator via Edge for translation.
           from:

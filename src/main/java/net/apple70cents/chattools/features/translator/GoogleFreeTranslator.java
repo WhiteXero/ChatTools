@@ -2,7 +2,6 @@ package net.apple70cents.chattools.features.translator;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import net.minecraft.client.gui.components.EditBox;
 
 import java.net.*;
