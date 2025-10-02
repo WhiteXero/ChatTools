@@ -1,6 +1,7 @@
 package net.apple70cents.chattools.features.responder;
 
 import net.apple70cents.chattools.config.SpecialUnits;
+import net.apple70cents.chattools.features.filter.ChatFilter;
 import net.apple70cents.chattools.utils.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -13,7 +14,8 @@ import java.util.regex.Pattern;
  * @author 70CentsApple
  */
 public class Responder {
-    static Minecraft mc = Minecraft.getInstance();
+    private static final Minecraft mc = Minecraft.getInstance();
+    public static long lastRequestTimestamp = -1L;
 
     /**
      * Replace the group name in the format `{GROUP}` in `message` with the corresponding grouping in the raw message.
@@ -44,6 +46,15 @@ public class Responder {
         return message;
     }
 
+    public static boolean shouldWork(Component message) {
+        boolean enabled = (boolean) ConfigUtils.get("general.ChatTools.Enabled") && (boolean) ConfigUtils.get("responder.Enabled");
+        // obviously, we should not respond to our own messages
+        boolean notJustSent = !MessageUtils.hadJustSentMessage();
+        boolean filterPassed = ChatFilter.shouldFilter(message) ? (boolean) ConfigUtils.get("responder.RespondToFilteredMessages") : true;
+        boolean awaitTimePassed = System.currentTimeMillis() - lastRequestTimestamp >= ((Number) ConfigUtils.get("responder.MinAwaitTimeInMilliseconds")).longValue();
+        return enabled && notJustSent && filterPassed && awaitTimePassed;
+    }
+
     public static void work(Component text) {
         String messageReceived = TextUtils.wash(text.getString());
         boolean shouldRespond = false;
@@ -70,6 +81,7 @@ public class Responder {
 
     public static void makeMessageSchedule(String messageReceived, String pattern, String msg, long delayInMilliseconds, boolean forceDisableFormatter) {
         LoggerUtils.info("[ChatTools] Will respond within " + delayInMilliseconds + "ms");
+        lastRequestTimestamp = System.currentTimeMillis();
         new Thread(() -> {
             // delay
             try {

@@ -58,6 +58,7 @@
   "notifier.AllowList": [],
   "notifier.BanList": [],
   "formatter.Enabled": false,
+  "formatter.DisableThreshold": 256,
   "formatter.List": [],
   "formatter.DisableOnMatchList": [
     "^(\\+|-)?\\d+(\\.\\d+)?$|^[.#%$/].*|\\ball\\b",
@@ -84,7 +85,7 @@
     }
   ],
   "responder.Enabled": false,
-  "formatter.DisableThreshold": 256,
+  "responder.MinAwaitTimeInMilliseconds": 500,
   "responder.RespondToFilteredMessages": false,
   "responder.List": [
     {

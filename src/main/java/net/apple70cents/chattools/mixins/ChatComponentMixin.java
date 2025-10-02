@@ -78,7 +78,7 @@ public abstract class ChatComponentMixin {
         }
         if (ChatFilter.shouldFilter(message)) {
             LoggerUtils.info("[ChatTools] Filtered message: " + message.getString());
-            if ((boolean) ConfigUtils.get("responder.RespondToFilteredMessages")) {
+            if (Responder.shouldWork(message)) {
                 Responder.work(message);
             }
             ChatFilter.sendPlaceholderIfActive();
@@ -113,9 +113,7 @@ public abstract class ChatComponentMixin {
         }
         // This is not the only attempt that we try to activate the responder.
         // When filtering a message with `responder.respondToFilteredMessages` option on, responder will also try to work.
-        if ((boolean) ConfigUtils.get("responder.Enabled") &&
-                // obviously, we should not respond to our own messages
-                !MessageUtils.hadJustSentMessage()) {
+        if (Responder.shouldWork(message)) {
             Responder.work(message);
         }
         if ((boolean) ConfigUtils.get("general.OverrideChatColor.Enabled")) {

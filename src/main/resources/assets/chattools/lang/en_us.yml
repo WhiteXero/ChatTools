@@ -534,8 +534,15 @@ key:
       Enabled:
         .: Enable Responder
         '@Tooltip': |-
-          Responder allows you to respond automatically to specific messages, based on custom rules.
+          Responder allows you to respond automatically to 
+          specific messages, based on custom rules.
           Toggles whether Responder should work.
+      MinAwaitTimeInMilliseconds:
+        .: Minimum Awaiting Time (in milliseconds)
+        '@Tooltip': |-
+          The minimum awaiting time (in milliseconds)
+          between two message responding requests.
+          This is to prevent the responder from responding too frequently.
       RespondToFilteredMessages:
         .: Respond To Filtered Messages
         '@Tooltip': Always try to respond, even if they are going to be filtered.
