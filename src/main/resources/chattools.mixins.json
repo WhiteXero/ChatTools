@@ -13,6 +13,7 @@
     "FriendlyByteBufMixin",
     "GuiMixinForExclusiveActionbar",
     "GuiMixinForRestoreMessages",
+    "NameTagFeatureRendererStorageMixin",
     "ScreenAccessor",
     "ServerboundChatPacketMixin",
     "StyleMixin"

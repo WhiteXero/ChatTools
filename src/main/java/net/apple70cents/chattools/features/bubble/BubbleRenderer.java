@@ -158,7 +158,7 @@ public class BubbleRenderer {
         }
         for (AbstractClientPlayer potentialSender : mc.level.players()) {
             Component senderDisplayName = potentialSender.getDisplayName();
-            Component entityDisplayName = entity.getDisplayName();
+            Component entityDisplayName = entity.getCustomName() != null ? entity.getCustomName() : entity.getDisplayName();
             if (senderDisplayName == null || entityDisplayName == null) {
                 return;
             }
