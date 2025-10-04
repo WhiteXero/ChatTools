@@ -153,9 +153,7 @@ public class BubbleRenderer {
 
     public static void render(Entity entity, PoseStack poseStack, MultiBufferSource multiBufferSource, float tickDelta) {
         Minecraft mc = Minecraft.getInstance();
-        if (bubbleMap.isEmpty()) {
-            return;
-        } else if (mc.level == null) {
+        if (bubbleMap.isEmpty() || mc.level == null || entity == null) {
             return;
         }
         for (AbstractClientPlayer potentialSender : mc.level.players()) {
