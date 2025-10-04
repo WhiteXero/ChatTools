@@ -83,7 +83,11 @@ public class CopyFeatureScreen extends Screen {
         }
         addCenterButton("jumpTo", this.height - 50, 0, 20, 200, (button) -> {
             Minecraft mc = Minecraft.getInstance();
-            ChatScreen chatScreen = new ChatScreen("");
+            //#if MC>=12109
+            ChatScreen chatScreen = new ChatScreen("", false);
+            //#else
+            //$$ ChatScreen chatScreen = new ChatScreen("");
+            //#endif
             mc.setScreen(chatScreen);
 
             List<TextUtils.MessageUnit> messages = new ArrayList<>(TextUtils.messageMap.values());
@@ -143,8 +147,14 @@ public class CopyFeatureScreen extends Screen {
         super.render(context, mouseX, mouseY, delta);
         // this draws the title
         // context.drawCenteredString(this.font, this.title, this.width / 2, this.getTitleY(), 0xffffff);
+
         // this draws the message
-        this.messageSplit.renderCentered(context, this.width / 2, this.getMessageY());
+        //#if MC>=12109
+        this.messageSplit.render(context, MultiLineLabel.Align.CENTER, this.width / 2, this.getMessageY(), 9, true, 0xffffffff);
+        //#else
+        //$$ this.messageSplit.renderCentered(context, this.width / 2, this.getMessageY());
+        //#endif
+
         // this draws the content preview
         Component previewText = TextUtils.SPACER;
         for (Map.Entry<String, Button> button : buttons.entrySet()) {
@@ -153,7 +163,11 @@ public class CopyFeatureScreen extends Screen {
             }
         }
         this.previewTextSplit = MultiLineLabel.create(this.font, previewText, this.width - 50);
-        this.previewTextSplit.renderCentered(context, this.width / 2, this.height / 2 + 50);
+        //#if MC>=12109
+        this.previewTextSplit.render(context, MultiLineLabel.Align.CENTER, this.width / 2, this.height / 2 + 50, 9, true, 0xffffffff);
+        //#else
+        //$$ this.previewTextSplit.renderCentered(context, this.width / 2, this.height / 2 + 50);
+        //#endif
     }
 
     private int getTitleY() {

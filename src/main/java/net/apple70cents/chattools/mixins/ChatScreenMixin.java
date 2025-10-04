@@ -18,6 +18,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+//#if MC>=12109
+import net.minecraft.client.input.KeyEvent;
+//#endif
 //#if MC>=12005
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.minecraft.network.chat.Style;
@@ -57,7 +60,11 @@ public abstract class ChatScreenMixin {
     //#endif
 
     @Inject(method = "keyPressed", at = @At("HEAD"))
-    private void keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+    //#if MC>=12109
+    private void keyPressed(KeyEvent keyEvent, CallbackInfoReturnable<Boolean> cir) {
+    //#else
+    //$$ private void keyPressed(int keyCode, int scanCode, int modifiers, CallbackInfoReturnable<Boolean> cir) {
+    //#endif
         if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
             return;
         }

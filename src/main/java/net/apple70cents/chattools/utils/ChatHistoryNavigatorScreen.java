@@ -21,9 +21,14 @@ import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+//#if MC>=12109
+import net.minecraft.client.input.MouseButtonEvent;
+//#endif
+
 //#if MC>=11900
 import net.minecraft.client.gui.components.Tooltip;
 //#endif
+
 //#if MC>=12000
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -172,7 +177,12 @@ public class ChatHistoryNavigatorScreen extends Screen {
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        //#if MC>=12109
+        public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+            int button = event.button();
+        //#else
+        //$$ public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        //#endif
             // left click
             if (button == 0) {
                 Minecraft.getInstance().setScreen(new CopyFeatureScreen(messageUnit));
@@ -217,15 +227,17 @@ public class ChatHistoryNavigatorScreen extends Screen {
         }
 
         @Override
-        public void render(
-                //#if MC>=12000
-                GuiGraphics context
-                //#else
-                //$$ PoseStack context
-                //#endif
-                , int index, int y, int x, int itemWidth, int itemHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-            //#if MC>=12000
-            context.drawString(font, this.getText(), x, y, 0xffffffff);
+        //#if MC>=12109
+        public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        //#elseif MC>=12000
+        //$$ public void render(GuiGraphics context, int index, int y, int x, int itemWidth, int itemHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        //#else
+        //$$ public void render(PoseStack context, int index, int y, int x, int itemWidth, int itemHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        //#endif
+            //#if MC>=12109
+            context.drawString(font, this.getText(), this.getContentX(), this.getContentY(), 0xffffffff);
+            //#elseif MC>=12000
+            //$$ context.drawString(font, this.getText(), x, y, 0xffffffff);
             //#else
             //$$ drawString(context, font, this.getText(), x, y, 0xffffff);
             //#endif
@@ -371,7 +383,12 @@ public class ChatHistoryNavigatorScreen extends Screen {
         @Override
         protected double scrollRate() {
             int lineHeight = font.lineHeight + 3;
-            return hasShiftDown() ? lineHeight : lineHeight * 7;
+            //#if MC>=12109
+            boolean shiftDown = Minecraft.getInstance().hasShiftDown();
+            //#else
+            //$$ boolean shiftDown = hasShiftDown();
+            //#endif
+            return shiftDown ? lineHeight : lineHeight * 7;
         }
         //#else
         //$$ @Override

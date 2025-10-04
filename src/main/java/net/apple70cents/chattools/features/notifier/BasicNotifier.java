@@ -73,7 +73,11 @@ public class BasicNotifier {
                 int pitch = ((Number) ConfigUtils.get("notifier.Sound.Pitch")).intValue();
 
                 boolean sendFromCameraPos = (boolean) ConfigUtils.get("notifier.Sound.PlaySoundFromCameraPositionEnabled");
-                Entity camera = Minecraft.getInstance().cameraEntity;
+                //#if MC>=12109
+                Entity camera = Minecraft.getInstance().getCameraEntity();
+                //#else
+                //$$ Entity camera = Minecraft.getInstance().cameraEntity;
+                //#endif
                 double x = (sendFromCameraPos && camera != null) ? camera.position().x : player.getX();
                 double y = (sendFromCameraPos && camera != null) ? camera.position().y : player.getY();
                 double z = (sendFromCameraPos && camera != null) ? camera.position().z : player.getZ();

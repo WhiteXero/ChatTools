@@ -79,7 +79,11 @@ public class MessageUtils {
                     ConfigUtils.set("formatter.Enabled", false);
                 }
 
-                ChatScreen tempChatScreen = new ChatScreen(text);
+                //#if MC>=12109
+                ChatScreen tempChatScreen = new ChatScreen(text, false);
+                //#else
+                //$$ ChatScreen tempChatScreen = new ChatScreen(text);
+                //#endif
                 ((ScreenAccessor) tempChatScreen).invokeInit(mc, 1, 1);
                 tempChatScreen.handleChatInput(text, false);
 

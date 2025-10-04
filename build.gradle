@@ -24,6 +24,7 @@ preprocess {
     def mc12104 = createNode('1.21.4', 1_21_04, '')
     def mc12105 = createNode('1.21.5', 1_21_05, '')
     def mc12108 = createNode('1.21.8', 1_21_08, '')
+    def mc12109 = createNode('1.21.9', 1_21_09, '')
 
     mc116.link(mc117, null)
     mc117.link(mc118, null)
@@ -35,6 +36,7 @@ preprocess {
     mc12101.link(mc12104, null)
     mc12104.link(mc12105, null)
     mc12105.link(mc12108, null)
+    mc12108.link(mc12109, null)
 }
 
 tasks.register('buildAndGather') {

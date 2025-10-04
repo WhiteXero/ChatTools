@@ -181,73 +181,73 @@
       "content": [
         {
           "type": "boolean",
-          "key": "translator.Translator.Enabled"
+          "key": "translator.Enabled"
         },
         {
           "type": "EnumTranslators",
-          "key": "translator.Translator.Mode"
+          "key": "translator.Mode"
         },
         {
           "type": "sub",
-          "key": "translator.Translator.Builtin",
+          "key": "translator.Builtin",
           "content": [
             {
               "type": "String",
-              "key": "translator.Translator.Builtin.API"
+              "key": "translator.Builtin.API"
             },
             {
               "type": "boolean",
-              "key": "translator.Translator.Builtin.PostInstead"
+              "key": "translator.Builtin.PostInstead"
             }
           ]
         },
         {
           "type": "sub",
-          "key": "translator.Translator.Baidu",
+          "key": "translator.Baidu",
           "content": [
             {
               "type": "String",
-              "key": "translator.Translator.Baidu.Appid"
+              "key": "translator.Baidu.Appid"
             },
             {
               "type": "String",
-              "key": "translator.Translator.Baidu.Appkey"
+              "key": "translator.Baidu.Appkey"
             },
             {
               "type": "String",
-              "key": "translator.Translator.Baidu.from"
+              "key": "translator.Baidu.from"
             },
             {
               "type": "String",
-              "key": "translator.Translator.Baidu.to"
+              "key": "translator.Baidu.to"
             }
           ]
         },
         {
           "type": "sub",
-          "key": "translator.Translator.MicrosoftFree",
+          "key": "translator.MicrosoftFree",
           "content": [
             {
               "type": "String",
-              "key": "translator.Translator.MicrosoftFree.from"
+              "key": "translator.MicrosoftFree.from"
             },
             {
               "type": "String",
-              "key": "translator.Translator.MicrosoftFree.to"
+              "key": "translator.MicrosoftFree.to"
             }
           ]
         },
         {
           "type": "sub",
-          "key": "translator.Translator.GoogleFree",
+          "key": "translator.GoogleFree",
           "content": [
             {
               "type": "String",
-              "key": "translator.Translator.GoogleFree.sl"
+              "key": "translator.GoogleFree.sl"
             },
             {
               "type": "String",
-              "key": "translator.Translator.GoogleFree.tl"
+              "key": "translator.GoogleFree.tl"
             }
           ]
         }

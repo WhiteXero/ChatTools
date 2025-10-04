@@ -1,8 +1,9 @@
 package net.apple70cents.chattools.utils;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Window;
 import net.apple70cents.chattools.config.SpecialUnits;
 import net.minecraft.client.Minecraft;
-import com.mojang.blaze3d.platform.InputConstants;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -21,21 +22,25 @@ public class KeyboardUtils {
         if (InputConstants.UNKNOWN.getName().equals(translationKey)) {
             return false;
         }
-        long handle = Minecraft.getInstance().getWindow().getWindow();
+        //#if MC>=12109
+        Window window = Minecraft.getInstance().getWindow();
+        //#else
+        //$$ long window = Minecraft.getInstance().getWindow().getWindow();
+        //#endif
         InputConstants.Key key = InputConstants.getKey(translationKey);
         int keyCode = key.getValue();
 
         // @formatter:off
         // This check is GREEDY, which means if `key` = D, `modifier` = Alt, it just cares whether these two keys are both activated.
         if ((modifier.equals(SpecialUnits.KeyModifiers.ALT) &&
-                !(InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_ALT) ||
-                        InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_ALT)))
+                !(InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_ALT) ||
+                        InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_ALT)))
         || (modifier.equals(SpecialUnits.KeyModifiers.SHIFT) &&
-                !(InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SHIFT) ||
-                        InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_SHIFT)))
+                !(InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT) ||
+                        InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SHIFT)))
         || (modifier.equals(SpecialUnits.KeyModifiers.CTRL) &&
-                !(InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_CONTROL)
-                        || InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_CONTROL)))
+                !(InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL)
+                        || InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_CONTROL)))
         ) {
             return false;
         }
@@ -46,47 +51,53 @@ public class KeyboardUtils {
             switch (modifier) {
                 case NONE :
                     lazyModePass =
-                        !(InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_ALT) ||
-                            InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_ALT) ||
-                            InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_CONTROL) ||
-                            InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_CONTROL) ||
-                            InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SHIFT) ||
-                            InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_SHIFT));
+                        !(InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_ALT) ||
+                            InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_ALT) ||
+                            InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL) ||
+                            InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_CONTROL) ||
+                            InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT) ||
+                            InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SHIFT));
                     break;
                 case SHIFT :
                     lazyModePass =
-                        !(InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_ALT) ||
-                            InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_ALT) ||
-                            InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_CONTROL) ||
-                            InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_CONTROL));
+                        !(InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_ALT) ||
+                            InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_ALT) ||
+                            InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL) ||
+                            InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_CONTROL));
                     break;
                 case ALT :
                     lazyModePass =
-                        !(InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_CONTROL) ||
-                            InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_CONTROL) ||
-                            InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SHIFT) ||
-                            InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_SHIFT));
+                        !(InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_CONTROL) ||
+                            InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_CONTROL) ||
+                            InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT) ||
+                            InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SHIFT));
                     break;
                 case CTRL :
                     lazyModePass =
-                        !(InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_ALT) ||
-                            InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_ALT) ||
-                            InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_LEFT_SHIFT) ||
-                            InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_RIGHT_SHIFT));
+                        !(InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_ALT) ||
+                            InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_ALT) ||
+                            InputConstants.isKeyDown(window, GLFW.GLFW_KEY_LEFT_SHIFT) ||
+                            InputConstants.isKeyDown(window, GLFW.GLFW_KEY_RIGHT_SHIFT));
                     break;
                 default :
                     lazyModePass = true;
             }
-            lazyModePass = lazyModePass & !InputConstants.isKeyDown(handle, GLFW.GLFW_KEY_F3);
+            lazyModePass = lazyModePass & !InputConstants.isKeyDown(window, GLFW.GLFW_KEY_F3);
             if (!lazyModePass){
                 return false;
             }
         }
         // @formatter:on
         if (key.getType().equals(InputConstants.Type.KEYSYM)) {
-            return InputConstants.isKeyDown(handle, keyCode);
+            return InputConstants.isKeyDown(window, keyCode);
         } else if (key.getType().equals(InputConstants.Type.MOUSE)) {
-            return GLFW.glfwGetMouseButton(handle, keyCode) == GLFW.GLFW_PRESS;
+            return GLFW.glfwGetMouseButton(
+                    //#if MC>=12109
+                    window.handle()
+                    //#else
+                    //$$ window
+                    //#endif
+                    , keyCode) == GLFW.GLFW_PRESS;
         }
         return false;
     }

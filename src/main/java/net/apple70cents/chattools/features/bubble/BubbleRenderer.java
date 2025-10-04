@@ -11,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.Entity;
@@ -77,7 +76,6 @@ public class BubbleRenderer {
                 renderComponent = NickHider.work(text);
             }
             int yOffset = ((Number) ConfigUtils.get("bubble.YOffset")).intValue();
-            EntityRenderDispatcher renderDispatcher = mc.getEntityRenderDispatcher();
             poseStack.pushPose();
 
             //#if MC>=12100
@@ -88,7 +86,13 @@ public class BubbleRenderer {
             //#else
             //$$ poseStack.translate(0.0F, entity.getBbHeight() + 0.5F + yOffset / 10.0F, 0.0F);
             //#endif
-            poseStack.mulPose(renderDispatcher.cameraOrientation());
+            poseStack.mulPose(
+                    //#if MC>=12109
+                    mc.gameRenderer.getLevelRenderState().cameraRenderState.orientation
+                    //#else
+                    //$$ mc.getEntityRenderDispatcher().cameraOrientation()
+                    //#endif
+            );
             poseStack.scale(
                     //#if MC>=12100
                     0.025F

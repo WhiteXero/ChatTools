@@ -7,12 +7,19 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+//#if MC>=12109
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.CameraRenderState;
+//#else
+//$$ import net.minecraft.network.chat.Component;
+//#endif
 
 //#if MC>=12102
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
@@ -30,9 +37,15 @@ public abstract class EntityRendererMixin {
         this.entity = entity;
         this.tickDelta = tickDelta;
     }
+    //#endif
 
-    @Inject(method = "render", at = @At(value = "HEAD"))
-    private void render(EntityRenderState entityRenderState, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, CallbackInfo ci) {
+    //#if MC>=12109
+    @Inject(method = "submit", at = @At(value = "HEAD"))
+    private void submit(EntityRenderState entityRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState, CallbackInfo ci) {
+        MultiBufferSource multiBufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+    //#elseif MC>=12102
+    //$$ @Inject(method = "render", at = @At(value = "HEAD"))
+    //$$ private void render(EntityRenderState entityRenderState, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, CallbackInfo ci) {
     //#else
     //$$ @Inject(method = "render", at = @At(value = "HEAD"))
     //$$ private void render(Entity entity, float yaw, float tickDelta, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, CallbackInfo ci) {
@@ -45,13 +58,28 @@ public abstract class EntityRendererMixin {
         }
     }
 
-    @ModifyVariable(method = "renderNameTag", at = @At(value = "HEAD", ordinal = 0), argsOnly = true)
-    public Component nickHiderChangeLabel(Component text) {
+    //#if MC>=12109
+    @ModifyVariable(method = "submitNameTag", at = @At(value = "HEAD", ordinal = 0), argsOnly = true)
+    public EntityRenderState nickHiderChangeLabel(EntityRenderState state) {
         if (!((boolean) ConfigUtils.get("general.ChatTools.Enabled"))) {
-            return text;
+            return state;
         } else if (!((boolean) ConfigUtils.get("general.NickHider.Enabled"))) {
-            return text;
+            return state;
+        } else if (state.nameTag == null) {
+            return state;
         }
-        return NickHider.work(text);
+        state.nameTag = NickHider.work(state.nameTag);
+        return state;
     }
+    //#else
+    //$$ @ModifyVariable(method = "renderNameTag", at = @At(value = "HEAD", ordinal = 0), argsOnly = true)
+    //$$ public Component nickHiderChangeLabel(Component text) {
+    //$$     if (!((boolean) ConfigUtils.get("general.ChatTools.Enabled"))) {
+    //$$         return text;
+    //$$     } else if (!((boolean) ConfigUtils.get("general.NickHider.Enabled"))) {
+    //$$         return text;
+    //$$     }
+    //$$     return NickHider.work(text);
+    //$$ }
+    //#endif
 }

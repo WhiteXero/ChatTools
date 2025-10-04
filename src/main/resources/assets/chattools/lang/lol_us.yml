@@ -124,50 +124,49 @@ key:
         .: Most Words Remembered
         '@Tooltip': "How many old meows you can peep at. (Minecraft usual is 100)"
     translator:
-      Translator:
-        .: Meow Transl8r
+      .: Meow Transl8r
+      Enabled:
+        .: Turn On Meow Transl8r
         '@Tooltip': |-
           Type words in chat, hit Shift + Tab to meow-transl8!
-        Enabled:
-          .: Turn On Meow Transl8r
-          '@Tooltip': Toggle if the transl8r should do its magic or nap.
-        Mode:
-          .: Meow Mode
+          Toggle if the transl8r should do its magic or nap.
+      Mode:
+        .: Meow Mode
+        '@Tooltip': |-
+          §6BUILTIN§r: Use custom API to beg for transl8shun
+          §6BAIDU§r: Use Baidu Transl8r API meow-magic
+      Builtin:
+        .: Custom Meow Transl8
+        '@Tooltip': |-
+          Use the provided API link to beg for transl8shun.
+          Gotta set up the API yourself, yo!
+        API:
+          .: Transl8 API Link
           '@Tooltip': |-
-            §6BUILTIN§r: Use custom API to beg for transl8shun
-            §6BAIDU§r: Use Baidu Transl8r API meow-magic
-        Builtin:
-          .: Custom Meow Transl8
+            Paste your API link here! Use {text} to swap the words to transl8.
+            No {text}? We'll just stick the words at the end—easy peasy!
+        PostInstead:
+          .: Use POST 4 Requestz
           '@Tooltip': |-
-            Use the provided API link to beg for transl8shun.
-            Gotta set up the API yourself, yo!
-          API:
-            .: Transl8 API Link
-            '@Tooltip': |-
-              Paste your API link here! Use {text} to swap the words to transl8.
-              No {text}? We'll just stick the words at the end—easy peasy!
-          PostInstead:
-            .: Use POST 4 Requestz
-            '@Tooltip': |-
-              Check 4 POST, uncheck 4 GET.
-              P.S. Right now, even POST sticks params in the URL—silly, but we'll fix later!
-        Baidu:
-          .: Baidu Meow Transl8
-          '@Tooltip': |-
-            Use Baidu Transl8r API magic.
-            Gotta sign up on Baidu Transl8 Platform yourself, bro!
-          Appid:
-            .: App ID
-            '@Tooltip': Your app's ID, yo!
-          Appkey:
-            .: App Secret Key
-            '@Tooltip': Your app's secret key—shhh!
-          from:
-            .: From Language
-            '@Tooltip': Original language! Use 'auto' 4 auto-detect—check Baidu's lang list, yo!
-          to:
-            .: To Language
-            '@Tooltip': Target language! Like 'en' 4 English—check Baidu's lang list, bro!
+            Check 4 POST, uncheck 4 GET.
+            P.S. Right now, even POST sticks params in the URL—silly, but we'll fix later!
+      Baidu:
+        .: Baidu Meow Transl8
+        '@Tooltip': |-
+          Use Baidu Transl8r API magic.
+          Gotta sign up on Baidu Transl8 Platform yourself, bro!
+        Appid:
+          .: App ID
+          '@Tooltip': Your app's ID, yo!
+        Appkey:
+          .: App Secret Key
+          '@Tooltip': Your app's secret key—shhh!
+        from:
+          .: From Language
+          '@Tooltip': Original language! Use 'auto' 4 auto-detect—check Baidu's lang list, yo!
+        to:
+          .: To Language
+          '@Tooltip': Target language! Like 'en' 4 English—check Baidu's lang list, bro!
     notifier:
       Toast:
         .: System Toasty Stuff

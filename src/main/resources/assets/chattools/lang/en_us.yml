@@ -247,85 +247,83 @@ key:
           .: Disable Text Obfuscation
           '@Tooltip': Toggles whether we should disable text obfuscations.
     translator:
-      Translator:
-        .: Translator
-        '@Tooltip': |-
+      .: Translator
+      Enabled:
+        .: Enable Translator
+        '@Tooltip':  |-
           Type text in the chat bar and press Shift + Tab to translate.
-        Enabled:
-          .: Enable Translator
-          '@Tooltip': Toggles whether the translator is enabled.
-        Mode:
-          .: Mode
+          Toggles whether the translator is enabled.
+      Mode:
+        .: Mode
+        '@Tooltip': |-
+          §6BUILTIN§r: Use custom API for translation
+          §6BAIDU§r: Use Baidu Translate API for translation
+          §6MICROSOFT_FREE§r: Use Microsoft Translator via Edge for translation
+          §6GOOGLE_FREE§r: Use Google translator website for translation
+      Builtin:
+        .: Custom Translation (BUILTIN)
+        '@Tooltip': |-
+          Use the provided API link to request translation.
+          Requires manual API configuration.
+        API:
+          .: Translation API
           '@Tooltip': |-
-            §6BUILTIN§r: Use custom API for translation
-            §6BAIDU§r: Use Baidu Translate API for translation
-            §6MICROSOFT_FREE§r: Use Microsoft Translator via Edge for translation
-            §6GOOGLE_FREE§r: Use Google translator website for translation
-        Builtin:
-          .: Custom Translation (BUILTIN)
+            Enter a link here, using {text} to replace the text to be translated.
+            If {text} is not present, the text to be translated will be added to the end.
+        PostInstead:
+          .: Send as POST Request
           '@Tooltip': |-
-            Use the provided API link to request translation.
-            Requires manual API configuration.
-          API:
-            .: Translation API
-            '@Tooltip': |-
-              Enter a link here, using {text} to replace the text to be translated.
-              If {text} is not present, the text to be translated will be added to the end.
-          PostInstead:
-            .: Send as POST Request
-            '@Tooltip': |-
-              If enabled, sends request via POST; otherwise uses GET.
-              Note: In current version, even with POST, parameters are still appended to the URL, which is somewhat limited.
-        Baidu:
-          .: Baidu Translate (BAIDU)
+            If enabled, sends request via POST; otherwise uses GET.
+            Note: In current version, even with POST, parameters are still appended to the URL, which is somewhat limited.
+      Baidu:
+        .: Baidu Translate (BAIDU)
+        '@Tooltip': |-
+          Use Baidu Translate API for translation.
+          Requires registration on Baidu Translate Open Platform.
+        Appid:
+          .: App ID (appid)
+          '@Tooltip': Your App ID
+        Appkey:
+          .: App Key (key)
+          '@Tooltip': Your App Key
+        from:
+          .: Source Language (from)
           '@Tooltip': |-
-            Use Baidu Translate API for translation.
-            Requires registration on Baidu Translate Open Platform.
-          Appid:
-            .: App ID (appid)
-            '@Tooltip': Your App ID
-          Appkey:
-            .: App Key (key)
-            '@Tooltip': Your App Key
-          from:
-            .: Source Language (from)
-            '@Tooltip': |-
-              Source language; recommended to set to 'auto' for auto-detection.
-              Refer to Baidu Translate language list.
-          to:
-            .: Target Language (to)
-            '@Tooltip': |-
-              Target language (e.g., 'en' for English).
-              Refer to Baidu Translate language list.
-        MicrosoftFree:
-          .: Microsoft Free (MICROSOFT_FREE)
-          '@Tooltip': Use Microsoft Translator via Edge for translation.
-          from:
-            .: Source Language (from)
-            '@Tooltip': |-
-              Source language; recommended to unset for auto-detection.
-              Refer to Microsoft Translate language list.
-          to:
-            .: Target Language (to)
-            '@Tooltip': |-
-              Target language (e.g., 'en' for English).
-              Refer to Microsoft Translate language list.
-        GoogleFree:
-          .: Google Free (GOOGLE_FREE)
+            Source language; recommended to set to 'auto' for auto-detection.
+            Refer to Baidu Translate language list.
+        to:
+          .: Target Language (to)
           '@Tooltip': |-
-            Use Google translator website for translation.
-            This is very unstable.
-          from:
-            .: Source Language (sl)
-            '@Tooltip': |-
-              Source language; recommended to set to 'auto' for auto-detection.
-              Refer to Google Translate language list.
-          to:
-            .: Target Language (tl)
-            '@Tooltip': |-
-              Target language (e.g., 'en' for English).
-              Refer to Google Translate language list.
-
+            Target language (e.g., 'en' for English).
+            Refer to Baidu Translate language list.
+      MicrosoftFree:
+        .: Microsoft Free (MICROSOFT_FREE)
+        '@Tooltip': Use Microsoft Translator via Edge for translation.
+        from:
+          .: Source Language (from)
+          '@Tooltip': |-
+            Source language; recommended to unset for auto-detection.
+            Refer to Microsoft Translate language list.
+        to:
+          .: Target Language (to)
+          '@Tooltip': |-
+            Target language (e.g., 'en' for English).
+            Refer to Microsoft Translate language list.
+      GoogleFree:
+        .: Google Free (GOOGLE_FREE)
+        '@Tooltip': |-
+          Use Google translator website for translation.
+          This is very unstable.
+        from:
+          .: Source Language (sl)
+          '@Tooltip': |-
+            Source language; recommended to set to 'auto' for auto-detection.
+            Refer to Google Translate language list.
+        to:
+          .: Target Language (tl)
+          '@Tooltip': |-
+            Target language (e.g., 'en' for English).
+            Refer to Google Translate language list.
     notifier:
       Toast:
         .: System Toast
