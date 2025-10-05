@@ -73,8 +73,10 @@ key:
           openFile: §c - §r打开文件：%s
           runCommand: §c - §r执行指令：%s
           suggestCommand: §c - §r填入文字：%s
+          showDialog: §c - §r打开对话框：%s
           changePage: §c - §r翻页：%s
           copyToClipboard: §c - §r复制到剪切板：%s
+          custom: §c - §r自定义网络数据包：%s
       'on': 启用 Chat Tools [聊天工具箱]
       'off': 禁用 Chat Tools [聊天工具箱]
       requireReload: 请在更改后输入 §6/chattools config reload§r 应用更改

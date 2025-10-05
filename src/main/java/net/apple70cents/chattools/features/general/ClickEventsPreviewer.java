@@ -136,17 +136,23 @@ public class ClickEventsPreviewer {
                 case OPEN_FILE:
                     value = ((ClickEvent.OpenFile) clickEvent).file().getAbsolutePath();
                     break;
-                case CHANGE_PAGE:
-                    value = String.valueOf(((ClickEvent.ChangePage) clickEvent).page());
-                    break;
                 case RUN_COMMAND:
                     value = ((ClickEvent.RunCommand) clickEvent).command();
                     break;
                 case SUGGEST_COMMAND:
                     value = ((ClickEvent.SuggestCommand) clickEvent).command();
                     break;
+                case SHOW_DIALOG:
+                    value = ((ClickEvent.ShowDialog) clickEvent).dialog().getRegisteredName();
+                    break;
+                case CHANGE_PAGE:
+                    value = String.valueOf(((ClickEvent.ChangePage) clickEvent).page());
+                    break;
                 case COPY_TO_CLIPBOARD:
                     value = ((ClickEvent.CopyToClipboard) clickEvent).value();
+                    break;
+                case CUSTOM:
+                    value = ((ClickEvent.Custom) clickEvent).id() + " → " + ((ClickEvent.Custom) clickEvent).payload();
                     break;
                 default:
                     value = "[ERROR]";
@@ -182,11 +188,17 @@ public class ClickEventsPreviewer {
                 case "suggest_command":
                     texts.add(TextUtils.trans("texts.PreviewClickEvents.clickEvent.suggestCommand", valueComponent));
                     break;
+                case "show_dialog":
+                    texts.add(TextUtils.trans("texts.PreviewClickEvents.clickEvent.showDialog", valueComponent));
+                    break;
                 case "change_page":
                     texts.add(TextUtils.trans("texts.PreviewClickEvents.clickEvent.changePage", valueComponent));
                     break;
                 case "copy_to_clipboard":
                     texts.add(TextUtils.trans("texts.PreviewClickEvents.clickEvent.copyToClipboard", valueComponent));
+                    break;
+                case "custom":
+                    texts.add(TextUtils.trans("texts.PreviewClickEvents.clickEvent.custom", valueComponent));
                     break;
                 default:
                     LoggerUtils.warn("[ChatTools] Unknown clickEvent action type: " + action);

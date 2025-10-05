@@ -75,8 +75,10 @@ key:
           openFile: "§c - §rOpen File: %s"
           runCommand: "§c - §rRun Command: %s"
           suggestCommand: "§c - §rSuggest Command: %s"
+          showDialog: "§c - §rShow Dialog: %s"
           changePage: "§c - §rChange Page: %s"
           copyToClipboard: "§c - §rCopy To Clipboard: %s"
+          custom: "§c - §rCustom: %s"
       'on': Enable Chat Tools
       'off': Disable Chat Tools
       requireReload: Use command §6/chattools config reload§r to apply changes!
