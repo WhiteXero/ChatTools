@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.state.CameraRenderState;
 //#if MC>=12102
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 //#endif
+
 /**
  * @author 70CentsApple
  */
@@ -28,6 +29,7 @@ public abstract class EntityRendererMixin {
     //#if MC>=12102
     Entity entity;
     float tickDelta;
+
     @Inject(method = "extractRenderState", at = @At(value = "HEAD"))
     private void updateEntityAndTickDelta(Entity entity, EntityRenderState state, float tickDelta, CallbackInfo ci) {
         this.entity = entity;
@@ -50,7 +52,11 @@ public abstract class EntityRendererMixin {
             return;
         }
         if ((boolean) ConfigUtils.get("bubble.Enabled")) {
-            BubbleRenderer.render(entity, poseStack, multiBufferSource, tickDelta);
+            BubbleRenderer.render(entity, poseStack, multiBufferSource, tickDelta
+                    //#if MC>=12109
+                    , submitNodeCollector
+                    //#endif
+            );
         }
     }
 }
