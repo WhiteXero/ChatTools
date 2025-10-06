@@ -459,6 +459,11 @@ key:
       RepeatKeyModifier:
         .: Repeat Key Modifier
         '@Tooltip': You'll need to activate this modifier key as well, in order to repeat.
+      ReviewLastMessageWithUpArrowOnly:
+        .: Review Last Message With Up Arrow Only
+        '@Tooltip': |-
+          If enabled, you can review your last message by pressing the Up Arrow key.
+          If disabled, you can do so only when the chat input field is focused.
       Macro:
         Enabled:
           .: Enable Command Keybindings

@@ -2,6 +2,7 @@ package net.apple70cents.chattools;
 
 import net.apple70cents.chattools.features.chatkeybindings.Macro;
 import net.apple70cents.chattools.features.chatkeybindings.Repeat;
+import net.apple70cents.chattools.features.chatkeybindings.ReviewLastMessageWithUpArrowOnly;
 import net.apple70cents.chattools.utils.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -34,6 +35,7 @@ public class ChatTools implements ModInitializer {
                 return;
             }
             Repeat.tick();
+            ReviewLastMessageWithUpArrowOnly.tick();
             if ((boolean) ConfigUtils.get("chatkeybindings.Macro.Enabled")) {
                 Macro.tick();
             }

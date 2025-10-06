@@ -66,6 +66,7 @@
   ],
   "chatkeybindings.RepeatKey": "key.keyboard.unknown",
   "chatkeybindings.RepeatKeyModifier": "NONE",
+  "chatkeybindings.ReviewLastMessageWithUpArrowOnly": false,
   "chatkeybindings.Macro.Enabled": true,
   "chatkeybindings.Macro.List": [],
   "bubble.Enabled": true,

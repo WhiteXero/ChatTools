@@ -438,6 +438,11 @@ key:
       RepeatKeyModifier:
         .: 复读键修饰符
         '@Tooltip': 你需要同时再按下此修饰键才能触发复读。
+      ReviewLastMessageWithUpArrowOnly:
+        .: 仅使用上箭头键查看上一条消息
+        '@Tooltip': |-
+          启用后，你可以通过按上箭头键查看你的上一条消息。
+          禁用后，只有在聚焦聊天栏时，你才能通过按上箭头键查看你的上一条消息。
       Macro:
         Enabled:
           .: 启用宏
