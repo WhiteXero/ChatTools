@@ -122,7 +122,7 @@ public class BubbleRenderer {
             float y2 = 1;
 
             //#if MC>=12109
-            renderQueue.submitCustomGeometry(poseStack, RenderType.textBackgroundSeeThrough(), (pose1, buffer) -> {
+            renderQueue.order(0).submitCustomGeometry(poseStack, RenderType.textBackgroundSeeThrough(), (pose1, buffer) -> {
             //#else
             //$$ VertexConsumer buffer = multiBufferSource.getBuffer(RenderType.textBackgroundSeeThrough());
             //$$ Matrix4f pose1 = pose;
@@ -153,7 +153,7 @@ public class BubbleRenderer {
                 //#endif
 
                 //#if MC>=12109
-                renderQueue.submitText(poseStack, xOffset, y, line, false, Font.DisplayMode.NORMAL, 0xF000F0, 0xFFFFFFFF, 0, 0);
+                renderQueue.order(1).submitText(poseStack, xOffset, y, line, false, Font.DisplayMode.NORMAL, 0xF000F0, 0xFFFFFFFF, 0, 0);
                 //#elseif MC>=11900
                 //$$ font.drawInBatch(line, xOffset, y, 0xFFFFFFFF, false, pose, multiBufferSource, Font.DisplayMode.NORMAL, 0, 0xF000F0);
                 //#else
