@@ -142,18 +142,22 @@ public class ClickEventsPreviewer {
                 case SUGGEST_COMMAND:
                     value = ((ClickEvent.SuggestCommand) clickEvent).command();
                     break;
+                //#if MC>=12106
                 case SHOW_DIALOG:
                     value = ((ClickEvent.ShowDialog) clickEvent).dialog().getRegisteredName();
                     break;
+                //#endif
                 case CHANGE_PAGE:
                     value = String.valueOf(((ClickEvent.ChangePage) clickEvent).page());
                     break;
                 case COPY_TO_CLIPBOARD:
                     value = ((ClickEvent.CopyToClipboard) clickEvent).value();
                     break;
+                //#if MC>=12106
                 case CUSTOM:
                     value = ((ClickEvent.Custom) clickEvent).id() + " → " + ((ClickEvent.Custom) clickEvent).payload();
                     break;
+                //#endif
                 default:
                     value = "[ERROR]";
             }
@@ -188,18 +192,22 @@ public class ClickEventsPreviewer {
                 case "suggest_command":
                     texts.add(TextUtils.trans("texts.PreviewClickEvents.clickEvent.suggestCommand", valueComponent));
                     break;
+                //#if MC>=12106
                 case "show_dialog":
                     texts.add(TextUtils.trans("texts.PreviewClickEvents.clickEvent.showDialog", valueComponent));
                     break;
+                //#endif
                 case "change_page":
                     texts.add(TextUtils.trans("texts.PreviewClickEvents.clickEvent.changePage", valueComponent));
                     break;
                 case "copy_to_clipboard":
                     texts.add(TextUtils.trans("texts.PreviewClickEvents.clickEvent.copyToClipboard", valueComponent));
                     break;
+                //#if MC>=12106
                 case "custom":
                     texts.add(TextUtils.trans("texts.PreviewClickEvents.clickEvent.custom", valueComponent));
                     break;
+                //#endif
                 default:
                     LoggerUtils.warn("[ChatTools] Unknown clickEvent action type: " + action);
             }
