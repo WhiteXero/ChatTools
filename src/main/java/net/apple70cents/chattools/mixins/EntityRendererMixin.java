@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 //#endif
 
 //#if MC>=12102
@@ -41,6 +42,9 @@ public abstract class EntityRendererMixin {
     @Inject(method = "submit", at = @At(value = "HEAD"))
     private void submit(EntityRenderState entityRenderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, CameraRenderState cameraRenderState, CallbackInfo ci) {
         MultiBufferSource multiBufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
+        if (entityRenderState instanceof AvatarRenderState && Minecraft.getInstance().level != null) {
+            entity = Minecraft.getInstance().level.getEntity(((AvatarRenderState) entityRenderState).id);
+        }
     //#elseif MC>=12102
     //$$ @Inject(method = "render", at = @At(value = "HEAD"))
     //$$ private void render(EntityRenderState entityRenderState, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, CallbackInfo ci) {
