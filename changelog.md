@@ -10,10 +10,10 @@
 - 优化 1.21.9 及以上版本聊天气泡不再使用即时渲染
 - 新增 仅使用上箭头键查看上一条消息选项
 
-#### 已知问题：
-
-- 1.21.9 及以上版本中，聊天气泡有时会被错误地渲染到玩家模型（mannequin）头上
-- 1.21.9 及以上版本中，聊天气泡文字偏灰
+### v2.3.14.2
+- 修复 1.21.9 聊天气泡有时会被错误地渲染到玩家模型（mannequin）头上
+- 修复 1.21.9 聊天气泡文字偏灰
+- 更新 1.21.10
 
 ## English
 ### v2.3.14
@@ -27,7 +27,7 @@
 - Optimization: Chat bubbles in 1.21.9+ no longer use immediate rendering.
 - Added: Review Last Message With Up Arrow Only Option.
 
-#### Known Issues:
-
-- In 1.21.9 and above, chat bubbles may sometimes be incorrectly rendered on top of mannequins.
-- In 1.21.9 and above, chat bubble text appears slightly grayed out.
+### v2.3.14.2
+- Fixed: In 1.21.9, chat bubbles may sometimes be incorrectly rendered on top of mannequins.
+- Fixed: In 1.21.9, chat bubble text appears slightly grayed out.
+- Update: Bumped to 1.21.10.
