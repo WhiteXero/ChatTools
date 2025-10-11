@@ -92,9 +92,7 @@ public class Responder {
 
             // work
             String message = msg;
-            if (mc.player != null) {
-                message = message.replace("{pos}", String.format("(%d,%d,%d)", (int) mc.player.getX(), (int) mc.player.getY(), (int) mc.player.getZ()));
-            }
+            message = ContextUtils.replacePlaceholders(message);
             try {
                 message = replaceAllGroupNames(messageReceived, pattern, message);
             } catch (Exception e) {

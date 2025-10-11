@@ -38,9 +38,7 @@ public class Formatter {
             LoggerUtils.info("[ChatTools] Chat Formatted.");
             modifiedMsg = formatter.replace("{text}", modifiedMsg);
         }
-        if (player != null) {
-            modifiedMsg = modifiedMsg.replace("{pos}", String.format("(%d,%d,%d)", (int) player.getX(), (int) player.getY(), (int) player.getZ()));
-        }
+        modifiedMsg = ContextUtils.replacePlaceholders(modifiedMsg);
         modifiedMsg = GradientParser.parse(modifiedMsg);
         return modifiedMsg.length() > ((Number) ConfigUtils.get("formatter.DisableThreshold")).intValue() ? msg : modifiedMsg;
     }
