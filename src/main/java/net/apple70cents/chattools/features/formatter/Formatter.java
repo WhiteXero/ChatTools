@@ -4,6 +4,7 @@ import net.apple70cents.chattools.config.SpecialUnits;
 import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.ContextUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
+import net.apple70cents.chattools.utils.PlaceholderEngine;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 
@@ -38,7 +39,7 @@ public class Formatter {
             LoggerUtils.info("[ChatTools] Chat Formatted.");
             modifiedMsg = formatter.replace("{text}", modifiedMsg);
         }
-        modifiedMsg = ContextUtils.replacePlaceholders(modifiedMsg);
+        modifiedMsg = PlaceholderEngine.replacePlaceholders(modifiedMsg);
         modifiedMsg = GradientParser.parse(modifiedMsg);
         return modifiedMsg.length() > ((Number) ConfigUtils.get("formatter.DisableThreshold")).intValue() ? msg : modifiedMsg;
     }

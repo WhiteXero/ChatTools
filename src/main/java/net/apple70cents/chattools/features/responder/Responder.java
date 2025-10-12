@@ -92,7 +92,7 @@ public class Responder {
 
             // work
             String message = msg;
-            message = ContextUtils.replacePlaceholders(message);
+            message = PlaceholderEngine.replacePlaceholders(message);
             try {
                 message = replaceAllGroupNames(messageReceived, pattern, message);
             } catch (Exception e) {
