@@ -25,6 +25,9 @@ import java.util.regex.Pattern;
  * - Each { ... } placeholder is evaluated independently.
  */
 public final class PlaceholderEngine {
+    // internal markers to protect escaped braces during processing
+    private static final String ESC_L = "\u0000LBR\u0000";
+    private static final String ESC_R = "\u0000RBR\u0000";
     private PlaceholderEngine() {
     }
 
@@ -38,10 +41,19 @@ public final class PlaceholderEngine {
     }
 
     protected static final Map<String, Resolver> MAPPINGS = new ConcurrentHashMap<>();
+    protected static final Map<String, Resolver> TempMappings = new ConcurrentHashMap<>();
+
+    public static void addNewTempMapping(String string, Resolver resolver) {
+        TempMappings.put(string, resolver);
+    }
+
+    public static void clearTempMappings() {
+        TempMappings.clear();
+    }
 
     static {
         // the number to determine whether two numbers equals to each other
-        double EPSILON = 1e-16;
+        final double EPSILON = 1e-16;
 
         // constants
         MAPPINGS.put("PI", args -> String.valueOf(Math.PI));
@@ -49,23 +61,23 @@ public final class PlaceholderEngine {
         MAPPINGS.put("E", args -> String.valueOf(Math.E));
 
         // variables
-        MAPPINGS.put("pitch", args -> String.valueOf( Minecraft.getInstance().player.
-                //#if MC>=11700
-                getXRot()
+        MAPPINGS.put("pitch", args -> String.valueOf(Minecraft.getInstance().player.
+                        //#if MC>=11700
+                                getXRot()
                 //#else
                 //$$ xRot
                 //#endif
         ));
         MAPPINGS.put("yaw", args -> String.valueOf(Minecraft.getInstance().player.
-                //#if MC>=11700
-                getYRot()
+                        //#if MC>=11700
+                                getYRot()
                 //#else
                 //$$ yRot
                 //#endif
         ));
         MAPPINGS.put("x", args -> String.valueOf(Minecraft.getInstance().player.getX()));
         MAPPINGS.put("y", args -> String.valueOf(Minecraft.getInstance().player.getY()));
-        MAPPINGS.put("z", args -> String.valueOf( Minecraft.getInstance().player.getZ()));
+        MAPPINGS.put("z", args -> String.valueOf(Minecraft.getInstance().player.getZ()));
         MAPPINGS.put("pos", args -> String.format("(%.1f, %.1f, %.1f)", Minecraft.getInstance().player.getX(),
                 Minecraft.getInstance().player.getY(), Minecraft.getInstance().player.getZ()));
         MAPPINGS.put("dimension_reg_name", args -> Minecraft.getInstance().level.dimension().location().toString());
@@ -77,8 +89,8 @@ public final class PlaceholderEngine {
                         //$$ net.minecraft.core.Registry.BIOME_REGISTRY
                         //#endif
                 ).getKey(Minecraft.getInstance().level.getBiome(Minecraft.getInstance().player.blockPosition())
-                        //#if MC>=11800
-                        .value()
+                                //#if MC>=11800
+                                .value()
                         //#endif
                 )));
         MAPPINGS.put("biome",
@@ -101,8 +113,8 @@ public final class PlaceholderEngine {
                     currentTime.getSecond());
         });
         MAPPINGS.put("nickname", args -> Minecraft.getInstance().player.getGameProfile()
-                //#if MC>=12109
-                .name()
+                        //#if MC>=12109
+                        .name()
                 //#else
                 //$$ .getName()
                 //#endif
@@ -134,7 +146,10 @@ public final class PlaceholderEngine {
         });
         MAPPINGS.put("upper", args -> args[0].toUpperCase(Locale.ROOT));
         MAPPINGS.put("lower", args -> args[0].toLowerCase(Locale.ROOT));
-        MAPPINGS.put("len", args -> String.valueOf(args[0].length()));
+        MAPPINGS.put("len_of_str", args -> String.valueOf(args[0].length()));
+        MAPPINGS.put("len_of_list", args -> String.valueOf(args.length));
+        MAPPINGS.put("replace", args -> args[0].replace(args[1], args.length > 2 ? args[2] : ""));
+        MAPPINGS.put("repeat", args -> args[0].repeat((int) Double.parseDouble(args[1])));
         MAPPINGS.put("join", args -> {
             // just join all args with no separator
             StringBuilder sb = new StringBuilder();
@@ -178,8 +193,17 @@ public final class PlaceholderEngine {
             return String.valueOf(sum);
         });
         MAPPINGS.put("avg", args -> {
-            double sum = Double.parseDouble(MAPPINGS.get("sum").resolve(args));
-            double len = Double.parseDouble(MAPPINGS.get("len").resolve(args));
+            if (args.length == 0) return "";
+            double sum = 0;
+            int len = 0;
+            for (String s : args) {
+                try {
+                    double v = Double.parseDouble(s);
+                    sum += v;
+                    len++;
+                } catch (NumberFormatException ignored) {
+                }
+            }
             return len == 0 ? "" : String.valueOf(sum / len);
         });
         MAPPINGS.put("subtract", args -> {
@@ -321,7 +345,7 @@ public final class PlaceholderEngine {
             if (args.length < 2) return "false";
             String a = args[0];
             String b = args[1];
-            return a.equals(b) || Math.abs(Double.parseDouble(a)-Double.parseDouble(b)) < EPSILON ? "true" : "false";
+            return a.equals(b) || Math.abs(Double.parseDouble(a) - Double.parseDouble(b)) < EPSILON ? "true" : "false";
         });
         MAPPINGS.put("not", args -> {
             if (args.length == 0) return "true";
@@ -344,11 +368,11 @@ public final class PlaceholderEngine {
             return "true";
         });
         MAPPINGS.put("if", args -> {
-            if (args.length < 2) return "";
-            String condition = args[0];
+            String condition = MAPPINGS.get("is_true").resolve(args[0]);
+            if (args.length == 1) return condition;
             String thenPart = args[1];
             String elsePart = args.length >= 3 ? args[2] : "";
-            if (MAPPINGS.get("is_true").resolve(condition).equals("true")) {
+            if ("true".equals(condition)) {
                 return thenPart;
             } else {
                 return elsePart;
@@ -412,9 +436,12 @@ public final class PlaceholderEngine {
     // simple outermost placeholder matcher (we assume no unmatched '}' inside)
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("\\{([^}]*)\\}");
 
-    public static String replacePlaceholders(String template) {
+    public static String apply(String template) {
         if (template == null) return null;
-        Matcher m = PLACEHOLDER_PATTERN.matcher(template);
+        // Preprocess escaped braces so they won't be treated as placeholders.
+        String processed = preprocessEscapedBraces(template);
+
+        Matcher m = PLACEHOLDER_PATTERN.matcher(processed);
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
             String body = m.group(1).trim();
@@ -431,7 +458,50 @@ public final class PlaceholderEngine {
             m.appendReplacement(sb, replacement);
         }
         m.appendTail(sb);
-        return sb.toString();
+
+        // Restore escaped braces markers back to literal braces
+        return sb.toString().replace(ESC_L, "{").replace(ESC_R, "}");
+    }
+
+    /**
+     * Preprocess input to replace escaped braces ("\{" or "\}") with internal markers.
+     * Handles runs of backslashes correctly: only an odd count of consecutive '\' directly
+     * before a brace makes that brace escaped. Pairs of '\' produce real '\' characters.
+     */
+    private static String preprocessEscapedBraces(String input) {
+        if (input == null || input.isEmpty()) return input;
+        StringBuilder out = new StringBuilder(input.length());
+        for (int i = 0; i < input.length(); ) {
+            char c = input.charAt(i);
+            if (c == '\\') {
+                int j = i;
+                // count consecutive backslashes
+                while (j < input.length() && input.charAt(j) == '\\') j++;
+                int count = j - i;
+                // if next char exists and is a brace, we need special handling
+                if (j < input.length() && (input.charAt(j) == '{' || input.charAt(j) == '}')) {
+                    // append the pairs as literal backslashes (each pair -> one backslash)
+                    int pairs = count / 2;
+                    for (int p = 0; p < pairs; p++) out.append('\\');
+                    // if odd, that means the brace is escaped -> append marker
+                    if ((count % 2) == 1) {
+                        out.append(input.charAt(j) == '{' ? ESC_L : ESC_R);
+                    } else {
+                        // even -> brace is not escaped, append the brace itself
+                        out.append(input.charAt(j));
+                    }
+                    i = j + 1; // skip the backslash-run and the brace
+                } else {
+                    // no brace after backslashes -> just copy them as-is
+                    for (int p = 0; p < count; p++) out.append('\\');
+                    i = j;
+                }
+            } else {
+                out.append(c);
+                i++;
+            }
+        }
+        return out.toString();
     }
 
     // Evaluate the content inside { ... }
@@ -495,6 +565,9 @@ public final class PlaceholderEngine {
                 String[] evaluated = new String[args.size()];
                 for (int i = 0; i < args.size(); i++) evaluated[i] = args.get(i).evaluate();
                 Resolver resolver = MAPPINGS.get(name);
+                if (resolver == null) {
+                    resolver = TempMappings.get(name);
+                }
                 if (resolver != null) {
                     try {
                         String r = resolver.resolve(evaluated);
@@ -580,7 +653,6 @@ public final class PlaceholderEngine {
                 consume(')');
                 return e;
             } else {
-                // 修正：先用parseIdentifier读取函数名
                 String ident = parseIdentifier();
                 skipWhitespace();
                 if (!ident.isEmpty() && peek() == '(') {
@@ -597,25 +669,15 @@ public final class PlaceholderEngine {
                     }
                     consume(')');
                     return new FuncCall(ident, args);
-                } else if (!ident.isEmpty()) {
+                } else {
                     // bare token: check number OR mapping OR else empty
                     if (isNumber(ident)) {
                         return new Literal(ident);
-                    } else if (MAPPINGS.containsKey(ident)) {
+                    } else if (MAPPINGS.containsKey(ident) || TempMappings.containsKey(ident)) {
                         // zero-arg call to mapped function
                         return new FuncCall(ident, Collections.emptyList());
                     } else {
                         // No quotes and not a number or mapped function -> treat as empty to avoid ambiguity
-                        return new Literal("");
-                    }
-                } else {
-                    // fallback: parseToken (for legacy or error cases)
-                    String token = parseToken();
-                    if (isNumber(token)) {
-                        return new Literal(token);
-                    } else if (MAPPINGS.containsKey(token)) {
-                        return new FuncCall(token, Collections.emptyList());
-                    } else {
                         return new Literal("");
                     }
                 }
@@ -640,13 +702,13 @@ public final class PlaceholderEngine {
             return sb.toString();
         }
 
-        // parse an identifier token (letters, digits, underscore, dot, dash)
+        // parse an identifier token (letters, digits, .-_$)
         private String parseIdentifier() {
             skipWhitespace();
             int start = p;
             while (p < s.length()) {
                 char c = s.charAt(p);
-                if (Character.isLetterOrDigit(c) || c == '_' || c == '.' || c == '-') p++;
+                if (Character.isLetterOrDigit(c) || c == '_' || c == '.' || c == '-' || c == '$') p++;
                 else break;
             }
             return s.substring(start, p);

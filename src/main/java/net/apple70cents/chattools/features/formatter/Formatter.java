@@ -5,8 +5,6 @@ import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.ContextUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
 import net.apple70cents.chattools.utils.PlaceholderEngine;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -16,7 +14,6 @@ import java.util.regex.Pattern;
  */
 public class Formatter {
     public static String work(String msg) {
-        LocalPlayer player = Minecraft.getInstance().player;
         for (String s : (List<String>) ConfigUtils.get("formatter.DisableOnMatchList")) {
             if (Pattern.compile(s, Pattern.MULTILINE).matcher(msg).matches()) {
                 // return in advance, and don't work with it.
@@ -34,13 +31,22 @@ public class Formatter {
                 break;
             }
         }
-        String modifiedMsg = msg;
+        String modifiedMsg;
         if (matched) {
             LoggerUtils.info("[ChatTools] Chat Formatted.");
-            modifiedMsg = formatter.replace("{text}", modifiedMsg);
+            PlaceholderEngine.addNewTempMapping("text", args -> msg);
+            modifiedMsg = formatter;
+        } else {
+            modifiedMsg = msg;
         }
-        modifiedMsg = PlaceholderEngine.replacePlaceholders(modifiedMsg);
+        modifiedMsg = PlaceholderEngine.apply(modifiedMsg);
         modifiedMsg = GradientParser.parse(modifiedMsg);
-        return modifiedMsg.length() > ((Number) ConfigUtils.get("formatter.DisableThreshold")).intValue() ? msg : modifiedMsg;
+        PlaceholderEngine.clearTempMappings();
+
+        if (modifiedMsg.length() <= ((Number) ConfigUtils.get("formatter.DisableThreshold")).intValue()) {
+            return modifiedMsg;
+        } else {
+            return msg;
+        }
     }
 }

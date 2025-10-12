@@ -444,8 +444,8 @@ key:
           '@Tooltip': |-
             The pattern for formatting.
             {text} -> Original Text
-            {pos} -> (X,Y,Z)
             <gradient> -> Gradients, please refer to FAQ
+            For other available functions or variables, please refer to Function Reference Table in FAQ.
       DisableOnMatchList:
         .: Disable-on-match List
         '@Tooltip': |-
@@ -574,9 +574,9 @@ key:
           .: Response Message
           '@Tooltip': |-
             An automatic response of a message.
-            {pos} -> (X,Y,Z)
             <gradient> -> Gradients, please refer to FAQ
-            {$GROUP} -> The Content of the matched group `$GROUP`
+            {GROUP} -> The Content of the matched group `GROUP`
+            For other available functions or variables, please refer to Function Reference Table in FAQ.
         DelayInMilliseconds:
           .: Delay (in milliseconds)
           '@Tooltip': Awaiting time (in milliseconds) before responding.

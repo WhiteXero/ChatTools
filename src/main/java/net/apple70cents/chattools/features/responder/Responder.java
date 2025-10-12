@@ -17,35 +17,6 @@ public class Responder {
     private static final Minecraft mc = Minecraft.getInstance();
     public static long lastRequestTimestamp = -1L;
 
-    /**
-     * Replace the group name in the format `{GROUP}` in `message` with the corresponding grouping in the raw message.
-     *
-     * @param rawMessageReceived the raw message
-     * @param rawPattern         the raw pattern
-     * @param message            the message to send
-     * @return the message after replacing groups with the corresponding values.
-     */
-    static String replaceAllGroupNames(String rawMessageReceived, String rawPattern, String message) {
-        // This RegEx takes out the name of the group in `{}`s.
-        // That is, it can take out `name` in `{name}`; `\}\{` in `{\}\{}`;
-        // but it cannot take out `{name\}` or `\{name}`.
-        final String groupNamePattern = "(?<!\\\\)\\{(?<group>.*?)(?<!\\\\)}";
-        Matcher matcher = Pattern.compile(groupNamePattern).matcher(message);
-        Matcher rawMessageMatcher = Pattern.compile(rawPattern).matcher(rawMessageReceived);
-
-        if (rawMessageMatcher.find()) {
-            while (matcher.find()) {
-                String groupName = matcher.group("group");
-                String context = rawMessageMatcher.group(groupName);
-                if (context != null && !context.isBlank()) {
-                    // the context caught is not blank
-                    message = message.replace("{" + groupName + "}", context);
-                }
-            }
-        }
-        return message;
-    }
-
     public static boolean shouldWork(Component message) {
         boolean enabled = (boolean) ConfigUtils.get("general.ChatTools.Enabled") && (boolean) ConfigUtils.get("responder.Enabled");
         // obviously, we should not respond to our own messages
@@ -92,16 +63,10 @@ public class Responder {
 
             // work
             String message = msg;
-            message = PlaceholderEngine.replacePlaceholders(message);
-            try {
-                message = replaceAllGroupNames(messageReceived, pattern, message);
-            } catch (Exception e) {
-                LoggerUtils.error("[ChatTools] Failed when auto responding: " + e.getMessage());
-                MessageUtils.sendToNonPublicChat(TextUtils.trans("texts.respond.failure", e.getMessage()));
-                MessageUtils.sendToActionbar(TextUtils.trans("texts.respond.failure", e.getMessage()));
-                e.printStackTrace();
-                return;
-            }
+            submitAllGroupsToPlaceholderEngine(messageReceived, pattern);
+            message = PlaceholderEngine.apply(message);
+            PlaceholderEngine.clearTempMappings();
+
             LoggerUtils.info("[ChatTools] Respond to `" + pattern + "`, with message `" + message + "`");
             message = message.replace("\\{", "{").replace("\\}", "}");
             MessageUtils.sendToPublicChat(message, forceDisableFormatter);
@@ -110,5 +75,34 @@ public class Responder {
             // FIXME but it's actually not a big problem, gonna delay fixing this.
             MessageUtils.setJustSentMessage(false);
         }).start();
+    }
+
+    /**
+     * Extract all named groups from rawPattern matched in rawMessageReceived and submit them to PlaceholderEngine as temp mappings.
+     * @param rawMessageReceived the raw message
+     * @param rawPattern the raw pattern
+     */
+    static void submitAllGroupsToPlaceholderEngine(String rawMessageReceived, String rawPattern) {
+        Pattern pattern = Pattern.compile(rawPattern);
+        Matcher matcher = pattern.matcher(rawMessageReceived);
+        if (matcher.find()) {
+            // Extract group names from pattern
+            Pattern groupNamePattern = java.util.regex.Pattern.compile("\\(\\?<([a-zA-Z][a-zA-Z0-9_]*)>");
+            Matcher groupNameMatcher = groupNamePattern.matcher(rawPattern);
+            while (groupNameMatcher.find()) {
+                String groupName = groupNameMatcher.group(1);
+                String context;
+                try {
+                    context = matcher.group(groupName);
+                } catch (IllegalArgumentException e) {
+                    // group not found, skip
+                    continue;
+                }
+                if (context != null && !context.isBlank()) {
+                    final String finalContext = context;
+                    PlaceholderEngine.addNewTempMapping(groupName, args -> finalContext);
+                }
+            }
+        }
     }
 }

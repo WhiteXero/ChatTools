@@ -17,7 +17,7 @@ key:
       filterPlaceholder:
         .: '§7==== [已过滤] ====§r'
         '@Tooltip': '此消息被 Chat Tools 聊天过滤功能过滤'
-      welcomeMessage: 第一次使用 Chat Tools ？点击这里查看常见问题解答！
+      welcomeMessage: 第一次使用 Chat Tools？点击这里查看常见问题解答！
       toast.title: 来自 Minecraft 的关注信息
       actionbar.title: §a§l聊天栏中有您关注的信息
       CircuitBreaker:
@@ -421,8 +421,8 @@ key:
           '@Tooltip': |-
             格式化的模式串。
             {text} -> 原始文本
-            {pos} -> (X,Y,Z)
             <gradient> -> 渐变，参见常见问题解答
+            其余支持变量或函数参见常见问题解答函数对照表。
       DisableOnMatchList:
         .: 自动禁用聊天注入列表
         '@Tooltip': |-
@@ -550,9 +550,9 @@ key:
           .: 响应消息
           '@Tooltip': |-
             这将是你的自动响应消息。
-            {pos} -> (X,Y,Z)
             <gradient> -> 渐变，参见常见问题解答
-            {$GROUP} -> 匹配组`$GROUP`的内容
+            {GROUP} -> 匹配组`GROUP`的内容
+            其余支持变量或函数参见常见问题解答函数对照表。
         DelayInMilliseconds:
           .: 延迟（毫秒）
           '@Tooltip': 发送此消息前的等待时间，单位为毫秒
