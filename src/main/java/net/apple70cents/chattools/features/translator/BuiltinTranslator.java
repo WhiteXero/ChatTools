@@ -34,14 +34,20 @@ public class BuiltinTranslator extends AbstractTranslator {
             url += URLEncoder.encode(text, StandardCharsets.UTF_8);
         }
         URL formattedUrl = new URL(url);
-        HttpURLConnection connection = (HttpURLConnection) formattedUrl.openConnection();
-        connection.setRequestMethod(method);
-        LoggerUtils.info("[ChatTools] Visiting \"" + api + "\" with method: " + method);
-        int responseCode = connection.getResponseCode();
+        HttpURLConnection conn = (HttpURLConnection) formattedUrl.openConnection();
+        conn.setRequestMethod(method);
+        conn.setInstanceFollowRedirects(true);
+        conn.setConnectTimeout(15000);
+        conn.setReadTimeout(15000);
+        conn.setRequestProperty("User-Agent", "Chrome/138.0.0.0");
+        conn.setRequestProperty("Accept-Charset", "utf-8");
+
+        LoggerUtils.info("[ChatTools] Builtin Translator Visiting \"" + api + "\" with method: " + method);
+        int responseCode = conn.getResponseCode();
         if (responseCode != HttpURLConnection.HTTP_OK) {
             throw new RuntimeException("Failed with HTTP Error Code " + responseCode);
         } else {
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
                 StringBuilder response = new StringBuilder();
                 String line;
                 while ((line = in.readLine()) != null) {

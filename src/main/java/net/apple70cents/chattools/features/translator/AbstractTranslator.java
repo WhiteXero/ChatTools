@@ -19,7 +19,7 @@ public abstract class AbstractTranslator {
             Minecraft mc = Minecraft.getInstance();
             try {
                 LoggerUtils.info("[ChatTools] Start translating: " + text);
-                String result = translate(text);
+                String result = translate(text).replace("\n","");
                 mc.execute(() -> editBox.setValue(result));
                 LoggerUtils.info("[ChatTools] Translation Result: " + result);
             } catch (Exception e) {
