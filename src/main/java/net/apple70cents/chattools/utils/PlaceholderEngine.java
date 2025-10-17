@@ -6,6 +6,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 //#endif
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,17 +23,18 @@ import java.util.regex.Pattern;
  * PlaceholderEngine: parses and renders placeholders of the form { ... }.
  * <p>
  * Features:
- * - Only quoted content ('...' or "...") is treated as string literal.
- * - Numeric tokens (integer or decimal) are recognized as numeric literals.
- * - Unquoted identifiers are treated as function names: if a mapping exists, they invoke it (zero-arg).
- * - If no mapping exists for such an identifier, an empty string is returned (to avoid ambiguity).
- * - Supports nested calls, recursion, and pipeline chaining using '|'.
- * - Each { ... } placeholder is evaluated independently.
+ * <li> Only quoted content ('...' or "...") is treated as string literal.</li>
+ * <li> Numeric tokens (integer or decimal) are recognized as numeric literals.</li>
+ * <li> Unquoted identifiers are treated as function names: if a mapping exists, they invoke it (zero-arg).</li>
+ * <li> If no mapping exists for such an identifier, an empty string is returned (to avoid ambiguity).</li>
+ * <li> Supports nested calls, recursion, and pipeline chaining using '|'.</li>
+ * <li> Each { ... } placeholder is evaluated independently.</li>
  */
 public final class PlaceholderEngine {
     // internal markers to protect escaped braces during processing
     private static final String ESC_L = "\u0000LBR\u0000";
     private static final String ESC_R = "\u0000RBR\u0000";
+
     private PlaceholderEngine() {
     }
 
@@ -37,7 +44,7 @@ public final class PlaceholderEngine {
          * Resolve the function with evaluated String arguments.
          * Should return non-null (empty string allowed).
          */
-        String resolve(String... args);
+        String resolve(String... args) throws Exception;
     }
 
     protected static final Map<String, Resolver> MAPPINGS = new ConcurrentHashMap<>();
@@ -139,7 +146,7 @@ public final class PlaceholderEngine {
                 //#endif
         ).getKey(Minecraft.getInstance().player.getMainHandItem().getItem()).toString());
 
-        // functions
+        // utility functions
         MAPPINGS.put("in_precision", args -> {
             int digits = (int) Double.parseDouble(args[1]);
             return String.format(("%." + digits + "f"), Double.parseDouble(args[0]));
@@ -156,6 +163,125 @@ public final class PlaceholderEngine {
             for (String s : args) sb.append(s);
             return sb.toString();
         });
+        MAPPINGS.put("find", args -> String.valueOf(args[0].indexOf(args[1])));
+        MAPPINGS.put("substr", args -> {
+            if (args.length == 1) return args[0];
+            if (args.length == 2) return args[0].substring((int) Double.parseDouble(args[1]));
+            int endIndex = Math.min(args[0].length(), (int) Double.parseDouble(args[2]));
+            return args[0].substring((int) Double.parseDouble(args[1]), endIndex);
+        });
+        MAPPINGS.put("request", args -> {
+            String method = args.length <= 1 || args[1] == null ? "GET" : args[1].trim().toUpperCase();
+            URL url = new URL(args[0]);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod(method.toUpperCase());
+            conn.setInstanceFollowRedirects(true);
+            conn.setConnectTimeout(3000);
+            conn.setReadTimeout(3000);
+            conn.setRequestProperty("User-Agent", "Chrome/138.0.0.0");
+            conn.setRequestProperty("Accept-Charset", "utf-8");
+
+            LoggerUtils.info("[ChatTools] Placeholder Engine Visiting \"" + url + "\" with method: " + method);
+            InputStream inStream = conn.getResponseCode() >= 400 ? conn.getErrorStream() : conn.getInputStream();
+            String response = "";
+            if (inStream != null) {
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(inStream, StandardCharsets.UTF_8))) {
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = in.readLine()) != null) {
+                        sb.append(line).append('\n');
+                    }
+                    response = sb.toString().replace("\n", "");
+                }
+            }
+            return response;
+        });
+        MAPPINGS.put("encode_rfc3986", args -> {
+            StringBuilder sb = new StringBuilder();
+            byte[] bytes = args[0].getBytes(StandardCharsets.UTF_8);
+            for (byte b : bytes) {
+                int c = b & 0xFF;
+                boolean unreserved = c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' || (c >= '0' && c <= '9');
+                unreserved |= c == '-' || c == '.' || c == '_' || c == '~';
+                if (unreserved) {
+                    sb.append((char) c);
+                } else {
+                    sb.append('%');
+                    char hex1 = Character.toUpperCase(Character.forDigit((c >> 4) & 0xF, 16));
+                    char hex2 = Character.toUpperCase(Character.forDigit(c & 0xF, 16));
+                    sb.append(hex1);
+                    sb.append(hex2);
+                }
+            }
+            return sb.toString();
+        });
+        MAPPINGS.put("escape_unicode", args -> {
+            String s = args[0];
+            StringBuilder out = new StringBuilder(s.length() * 2);
+            for (int i = 0; i < s.length(); i++) {
+                char ch = s.charAt(i);
+                if (ch == '\\') { // the codepoint of '\' is 005C
+                    out.append("\\u005C");
+                } else if (ch >= 0x20 && ch <= 0x7E) { // ASCII
+                    out.append(ch);
+                } else {
+                    out.append("\\u");
+                    String hex = Integer.toHexString(ch).toUpperCase();
+                    out.append("0".repeat(Math.max(0, 4 - hex.length())));
+                    out.append(hex);
+                }
+            }
+            return out.toString();
+        });
+        MAPPINGS.put("unescape_unicode", args -> {
+            String s = args[0];
+            StringBuilder out = new StringBuilder(s.length());
+            int len = s.length();
+            for (int i = 0; i < len; ) {
+                char c = s.charAt(i);
+                if (c == '\\' && i + 5 < len && (s.charAt(i + 1) == 'u' || s.charAt(i + 1) == 'U')) {
+                    int hi = i + 2;
+                    int hiEnd = hi + 4;
+                    String hex = s.substring(hi, hiEnd);
+                    int codeUnit;
+                    try {
+                        codeUnit = Integer.parseInt(hex, 16);
+                    } catch (NumberFormatException e) {
+                        out.append(c);
+                        i++;
+                        continue;
+                    }
+                    i = hiEnd;
+                    if (codeUnit >= 0xD800 && codeUnit <= 0xDBFF && i + 6 < len && s.charAt(i) == '\\' && (s.charAt(
+                            i + 1) == 'u' || s.charAt(i + 1) == 'U')) {
+                        String lowHex = s.substring(i + 2, i + 6);
+                        int lowUnit;
+                        try {
+                            lowUnit = Integer.parseInt(lowHex, 16);
+                        } catch (NumberFormatException e) {
+                            lowUnit = -1;
+                        }
+                        if (lowUnit >= 0xDC00 && lowUnit <= 0xDFFF) {
+                            int codePoint = (((codeUnit - 0xD800) << 10) | (lowUnit - 0xDC00)) + 0x10000;
+                            out.append(Character.toChars(codePoint));
+                            i += 6;
+                            continue;
+                        }
+                    }
+                    out.append((char) codeUnit);
+                } else {
+                    out.append(c);
+                    i++;
+                }
+            }
+            return out.toString();
+        });
+        MAPPINGS.put("store_as_var", args -> {
+            PlaceholderEngine.addNewTempMapping(args[1], args2 -> args[0]);
+            return "";
+        });
+        MAPPINGS.put("translatable", args -> TextUtils.transWithPrefix(args[0], "").getString());
+        // math functions
         MAPPINGS.put("min", args -> {
             if (args.length == 0) return "";
             double min = Double.MAX_VALUE;
@@ -180,18 +306,6 @@ public final class PlaceholderEngine {
             }
             return max == -Double.MAX_VALUE ? "" : String.valueOf(max);
         });
-        MAPPINGS.put("sum", args -> {
-            if (args.length == 0) return "";
-            double sum = 0;
-            for (String s : args) {
-                try {
-                    double v = Double.parseDouble(s);
-                    sum += v;
-                } catch (NumberFormatException ignored) {
-                }
-            }
-            return String.valueOf(sum);
-        });
         MAPPINGS.put("avg", args -> {
             if (args.length == 0) return "";
             double sum = 0;
@@ -205,6 +319,18 @@ public final class PlaceholderEngine {
                 }
             }
             return len == 0 ? "" : String.valueOf(sum / len);
+        });
+        MAPPINGS.put("sum", args -> {
+            if (args.length == 0) return "";
+            double sum = 0;
+            for (String s : args) {
+                try {
+                    double v = Double.parseDouble(s);
+                    sum += v;
+                } catch (NumberFormatException ignored) {
+                }
+            }
+            return String.valueOf(sum);
         });
         MAPPINGS.put("subtract", args -> {
             if (args.length == 0) return "";
