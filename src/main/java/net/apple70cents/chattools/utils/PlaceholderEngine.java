@@ -163,6 +163,7 @@ public final class PlaceholderEngine {
             for (String s : args) sb.append(s);
             return sb.toString();
         });
+        MAPPINGS.put("flip", args -> ThreadLocalRandom.current().nextBoolean() ? "HEAD" : "TAIL");
         MAPPINGS.put("find", args -> String.valueOf(args[0].indexOf(args[1])));
         MAPPINGS.put("substr", args -> {
             if (args.length == 1) return args[0];
@@ -281,6 +282,95 @@ public final class PlaceholderEngine {
             return "";
         });
         MAPPINGS.put("translatable", args -> TextUtils.transWithPrefix(args[0], "").getString());
+        MAPPINGS.put("ljust", args -> {
+            String s = args[0];
+            if (args.length == 1) return s;
+            Character fill = args.length > 2 && !args[2].isBlank() ? args[2].charAt(0) : ' ';
+            return s + String.valueOf(fill).repeat(Math.max(0, (int) Double.parseDouble(args[1]) - s.length()));
+        });
+        MAPPINGS.put("rjust", args -> {
+            String s = args[0];
+            if (args.length == 1) return s;
+            Character fill = args.length > 2 && !args[2].isBlank() ? args[2].charAt(0) : ' ';
+            return String.valueOf(fill).repeat(Math.max(0, (int) Double.parseDouble(args[1]) - s.length())) + s;
+        });
+
+        // conditionals
+        MAPPINGS.put("is_true", args -> {
+            if (args.length == 0) return "false";
+            String condition = args[0];
+            if (!condition.isEmpty() && !condition.equals("0") && !condition.equalsIgnoreCase("false")) {
+                return "true";
+            } else {
+                return "false";
+            }
+        });
+        MAPPINGS.put("eq", args -> {
+            if (args.length < 2) return "false";
+            String a = args[0];
+            String b = args[1];
+            return a.equals(b) || Math.abs(Double.parseDouble(a) - Double.parseDouble(b)) < EPSILON ? "true" : "false";
+        });
+        MAPPINGS.put("not", args -> {
+            if (args.length == 0) return "true";
+            return MAPPINGS.get("is_true").resolve(args[0]).equals("true") ? "false" : "true";
+        });
+        MAPPINGS.put("or", args -> {
+            for (String s : args) {
+                if (MAPPINGS.get("is_true").resolve(s).equals("true")) {
+                    return "true";
+                }
+            }
+            return "false";
+        });
+        MAPPINGS.put("and", args -> {
+            for (String s : args) {
+                if (MAPPINGS.get("is_true").resolve(s).equals("false")) {
+                    return "false";
+                }
+            }
+            return "true";
+        });
+        MAPPINGS.put("if", args -> {
+            String condition = MAPPINGS.get("is_true").resolve(args[0]);
+            if (args.length == 1) return condition;
+            String thenPart = args[1];
+            String elsePart = args.length >= 3 ? args[2] : "";
+            if ("true".equals(condition)) {
+                return thenPart;
+            } else {
+                return elsePart;
+            }
+        });
+        MAPPINGS.put("greater", args -> {
+            if (args.length < 2) return "false";
+            try {
+                double a = Double.parseDouble(args[0]);
+                double b = Double.parseDouble(args[1]);
+                return a > b ? "true" : "false";
+            } catch (NumberFormatException e) {
+                return "false";
+            }
+        });
+        MAPPINGS.put("less", args -> {
+            if (args.length < 2) return "false";
+            try {
+                double a = Double.parseDouble(args[0]);
+                double b = Double.parseDouble(args[1]);
+                return a < b ? "true" : "false";
+            } catch (NumberFormatException e) {
+                return "false";
+            }
+        });
+        MAPPINGS.put("greater_eq", args -> MAPPINGS.get("not").resolve(MAPPINGS.get("less").resolve(args)));
+        MAPPINGS.put("less_eq", args -> MAPPINGS.get("not").resolve(MAPPINGS.get("greater").resolve(args)));
+        MAPPINGS.put("contains", args -> {
+            if (args.length < 2) return "false";
+            String haystack = args[0];
+            String needle = args[1];
+            return haystack.contains(needle) ? "true" : "false";
+        });
+
         // math functions
         MAPPINGS.put("min", args -> {
             if (args.length == 0) return "";
@@ -395,7 +485,6 @@ public final class PlaceholderEngine {
         MAPPINGS.put("round", args -> String.valueOf(Math.round(Double.parseDouble(args[0]))));
         MAPPINGS.put("floor", args -> String.valueOf((int) Math.floor(Double.parseDouble(args[0]))));
         MAPPINGS.put("ceil", args -> String.valueOf((int) Math.ceil(Double.parseDouble(args[0]))));
-        MAPPINGS.put("flip", args -> ThreadLocalRandom.current().nextBoolean() ? "HEAD" : "TAIL");
         MAPPINGS.put("random", args -> {
             if (args.length == 0) return String.valueOf(ThreadLocalRandom.current().nextDouble());
             else if (args.length == 1) {
@@ -456,82 +545,6 @@ public final class PlaceholderEngine {
         });
         MAPPINGS.put("to_rad", args -> String.valueOf(Math.toRadians(Double.parseDouble(args[0]))));
         MAPPINGS.put("to_deg", args -> String.valueOf(Math.toDegrees(Double.parseDouble(args[0]))));
-
-        // conditionals
-        MAPPINGS.put("is_true", args -> {
-            if (args.length == 0) return "false";
-            String condition = args[0];
-            if (!condition.isEmpty() && !condition.equals("0") && !condition.equalsIgnoreCase("false")) {
-                return "true";
-            } else {
-                return "false";
-            }
-        });
-        MAPPINGS.put("eq", args -> {
-            if (args.length < 2) return "false";
-            String a = args[0];
-            String b = args[1];
-            return a.equals(b) || Math.abs(Double.parseDouble(a) - Double.parseDouble(b)) < EPSILON ? "true" : "false";
-        });
-        MAPPINGS.put("not", args -> {
-            if (args.length == 0) return "true";
-            return MAPPINGS.get("is_true").resolve(args[0]).equals("true") ? "false" : "true";
-        });
-        MAPPINGS.put("or", args -> {
-            for (String s : args) {
-                if (MAPPINGS.get("is_true").resolve(s).equals("true")) {
-                    return "true";
-                }
-            }
-            return "false";
-        });
-        MAPPINGS.put("and", args -> {
-            for (String s : args) {
-                if (MAPPINGS.get("is_true").resolve(s).equals("false")) {
-                    return "false";
-                }
-            }
-            return "true";
-        });
-        MAPPINGS.put("if", args -> {
-            String condition = MAPPINGS.get("is_true").resolve(args[0]);
-            if (args.length == 1) return condition;
-            String thenPart = args[1];
-            String elsePart = args.length >= 3 ? args[2] : "";
-            if ("true".equals(condition)) {
-                return thenPart;
-            } else {
-                return elsePart;
-            }
-        });
-        MAPPINGS.put("greater", args -> {
-            if (args.length < 2) return "false";
-            try {
-                double a = Double.parseDouble(args[0]);
-                double b = Double.parseDouble(args[1]);
-                return a > b ? "true" : "false";
-            } catch (NumberFormatException e) {
-                return "false";
-            }
-        });
-        MAPPINGS.put("less", args -> {
-            if (args.length < 2) return "false";
-            try {
-                double a = Double.parseDouble(args[0]);
-                double b = Double.parseDouble(args[1]);
-                return a < b ? "true" : "false";
-            } catch (NumberFormatException e) {
-                return "false";
-            }
-        });
-        MAPPINGS.put("greater_eq", args -> MAPPINGS.get("not").resolve(MAPPINGS.get("less").resolve(args)));
-        MAPPINGS.put("less_eq", args -> MAPPINGS.get("not").resolve(MAPPINGS.get("greater").resolve(args)));
-        MAPPINGS.put("contains", args -> {
-            if (args.length < 2) return "false";
-            String haystack = args[0];
-            String needle = args[1];
-            return haystack.contains(needle) ? "true" : "false";
-        });
     }
 
     // debug prints
