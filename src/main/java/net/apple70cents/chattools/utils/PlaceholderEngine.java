@@ -9,6 +9,7 @@ import net.minecraft.core.registries.Registries;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -545,6 +546,9 @@ public final class PlaceholderEngine {
         });
         MAPPINGS.put("to_rad", args -> String.valueOf(Math.toRadians(Double.parseDouble(args[0]))));
         MAPPINGS.put("to_deg", args -> String.valueOf(Math.toDegrees(Double.parseDouble(args[0]))));
+        MAPPINGS.put("to_radix", args -> new BigInteger(args[0],
+                args.length > 1 && !args[1].isEmpty() ? Integer.parseInt(args[1]) : 10).toString(
+                args.length > 2 && !args[2].isEmpty() ? Integer.parseInt(args[2]) : 10).toUpperCase());
     }
 
     // debug prints
