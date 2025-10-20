@@ -450,7 +450,7 @@ public final class PlaceholderEngine {
         MAPPINGS.put("divide", args -> {
             if (args.length == 0) return "";
             double result = Double.parseDouble(args[0]);
-            for (String s : args) {
+            for (String s : Arrays.stream(args).skip(1).toList()) {
                 try {
                     double v = Double.parseDouble(s);
                     if (v != 0) result /= v;
