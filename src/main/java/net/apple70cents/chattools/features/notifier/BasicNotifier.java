@@ -49,13 +49,10 @@ public class BasicNotifier {
 
     public static Component work(Component text) {
         if ((boolean) ConfigUtils.get("notifier.IgnoreMyMessageEnabled") && MessageUtils.hadJustSentMessage()) {
-            // my message SHOULD BE and ALREADY BEEN ignored
-            MessageUtils.setJustSentMessage(false);
             return text;
         }
 
         LoggerUtils.info("[ChatTools] Found the latest chat message matches customized RegEx");
-        MessageUtils.setJustSentMessage(false);
 
         LocalPlayer player = Minecraft.getInstance().player;
         ClientLevel world = Minecraft.getInstance().level;

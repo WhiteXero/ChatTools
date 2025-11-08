@@ -28,7 +28,6 @@ public class CustomJoinMessageSender {
                 e.printStackTrace();
             }
             Minecraft.getInstance().execute(() -> {
-                MessageUtils.setJustSentMessage(true);
                 MessageUtils.sendToPublicChat(message, forceDisableFormatter);
             });
         }).start();

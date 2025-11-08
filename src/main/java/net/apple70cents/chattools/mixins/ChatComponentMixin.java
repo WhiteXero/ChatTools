@@ -158,8 +158,6 @@ public abstract class ChatComponentMixin {
                 .now().getEpochSecond(), occurrenceCount);
         TextUtils.putMessageMapWithHashcode(hashcode, messageUnit);
 
-        // we need to reset `justSentMessage` status, since it might be that this message received was sent by us
-        MessageUtils.setJustSentMessage(false);
         args.set(MESSAGE_IDX, message);
     }
 

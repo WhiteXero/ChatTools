@@ -25,7 +25,7 @@ public abstract class ClientPacketListenerMixin {
         //#endif
          , at = @At("HEAD"), argsOnly = true)
     public String sendPublicMessage(String message) {
-        MessageUtils.setJustSentMessage(true);
+        MessageUtils.updateLastSentMessageTimestamp();
         if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
             return message;
         }

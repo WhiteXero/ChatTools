@@ -43,7 +43,7 @@ key:
         copyObjectData: 复制对象数据
         copyRaw: 复制源文本
         copyWithColorCodeEscaped: 复制颜色代码转义后文本
-        copyWithNoColorCode: 复制无颜色代码文本
+        copyWithNoColorCode: 复制去除颜色代码的文本
         copyUnixTimestamp: 复制 Unix 时间戳
         copyTimestamp: 复制时间戳文本
         jumpTo: 跳转
@@ -379,7 +379,9 @@ key:
           '@Tooltip': 切换高亮文本应该插入在时间戳前方还是后方。
       IgnoreMyMessageEnabled:
         .: 忽略我自己的消息
-        '@Tooltip': 切换是否应从匹配中排除我自己的消息。
+        '@Tooltip': |-
+          切换是否应从匹配中排除我自己的消息。
+          在发送消息起 500ms 内接收到的消息都会被排除匹配。
       MatchMyNameEnabled:
         .: 匹配我的昵称
         '@Tooltip': |-
@@ -422,7 +424,7 @@ key:
             格式化的模式串。
             {text} -> 原始文本
             <gradient> -> 渐变，参见常见问题解答
-            其余支持变量或函数参见常见问题解答函数对照表。
+            其余支持变量或函数参见常见问题解答-函数对照表。
       DisableOnMatchList:
         .: 自动禁用聊天注入列表
         '@Tooltip': |-
@@ -552,7 +554,12 @@ key:
             这将是你的自动响应消息。
             <gradient> -> 渐变，参见常见问题解答
             {GROUP} -> 匹配组`GROUP`的内容
-            其余支持变量或函数参见常见问题解答函数对照表。
+            {unix_time_on_request} -> 创建响应请求时的 Unix 时间戳
+            {original_text_component} -> 接收到的文本组件
+            {original_text_raw} -> 接收到的文本字符串（未去除颜色代码）
+            {original_text_string} -> 接收到的文本字符串（去除颜色代码）
+            {object_data} -> 接收到的文本的对象数据
+            其余支持变量或函数参见常见问题解答-函数对照表。
         DelayInMilliseconds:
           .: 延迟（毫秒）
           '@Tooltip': 发送此消息前的等待时间，单位为毫秒

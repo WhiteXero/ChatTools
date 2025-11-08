@@ -400,7 +400,9 @@ key:
           '@Tooltip': Toggles whether the prefix should be inserted before the timestamp or after it.
       IgnoreMyMessageEnabled:
         .: Ignore My Own Messages
-        '@Tooltip': Toggles whether my own messages should be picked out from being matched.
+        '@Tooltip': |-
+          Toggles whether my own messages should be picked out from being matched.
+          Any messages received within 500ms upon sending will be excluded from matching.
       MatchMyNameEnabled:
         .: Match My Nickname
         '@Tooltip': |-
@@ -576,6 +578,11 @@ key:
             An automatic response of a message.
             <gradient> -> Gradients, please refer to FAQ
             {GROUP} -> The Content of the matched group `GROUP`
+            {unix_time_on_request} -> Unix timestamp at the time of responder request
+            {original_text_component} -> Received text component
+            {original_text_raw} -> Received text string (with color codes)
+            {original_text_string} -> Received text string (without color codes)
+            {object_data} -> Object data of the received text
             For other available functions or variables, please refer to Function Reference Table in FAQ.
         DelayInMilliseconds:
           .: Delay (in milliseconds)

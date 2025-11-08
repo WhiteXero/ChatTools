@@ -106,6 +106,7 @@ public final class PlaceholderEngine {
                         .getString());
         MAPPINGS.put("world_time", args -> String.valueOf(Minecraft.getInstance().level.getDayTime() % 24000));
         MAPPINGS.put("game_time", args -> String.valueOf(Minecraft.getInstance().level.getGameTime()));
+        MAPPINGS.put("real_time_unix", args -> String.valueOf(java.time.Instant.now().getEpochSecond()));
         MAPPINGS.put("real_time_long", args -> {
             java.time.Instant instant = java.time.Instant.now();
             java.time.ZonedDateTime currentTime = java.time.ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());

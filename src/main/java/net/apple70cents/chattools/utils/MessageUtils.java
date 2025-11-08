@@ -13,15 +13,15 @@ import org.apache.commons.lang3.StringUtils;
  * @author 70CentsApple
  */
 public class MessageUtils {
-
-    private static boolean justSentMessage = false;
+    private static long lastSentMessageTimestamp = -1L;
+    private static final long JUST_SENT_MESSAGE_AWAIT_TIME_IN_MILLISECONDS = 500L;
 
     public static boolean hadJustSentMessage() {
-        return justSentMessage;
+        return System.currentTimeMillis() - lastSentMessageTimestamp < JUST_SENT_MESSAGE_AWAIT_TIME_IN_MILLISECONDS;
     }
 
-    public static void setJustSentMessage(boolean bl) {
-        justSentMessage = bl;
+    public static void updateLastSentMessageTimestamp() {
+        lastSentMessageTimestamp = System.currentTimeMillis();
     }
 
     public static void sendToOriginalActionbar(Component text) {
@@ -47,7 +47,8 @@ public class MessageUtils {
             return;
         }
         if (!(boolean) ConfigUtils.get("general.ExclusiveActionbar.Enabled")) {
-            LoggerUtils.warn("[ChatTools] Customized actionbar duration is not supported when Exclusive Actionbar is disabled.");
+            LoggerUtils.warn(
+                    "[ChatTools] Customized actionbar duration is not supported when Exclusive Actionbar is disabled.");
             sendToActionbar(text);
         } else {
             ExclusiveActionbarHandler.addToRenderQueue(text, duration);
@@ -67,7 +68,7 @@ public class MessageUtils {
         if (player == null) {
             return;
         }
-        setJustSentMessage(true);
+        updateLastSentMessageTimestamp();
 
         boolean oldStatus = (boolean) ConfigUtils.get("formatter.Enabled");
 

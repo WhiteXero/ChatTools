@@ -1,5 +1,6 @@
 package net.apple70cents.chattools.features.responder;
 
+import com.google.gson.JsonElement;
 import net.apple70cents.chattools.config.SpecialUnits;
 import net.apple70cents.chattools.features.filter.ChatFilter;
 import net.apple70cents.chattools.utils.*;
@@ -46,13 +47,16 @@ public class Responder {
             }
         }
         if (shouldRespond) {
-            makeMessageSchedule(messageReceived, pattern, message, delayInMilliseconds, forceDisableFormatter);
+            makeMessageSchedule(text, pattern, message, delayInMilliseconds, forceDisableFormatter);
         }
     }
 
-    public static void makeMessageSchedule(String messageReceived, String pattern, String msg, long delayInMilliseconds, boolean forceDisableFormatter) {
+    public static void makeMessageSchedule(Component messageReceived, String pattern, String msg, long delayInMilliseconds, boolean forceDisableFormatter) {
         LoggerUtils.info("[ChatTools] Will respond within " + delayInMilliseconds + "ms");
         lastRequestTimestamp = System.currentTimeMillis();
+        long timeOnRequest = java.time.Instant.now().getEpochSecond();
+        JsonElement jsonElement = TextUtils.component2JsonElement(messageReceived.copy());
+        String jsonString = jsonElement != null ? jsonElement.toString() : "ERROR";
         new Thread(() -> {
             // delay
             try {
@@ -63,17 +67,18 @@ public class Responder {
 
             // work
             String message = msg;
-            submitAllGroupsToPlaceholderEngine(messageReceived, pattern);
+            submitAllGroupsToPlaceholderEngine(TextUtils.wash(messageReceived.getString()), pattern);
+            PlaceholderEngine.addNewTempMapping("unix_time_on_request", args -> String.valueOf(timeOnRequest));
+            PlaceholderEngine.addNewTempMapping("original_text_component", args -> jsonString);
+            PlaceholderEngine.addNewTempMapping("original_text_raw", args -> messageReceived.getString());
+            PlaceholderEngine.addNewTempMapping("original_text_string", args -> TextUtils.wash(messageReceived.getString()));
+            PlaceholderEngine.addNewTempMapping("object_data", args -> messageReceived.toString());
             message = PlaceholderEngine.apply(message);
             PlaceholderEngine.clearTempMappings();
 
             LoggerUtils.info("[ChatTools] Respond to `" + pattern + "`, with message `" + message + "`");
             message = message.replace("\\{", "{").replace("\\}", "}");
             MessageUtils.sendToPublicChat(message, forceDisableFormatter);
-            // setting `justSentMessage` to false immediately can fix the issue of the order of dealing with messages
-            // however it might lead to notifying the response text sent by the user, even with the option `IgnoreMyMessage` enabled
-            // FIXME but it's actually not a big problem, gonna delay fixing this.
-            MessageUtils.setJustSentMessage(false);
         }).start();
     }
 
