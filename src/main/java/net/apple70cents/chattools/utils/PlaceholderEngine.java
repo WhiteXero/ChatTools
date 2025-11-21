@@ -179,7 +179,7 @@ public final class PlaceholderEngine {
             String json = args[0];
             String path = args[1];
 
-            JsonElement element = JsonParser.parseString(json);
+            JsonElement element = new JsonParser().parse(json);
             String[] parts = path.split("\\.");
 
             for (String part : parts) {
