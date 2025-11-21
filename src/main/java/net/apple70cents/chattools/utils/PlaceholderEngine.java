@@ -1,5 +1,7 @@
 package net.apple70cents.chattools.utils;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 //#if MC>=11903
@@ -172,6 +174,46 @@ public final class PlaceholderEngine {
             if (args.length == 2) return args[0].substring((int) Double.parseDouble(args[1]));
             int endIndex = Math.min(args[0].length(), (int) Double.parseDouble(args[2]));
             return args[0].substring((int) Double.parseDouble(args[1]), endIndex);
+        });
+        MAPPINGS.put("json_get", args -> {
+            String json = args[0];
+            String path = args[1];
+
+            JsonElement element = JsonParser.parseString(json);
+            String[] parts = path.split("\\.");
+
+            for (String part : parts) {
+                if (part == null || part.isEmpty()) continue;
+                // If part contains bracket(s) like field[0][1] or starts with [0]
+                if (part.contains("[")) {
+                    String field = part.substring(0, part.indexOf("["));
+                    // if there's a field name before the brackets, descend into the object first
+                    if (!field.isEmpty()) {
+                        element = element.getAsJsonObject().get(field);
+                    }
+                    int idxPos = part.indexOf('[');
+                    // process all bracketed indices in order
+                    while (idxPos >= 0 && idxPos < part.length()) {
+                        int open = part.indexOf('[', idxPos);
+                        int close = part.indexOf(']', open);
+                        if (open < 0 || close < 0) break;
+                        String idxStr = part.substring(open + 1, close);
+                        int idx = Integer.parseInt(idxStr);
+                        element = element.getAsJsonArray().get(idx);
+                        idxPos = close + 1;
+                    }
+                } else {
+                    // no brackets: token can be an object key or a numeric index into current array
+                    if (element.isJsonArray() && part.matches("\\d+")) {
+                        int idx = Integer.parseInt(part);
+                        element = element.getAsJsonArray().get(idx);
+                    } else {
+                        element = element.getAsJsonObject().get(part);
+                    }
+                }
+            }
+
+            return element.isJsonPrimitive() ? element.getAsString() : element.toString();
         });
         MAPPINGS.put("request", args -> {
             String method = args.length <= 1 || args[1] == null ? "GET" : args[1].trim().toUpperCase();
@@ -588,7 +630,7 @@ public final class PlaceholderEngine {
         Matcher m = PLACEHOLDER_PATTERN.matcher(processed);
         StringBuffer sb = new StringBuffer();
         while (m.find()) {
-            String body = m.group(1).trim();
+            String body = m.group(1).trim().replace(ESC_L, "{").replace(ESC_R, "}");
             String replacement;
             try {
                 debugPrint("Evaluating placeholder: {" + body + "}");
