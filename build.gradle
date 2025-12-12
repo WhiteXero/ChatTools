@@ -1,13 +1,13 @@
 plugins {
     id 'maven-publish'
-    id 'fabric-loom' version '1.11-SNAPSHOT' apply false
+    id 'fabric-loom' version '1.14-SNAPSHOT' apply false
 
     // https://github.com/ReplayMod/preprocessor
     // https://github.com/Fallen-Breath/preprocessor
-    id 'com.replaymod.preprocess' version '0a04a5668b'
+    id 'com.replaymod.preprocess' version 'd452ef7612'
 
     // https://github.com/Fallen-Breath/yamlang
-    id 'me.fallenbreath.yamlang' version '1.4.1'
+    id 'me.fallenbreath.yamlang' version '1.5.0'
 }
 
 preprocess {
@@ -25,6 +25,7 @@ preprocess {
     def mc12105 = createNode('1.21.5', 1_21_05, '')
     def mc12108 = createNode('1.21.8', 1_21_08, '')
     def mc12110 = createNode('1.21.10', 1_21_10, '')
+    def mc12111 = createNode('1.21.11', 1_21_11, '')
 
     mc116.link(mc117, null)
     mc117.link(mc118, null)
@@ -37,6 +38,7 @@ preprocess {
     mc12104.link(mc12105, null)
     mc12105.link(mc12108, null)
     mc12108.link(mc12110, null)
+    mc12110.link(mc12111, null)
 }
 
 tasks.register('buildAndGather') {
@@ -45,7 +47,8 @@ tasks.register('buildAndGather') {
     }
     doFirst {
         println 'Gathering builds'
-        def buildLibs = { p -> p.buildDir.toPath().resolve('libs')
+        def buildLibs = {
+            p -> p.buildDir.toPath().resolve('libs')
         }
         delete fileTree(buildLibs(rootProject)) {
             include '*'
@@ -54,10 +57,10 @@ tasks.register('buildAndGather') {
             copy {
                 from(buildLibs(project)) {
                     include '*.jar'
-                    exclude '*-dev.jar', '*-sources.jar'
+                    exclude '*-dev.jar', '*-sources.jar', '*-shadow.jar'
                 }
                 into buildLibs(rootProject).resolve('v' + project.mod_version)
-                duplicatesStrategy DuplicatesStrategy.INCLUDE
+                duplicatesStrategy   DuplicatesStrategy.INCLUDE
             }
             delete(buildLibs(project))
         }

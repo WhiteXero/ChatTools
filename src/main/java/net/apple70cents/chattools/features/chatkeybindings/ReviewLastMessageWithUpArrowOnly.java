@@ -14,7 +14,8 @@ public class ReviewLastMessageWithUpArrowOnly {
         if (!(boolean) ConfigUtils.get("chatkeybindings.ReviewLastMessageWithUpArrowOnly")) {
             return;
         }
-        if (KeyboardUtils.isKeyPressingWithModifier(UP, SpecialUnits.KeyModifiers.NONE, SpecialUnits.MacroModes.GREEDY)) {
+        if (KeyboardUtils.isKeyPressingWithModifier(UP, SpecialUnits.KeyModifiers.NONE,
+                SpecialUnits.MacroModes.GREEDY)) {
             Minecraft mc = Minecraft.getInstance();
             // only if no screen is open
             if (mc.screen != null) {
@@ -25,7 +26,13 @@ public class ReviewLastMessageWithUpArrowOnly {
             //#else
             //$$ ChatScreen chatScreen = new ChatScreen("");
             //#endif
-            ((ScreenAccessor) chatScreen).invokeInit(mc, 1, 1);
+            ((ScreenAccessor) chatScreen).invokeInit(
+                    //#if MC>=12111
+                    //$$ // no-op
+                    //#else
+                    //$$ mc,
+                    //#endif
+                    1, 1);
             mc.setScreen(chatScreen);
             chatScreen.moveInHistory(-1);
         }

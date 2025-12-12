@@ -18,16 +18,21 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-//#if MC>=12109
+//#if MC>=12111
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.world.entity.EntityAttachment;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+//#elseif MC>=12109
+//$$ import net.minecraft.client.renderer.SubmitNodeCollector;
+//$$ import net.minecraft.world.entity.EntityAttachment;
+//$$ import net.minecraft.world.phys.Vec3;
+//$$ import net.minecraft.client.renderer.RenderType;
 //#elseif MC>=12100
-import net.minecraft.world.entity.EntityAttachment;
-import net.minecraft.world.phys.Vec3;
-import net.minecraft.client.renderer.RenderType;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+//$$ import net.minecraft.world.entity.EntityAttachment;
+//$$ import net.minecraft.world.phys.Vec3;
+//$$ import net.minecraft.client.renderer.RenderType;
+//$$ import com.mojang.blaze3d.vertex.VertexConsumer;
 //#endif
 
 //#if MC>=11900
@@ -121,8 +126,10 @@ public class BubbleRenderer {
             float x2 = maxWidth / 2.0F + 3;
             float y2 = 1;
 
-            //#if MC>=12109
-            renderQueue.order(0).submitCustomGeometry(poseStack, RenderType.textBackgroundSeeThrough(), (pose1, buffer) -> {
+            //#if MC>=12111
+            renderQueue.order(0).submitCustomGeometry(poseStack, RenderTypes.textBackgroundSeeThrough(), (pose1, buffer) -> {
+            //#elseif MC>=12109
+            //$$ renderQueue.order(0).submitCustomGeometry(poseStack, RenderType.textBackgroundSeeThrough(), (pose1, buffer) -> {
             //#else
             //$$ VertexConsumer buffer = multiBufferSource.getBuffer(RenderType.textBackgroundSeeThrough());
             //$$ Matrix4f pose1 = pose;

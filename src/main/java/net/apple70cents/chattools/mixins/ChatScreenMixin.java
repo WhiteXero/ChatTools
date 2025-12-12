@@ -24,7 +24,6 @@ import net.minecraft.client.input.KeyEvent;
 //#if MC>=12005
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import net.minecraft.network.chat.Style;
-import java.util.List;
 //#endif
 
 /**
@@ -86,33 +85,52 @@ public abstract class ChatScreenMixin {
                 (boolean) ConfigUtils.get("general.HideChatHistoryInF1Mode");
     }
 
-    @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/ChatComponent;render(Lnet/minecraft/client/gui/GuiGraphics;IIIZ)V"))
-    private boolean hideChatHistoryInF1Mode_1(ChatComponent instance, GuiGraphics context, int i1, int i2, int i3, boolean b) {
-        // if addition conditions are satisfied, don't make it render
-        return !shouldHideChatHistory();
-    }
-
-    @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderComponentHoverEffect(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Style;II)V"))
-    private boolean hideChatHistoryInF1Mode_2(GuiGraphics instance, Font font, Style style, int i, int j) {
-        // if addition conditions are satisfied, don't make it render
-        return !shouldHideChatHistory();
-    }
-
-    //#if MC>=12007
-    @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;setTooltipForNextFrame(Lnet/minecraft/client/gui/Font;Ljava/util/List;II)V"))
+    //#if MC>=12111
+    @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/ChatComponent;render(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/gui/Font;IIIZZ)V"))
+    private boolean hideChatHistoryInF1Mode_1(ChatComponent instance, GuiGraphics guiGraphics, Font font, int i1, int i2, int i3, boolean b1, boolean b2) {
     //#else
-    //$$ @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderTooltip(Lnet/minecraft/client/gui/Font;Ljava/util/List;II)V"))
+    //$$ @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/ChatComponent;render(Lnet/minecraft/client/gui/GuiGraphics;IIIZ)V"))
+    //$$ private boolean hideChatHistoryInF1Mode_1(ChatComponent instance, GuiGraphics context, int i1, int i2, int i3, boolean b) {
     //#endif
-    private boolean hideChatHistoryInF1Mode_3(GuiGraphics instance, Font font, List list, int i, int j) {
         // if addition conditions are satisfied, don't make it render
         return !shouldHideChatHistory();
     }
 
-    @Inject(method = "getComponentStyleAt", at = @At(value = "HEAD"), cancellable = true)
-    private void hideChatHistoryInF1Mode_4(double x, double y, CallbackInfoReturnable<Style> cir) {
+    //if MC>=12111
+    //$$ // no-op
+    //#else
+    //$$ @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderComponentHoverEffect(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Style;II)V"))
+    //$$ private boolean hideChatHistoryInF1Mode_2(GuiGraphics instance, Font font, Style style, int i, int j) {
+    //$$     // if addition conditions are satisfied, don't make it render
+    //$$     return !shouldHideChatHistory();
+    //$$ }
+    //$$
+    //$$ //#if MC>=12007
+    //$$ @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;setTooltipForNextFrame(Lnet/minecraft/client/gui/Font;Ljava/util/List;II)V"))
+    //$$ //#else
+    //$$ //$$ @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderTooltip(Lnet/minecraft/client/gui/Font;Ljava/util/List;II)V"))
+    //$$ //#endif
+    //$$ private boolean hideChatHistoryInF1Mode_3(GuiGraphics instance, Font font, java.util.List list, int i, int j) {
+    //$$     // if addition conditions are satisfied, don't make it render
+    //$$     return !shouldHideChatHistory();
+    //$$ }
+    //$$
+    //$$ @Inject(method = "getComponentStyleAt", at = @At(value = "HEAD"), cancellable = true)
+    //$$ private void hideChatHistoryInF1Mode_4(double x, double y, CallbackInfoReturnable<Style> cir) {
+    //$$     // if addition conditions are satisfied, don't consume its click
+    //$$     if (shouldHideChatHistory()) {
+    //$$         cir.setReturnValue(null);
+    //$$     }
+    //$$ }
+    //#endif
+
+    //#if MC>=12111
+    @Inject(method = "handleComponentClicked", at = @At("HEAD"), cancellable = true)
+    private void hideChatHistoryInF1Mode_2(Style style, boolean bl, CallbackInfoReturnable<Boolean> cir) {
         // if addition conditions are satisfied, don't consume its click
         if (shouldHideChatHistory()) {
-            cir.setReturnValue(null);
+            cir.setReturnValue(false);
+            cir.cancel();
         }
     }
     //#endif

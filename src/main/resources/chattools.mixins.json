@@ -11,6 +11,7 @@
     "ClientPacketListenerMixin",
     "EntityRendererMixin",
     "FriendlyByteBufMixin",
+    "GuiGraphicsMixin",
     "GuiMixinForExclusiveActionbar",
     "GuiMixinForRestoreMessages",
     "NameTagFeatureRendererStorageMixin",

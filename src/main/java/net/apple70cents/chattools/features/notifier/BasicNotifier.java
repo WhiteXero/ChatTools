@@ -11,7 +11,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+
+//#if MC>=12111
+import net.minecraft.resources.Identifier;
+//#else
+//$$ import net.minecraft.resources.ResourceLocation;
+//#endif
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -79,8 +84,10 @@ public class BasicNotifier {
                 double y = (sendFromCameraPos && camera != null) ? camera.position().y : player.getY();
                 double z = (sendFromCameraPos && camera != null) ? camera.position().z : player.getZ();
                 world.playLocalSound(x, y, z,
-                        //#if MC>=12100
-                        SoundEvent.createVariableRangeEvent(ResourceLocation.parse(identifier))
+                        //#if MC>=12111
+                        SoundEvent.createVariableRangeEvent(Identifier.parse(identifier))
+                        //#elseif MC>=12100
+                        //$$ SoundEvent.createVariableRangeEvent(ResourceLocation.parse(identifier))
                         //#elseif MC>=11900
                         //$$ SoundEvent.createVariableRangeEvent(new ResourceLocation(identifier))
                         //#else

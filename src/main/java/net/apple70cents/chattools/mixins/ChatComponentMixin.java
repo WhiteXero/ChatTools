@@ -8,18 +8,15 @@ import net.apple70cents.chattools.features.notifier.BasicNotifier;
 import net.apple70cents.chattools.features.responder.Responder;
 import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
-import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
 import net.minecraft.client.GuiMessage;
 import net.minecraft.client.gui.components.ChatComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import java.time.Instant;
@@ -161,18 +158,22 @@ public abstract class ChatComponentMixin {
         args.set(MESSAGE_IDX, message);
     }
 
-    @Inject(method = "getClickedComponentStyleAt", at = @At(value = "RETURN"), cancellable = true)
-    public void modifyHoverEvent(double x, double y, CallbackInfoReturnable<Style> cir) {
-        Style style = cir.getReturnValue();
-        if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
-            cir.setReturnValue(style);
-            return;
-        }
-        if (!(boolean) ConfigUtils.get("general.PreviewClickEvents.Enabled")) {
-            cir.setReturnValue(style);
-            return;
-        }
-        cir.setReturnValue(ClickEventsPreviewer.work(style));
-    }
+    //#if MC>=12111
+    //$$ // no-op
+    //#else
+    //$$ @Inject(method = "getClickedComponentStyleAt", at = @At(value = "RETURN"), cancellable = true)
+    //$$ public void modifyHoverEvent(double x, double y, org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<net.minecraft.network.chat.Style> cir) {
+    //$$     net.minecraft.network.chat.Style style = cir.getReturnValue();
+    //$$     if (!(boolean) ConfigUtils.get("general.ChatTools.Enabled")) {
+    //$$         cir.setReturnValue(style);
+    //$$         return;
+    //$$     }
+    //$$     if (!(boolean) ConfigUtils.get("general.PreviewClickEvents.Enabled")) {
+    //$$         cir.setReturnValue(style);
+    //$$         return;
+    //$$     }
+    //$$     cir.setReturnValue(ClickEventsPreviewer.work(style));
+    //$$ }
+    //#endif
 
 }

@@ -90,7 +90,13 @@ public final class PlaceholderEngine {
         MAPPINGS.put("z", args -> String.valueOf(Minecraft.getInstance().player.getZ()));
         MAPPINGS.put("pos", args -> String.format("(%.1f, %.1f, %.1f)", Minecraft.getInstance().player.getX(),
                 Minecraft.getInstance().player.getY(), Minecraft.getInstance().player.getZ()));
-        MAPPINGS.put("dimension_reg_name", args -> Minecraft.getInstance().level.dimension().location().toString());
+        MAPPINGS.put("dimension_reg_name", args ->
+                //#if MC>=12111
+                Minecraft.getInstance().level.dimension().identifier().toString()
+                //#else
+                //$$ Minecraft.getInstance().level.dimension().location().toString()
+                //#endif
+        );
         MAPPINGS.put("biome_reg_name",
                 args -> String.valueOf(Minecraft.getInstance().level.registryAccess().lookupOrThrow(
                         //#if MC>=11903

@@ -85,7 +85,13 @@ public class MessageUtils {
                 //#else
                 //$$ ChatScreen tempChatScreen = new ChatScreen(text);
                 //#endif
-                ((ScreenAccessor) tempChatScreen).invokeInit(mc, 1, 1);
+                ((ScreenAccessor) tempChatScreen).invokeInit(
+                        //#if MC>=12111
+                        //$$ // no-op
+                        //#else
+                        //$$ mc,
+                        //#endif
+                        1, 1);
                 tempChatScreen.handleChatInput(text, false);
 
                 ConfigUtils.set("formatter.Enabled", oldStatus);

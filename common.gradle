@@ -32,10 +32,15 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-    modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
-        exclude group: "net.fabricmc.fabric-api"
+    if (project.cloth_config_version.size() > 0) {
+        modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
+            exclude group: "net.fabricmc.fabric-api"
+        }
     }
-    modApi "com.terraformersmc:modmenu:${project.mod_menu_version}"
+
+    if (project.mod_menu_version.size() > 0) {
+        modApi "com.terraformersmc:modmenu:${project.mod_menu_version}"
+    }
 
     // https://github.com/sshtools/two-slices
     modImplementation 'com.sshtools:two-slices:0.9.4'
@@ -76,16 +81,15 @@ group = project.maven_group
 base.archivesName = project.archives_base_name + '-' + project.minecraft_version
 
 processResources {
-    inputs.property "id", project.mod_id
-    inputs.property "version", fullModVersion
-    inputs.property "minecraft_dependency", project.minecraft_dependency
+    def modProperties = [
+            "id"                  : project.mod_id,
+            "version"             : fullModVersion,
+            "minecraft_dependency": project.minecraft_dependency,
+    ]
+    inputs.properties(modProperties)
 
     filesMatching("fabric.mod.json") {
-        expand([
-                "id": project.mod_id,
-                "version": fullModVersion,
-                "minecraft_dependency": project.minecraft_dependency
-        ])
+        expand modProperties
     }
     filesMatching('chattools.mixins.json') {
         filter { s -> s.replace('{{COMPATIBILITY_LEVEL}}', "JAVA_${JAVA_COMPATIBILITY.ordinal() + 1}") }

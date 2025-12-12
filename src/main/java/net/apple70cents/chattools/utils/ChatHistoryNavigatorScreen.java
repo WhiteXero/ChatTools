@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 
 //#if MC>=12109
 import net.minecraft.client.input.MouseButtonEvent;
+import com.mojang.blaze3d.platform.cursor.CursorTypes;
 //#endif
 
 //#if MC>=11900
@@ -242,6 +243,12 @@ public class ChatHistoryNavigatorScreen extends Screen {
             //$$ drawString(context, font, this.getText(), x, y, 0xffffff);
             //#endif
             if (hovered) {
+                // set cursor
+                //#if MC>=12109
+                context.requestCursor(CursorTypes.POINTING_HAND);
+                //#endif
+
+
                 List<Component> timestamps = Arrays.stream(this.getTooltip().getString().split("\n")).map(TextUtils::of)
                                                    .collect(Collectors.toList());
                 //#if MC>=12106

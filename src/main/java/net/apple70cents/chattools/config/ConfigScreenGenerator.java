@@ -9,7 +9,12 @@ import me.shedaniel.clothconfig2.impl.builders.SubCategoryBuilder;
 import net.apple70cents.chattools.utils.ConfigScreenUtils;
 import net.apple70cents.chattools.utils.ConfigUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+
+//#if MC>=12111
+import net.minecraft.resources.Identifier;
+//#else
+//$$ import net.minecraft.resources.ResourceLocation;
+//#endif
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -61,8 +66,10 @@ public class ConfigScreenGenerator {
     public static ConfigBuilder getConfigBuilder() {
         initializeConfigGuiMapIfNecessary();
 
-        //#if MC>=12100
-        ResourceLocation backgroundTexture = ResourceLocation.parse("minecraft:textures/block/oak_planks.png");
+        //#if MC>=12111
+        Identifier backgroundTexture = Identifier.parse("minecraft:textures/block/oak_planks.png");
+        //#elseif MC>=12100
+        //$$ ResourceLocation backgroundTexture = ResourceLocation.parse("minecraft:textures/block/oak_planks.png");
         //#else
         //$$ ResourceLocation backgroundTexture = new ResourceLocation("minecraft:textures/block/oak_planks.png");
         //#endif

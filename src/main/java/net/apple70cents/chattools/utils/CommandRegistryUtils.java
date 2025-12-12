@@ -14,7 +14,6 @@ import net.apple70cents.chattools.config.ConfigScreenGenerator;
 import net.apple70cents.chattools.config.ConfigStorage;
 import net.apple70cents.chattools.config.SpecialUnits;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.commands.CommandSource;
@@ -24,6 +23,12 @@ import net.minecraft.util.Tuple;
 
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+//#if MC>=12111
+import net.minecraft.server.permissions.PermissionSet;
+import net.minecraft.util.Util;
+//#else
+//$$ import net.minecraft.Util;
+//#endif
 
 //#if MC>=12105
 import com.mojang.serialization.JavaOps;
@@ -385,7 +390,13 @@ public class CommandRegistryUtils {
                 public boolean shouldInformAdmins() {
                     return true;
                 }
-            }, player.position(), player.getRotationVector(), null, 4, player.getScoreboardName(), player.getName(), null, player);
+            }, player.position(), player.getRotationVector(), null,
+                    //#if MC>=12111
+                    PermissionSet.ALL_PERMISSIONS
+                    //#else
+                    //$$ 4
+                    //#endif
+                    , player.getScoreboardName(), player.getName(), null, player);
         }
     }
 }

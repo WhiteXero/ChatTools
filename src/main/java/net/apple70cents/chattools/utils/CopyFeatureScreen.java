@@ -64,7 +64,8 @@ public class CopyFeatureScreen extends Screen {
         this.buttonDatas.put("copyTextComponent", new ButtonData(-2, -1, textComponent));
         this.buttonDatas.put("copyObjectData", new ButtonData(-2, 1, unit.message.toString()));
         this.buttonDatas.put("copyRaw", new ButtonData(-1, -1, unit.message.getString()));
-        this.buttonDatas.put("copyWithColorCodeEscaped", new ButtonData(-1, 1, TextUtils.decodeColorCodes(unit.message.getString())));
+        this.buttonDatas.put("copyWithColorCodeEscaped",
+                new ButtonData(-1, 1, TextUtils.decodeColorCodes(unit.message.getString())));
         this.buttonDatas.put("copyWithNoColorCode", new ButtonData(0, -1, TextUtils.wash(unit.message.getString())));
         this.buttonDatas.put("copyUnixTimestamp", new ButtonData(0, 1, String.valueOf(unit.unixTimestamp)));
         this.buttonDatas.put("copyTimestamp", new ButtonData(1, 0, this.getLongTimeDisplay(unit.unixTimestamp)));
@@ -94,7 +95,8 @@ public class CopyFeatureScreen extends Screen {
             List<TextUtils.MessageUnit> messagesAfter = messages.stream().skip(messages.indexOf(unit) + 1L).toList();
             int lines = 0;
             //#if MC>=11904
-            int maxLineLength = Mth.floor((double) ChatComponent.getWidth(mc.options.chatWidth().get()) / mc.options.chatScale().get());
+            int maxLineLength = Mth.floor(
+                    (double) ChatComponent.getWidth(mc.options.chatWidth().get()) / mc.options.chatScale().get());
             //#else
             //$$ int maxLineLength = Mth.floor((double) ChatComponent.getWidth(mc.options.chatWidth) / mc.options.chatScale);
             //#endif
@@ -107,11 +109,11 @@ public class CopyFeatureScreen extends Screen {
             mc.gui.getChat().scrollChat(lines);
         });
         addCenterButton("cancel", this.height - 30, 0, 20, 200, (button) -> {
-            if (oldScreen instanceof ChatHistoryNavigatorScreen) {
-                if (((ChatHistoryNavigatorScreen) oldScreen).keywordField != null) {
-                    ((ChatHistoryNavigatorScreen) oldScreen).chatUnitListWidget.setKeyword(((ChatHistoryNavigatorScreen) oldScreen).keywordField.getValue());
+            if (oldScreen instanceof ChatHistoryNavigatorScreen oldNavScreen) {
+                if (oldNavScreen.keywordField != null) {
+                    oldNavScreen.chatUnitListWidget.setKeyword(oldNavScreen.keywordField.getValue());
                 } else {
-                    ((ChatHistoryNavigatorScreen) oldScreen).chatUnitListWidget.setKeyword("");
+                    oldNavScreen.chatUnitListWidget.setKeyword("");
                 }
             }
             Minecraft.getInstance().setScreen(oldScreen);
@@ -121,8 +123,7 @@ public class CopyFeatureScreen extends Screen {
     protected Button addCenterButton(String translationKey, int y, int xOffset, int buttonH, int buttonW, Button.OnPress func) {
         //#if MC>=11900
         Button buttonWidget = Button.builder(TextUtils.trans("texts.copy." + translationKey), func)
-                                    .pos(this.width / 2 - buttonW / 2 + xOffset, y - buttonH / 2).size(buttonW, buttonH)
-                                    .build();
+                .pos(this.width / 2 - buttonW / 2 + xOffset, y - buttonH / 2).size(buttonW, buttonH).build();
         //#else
         //$$ Button buttonWidget = new Button(this.width/2 - buttonW/2 + xOffset,y - buttonH/2, buttonW, buttonH, TextUtils.trans("texts.copy." + translationKey), func);
         //#endif
@@ -149,8 +150,11 @@ public class CopyFeatureScreen extends Screen {
         // context.drawCenteredString(this.font, this.title, this.width / 2, this.getTitleY(), 0xffffff);
 
         // this draws the message
-        //#if MC>=12109
-        this.messageSplit.render(context, MultiLineLabel.Align.CENTER, this.width / 2, this.getMessageY(), 9, true, 0xffffffff);
+        //#if MC>=12111
+        this.messageSplit.visitLines(net.minecraft.client.gui.TextAlignment.CENTER, this.width / 2, this.getMessageY(),
+                9, context.textRenderer());
+        //#elseif MC>=12109
+        //$$ this.messageSplit.render(context, MultiLineLabel.Align.CENTER, this.width / 2, this.getMessageY(), 9, true, 0xffffffff);
         //#else
         //$$ this.messageSplit.renderCentered(context, this.width / 2, this.getMessageY());
         //#endif
@@ -163,8 +167,11 @@ public class CopyFeatureScreen extends Screen {
             }
         }
         this.previewTextSplit = MultiLineLabel.create(this.font, previewText, this.width - 50);
-        //#if MC>=12109
-        this.previewTextSplit.render(context, MultiLineLabel.Align.CENTER, this.width / 2, this.height / 2 + 50, 9, true, 0xffffffff);
+        //#if MC>=12111
+        this.previewTextSplit.visitLines(net.minecraft.client.gui.TextAlignment.CENTER, this.width / 2, this.height / 2 + 50, 9,
+                context.textRenderer());
+        //#elseif MC>=12109
+        //$$ this.previewTextSplit.render(context, MultiLineLabel.Align.CENTER, this.width / 2, this.height / 2 + 50, 9, true, 0xffffffff);
         //#else
         //$$ this.previewTextSplit.renderCentered(context, this.width / 2, this.height / 2 + 50);
         //#endif
@@ -185,13 +192,13 @@ public class CopyFeatureScreen extends Screen {
 
     private String getLongTimeDisplay(long timestamp) {
         Instant instant = Instant.ofEpochSecond(timestamp);
-        LocalDateTime currentTime = LocalDateTime.ofEpochSecond(timestamp, 0, ZoneId.systemDefault().getRules()
-                                                                                    .getOffset(instant));
+        LocalDateTime currentTime = LocalDateTime.ofEpochSecond(timestamp, 0,
+                ZoneId.systemDefault().getRules().getOffset(instant));
         String offsetString = ZoneId.systemDefault().getRules().getOffset(instant).getId();
         // yyyy/MM/dd HH:mm:ss UTC±XX:XX
-        String longTimeDisplay = String.format("%4d/%d/%d %02d:%02d:%02d\nUTC%s", currentTime.getYear(), currentTime
-                .getMonth()
-                .getValue(), currentTime.getDayOfMonth(), currentTime.getHour(), currentTime.getMinute(), currentTime.getSecond(), offsetString);
+        String longTimeDisplay = String.format("%4d/%d/%d %02d:%02d:%02d\nUTC%s", currentTime.getYear(),
+                currentTime.getMonth().getValue(), currentTime.getDayOfMonth(), currentTime.getHour(),
+                currentTime.getMinute(), currentTime.getSecond(), offsetString);
         return longTimeDisplay;
     }
 
