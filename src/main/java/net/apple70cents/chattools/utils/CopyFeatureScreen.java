@@ -109,7 +109,8 @@ public class CopyFeatureScreen extends Screen {
             mc.gui.getChat().scrollChat(lines);
         });
         addCenterButton("cancel", this.height - 30, 0, 20, 200, (button) -> {
-            if (oldScreen instanceof ChatHistoryNavigatorScreen oldNavScreen) {
+            if (oldScreen instanceof ChatHistoryNavigatorScreen) {
+                ChatHistoryNavigatorScreen oldNavScreen = (ChatHistoryNavigatorScreen) oldScreen;
                 if (oldNavScreen.keywordField != null) {
                     oldNavScreen.chatUnitListWidget.setKeyword(oldNavScreen.keywordField.getValue());
                 } else {
