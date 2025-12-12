@@ -96,7 +96,7 @@ public abstract class ChatScreenMixin {
         return !shouldHideChatHistory();
     }
 
-    //if MC>=12111
+    //#if MC>=12111
     //$$ // no-op
     //#else
     //$$ @WrapWithCondition(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;renderComponentHoverEffect(Lnet/minecraft/client/gui/Font;Lnet/minecraft/network/chat/Style;II)V"))
@@ -133,5 +133,7 @@ public abstract class ChatScreenMixin {
             cir.cancel();
         }
     }
+    //#endif
+
     //#endif
 }
