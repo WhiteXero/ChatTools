@@ -9,18 +9,49 @@ runs:
       run: python3 .github/workflows/scripts/minify_json_files.py
       shell: bash
 
-    - name: Set up JDK ${{ matrix.java-version }}
+    - name: Set up JDK
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: 21
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        cache-read-only: false
 
     - name: Build with gradle
       shell: bash
       run: |
         chmod +x gradlew
         echo "Building..."
-        ./gradlew build
+        
+        # make several attempts to build in case of transient errors
+        MAX_RETRIES=3
+        RETRY_DELAY=10
+        
+        count=0
+        success=false
+
+        while [ $count -lt $MAX_RETRIES ]; do
+          if ./gradlew build; then
+            success=true
+            break
+          fi
+        
+          count=$((count+1))
+          echo "⚠️ Build failed. Attempt $count of $MAX_RETRIES..."
+        
+          if [ $count -lt $MAX_RETRIES ]; then
+            echo "Waiting $RETRY_DELAY seconds before retrying..."
+            sleep $RETRY_DELAY
+          fi
+        done
+
+        if [ "$success" = false ]; then
+          echo "❌ Build failed after $MAX_RETRIES attempts."
+          exit 1
+        fi
       env:
         BUILD_ID: ${{ github.run_number }}
         BUILD_RELEASE: false
@@ -28,7 +59,7 @@ runs:
     - name: Gather artifacts
       shell: bash
       run: |
-        mkdir gathered-artifacts
+        mkdir -p gathered-artifacts
         cp -r versions/*/build/libs/* gathered-artifacts/
 
     - name: Upload artifacts
