@@ -11,6 +11,7 @@ repositories {
     maven { url = 'https://jitpack.io' }
     maven { url = "https://maven.shedaniel.me/" } // Cloth Config
     maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu
+    maven { url = 'https://maven.parchmentmc.org' } // Parchment
 }
 
 // https://github.com/FabricMC/fabric-loader/issues/783
@@ -22,7 +23,12 @@ configurations {
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
+    mappings loom.layered() {
+        officialMojangMappings()
+        if (project.parchment_version.size() > 0) {
+            parchment("org.parchmentmc.data:parchment-${project.minecraft_version}:${project.parchment_version}@zip")
+        }
+    }
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
