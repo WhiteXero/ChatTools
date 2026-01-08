@@ -4,6 +4,7 @@ import net.apple70cents.chattools.utils.ConfigUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -27,9 +28,7 @@ public class ExclusiveActionbarHandler {
         }
 
         ExclusiveActionbarMessageUnit(Component text, long lifeTimeInMillis) {
-            this.text = text;
-            this.startTime = System.currentTimeMillis();
-            this.lifeTimeInMillis = lifeTimeInMillis;
+            this(text, System.currentTimeMillis(), lifeTimeInMillis);
         }
     }
 
@@ -54,34 +53,39 @@ public class ExclusiveActionbarHandler {
         float size = ((Number) ConfigUtils.get("general.ExclusiveActionbar.Size")).floatValue();
         int xOffset = ((Number) ConfigUtils.get("general.ExclusiveActionbar.XOffset")).intValue();
         int yOffset = ((Number) ConfigUtils.get("general.ExclusiveActionbar.YOffset")).intValue();
+
+        long currentTime = System.currentTimeMillis();
         int index = 0;
         for (ExclusiveActionbarMessageUnit ele : messageUnitList) {
-            int opacity = calculateOpacity(ele.startTime, ele.lifeTimeInMillis);
-            yOffset += calculateOffset(ele.startTime, ele.lifeTimeInMillis);
-            if (opacity > 2) {
-                //#if MC>=12106
-                context.pose().pushMatrix();
-                context.pose().translate(context.guiWidth() / 2.0F, context.guiHeight() - 68.0F - 4.0F);
-                context.pose().scale(size, size);
-                context.drawCenteredString(font, ele.text, xOffset, yOffset + index * 12, opacity << 24 | 0xffffff);
-                context.pose().popMatrix();
-                //#elseif MC>=12000
-                //$$ context.pose().pushPose();
-                //$$ context.pose().translate(context.guiWidth() / 2.0F, context.guiHeight() - 68.0F - 4.0F, 0.0F);
-                //$$ context.pose().scale(size, size, 1);
-                //$$ context.drawCenteredString(font, ele.text, xOffset, yOffset + index * 12, opacity << 24 | 0xffffff);
-                //$$ context.pose().popPose();
-                //#else
-                //$$ pose.pushPose();
-                //$$ pose.translate(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2.0F, Minecraft
-                //$$         .getInstance().getWindow().getGuiScaledHeight() - 68.0F - 4.0F, 0.0F);
-                //$$ pose.scale(size, size, 1);
-                //$$ int textWidth = font.width(ele.text);
-                //$$ font.drawShadow(pose, ele.text, (-textWidth / 2.0F) + xOffset, yOffset + index * 12, opacity << 24 | 0xffffff);
-                //$$ pose.popPose();
-                //#endif
-                index++;
-            }
+            long elapsedTime = currentTime - ele.startTime;
+
+            int opacity = Mth.clamp(calculateOpacity(elapsedTime, ele.lifeTimeInMillis), 0, 255);
+            if (opacity <= 2) continue;
+
+            yOffset += calculateOffset(elapsedTime, ele.lifeTimeInMillis);
+
+            //#if MC>=12106
+            context.pose().pushMatrix();
+            context.pose().translate(context.guiWidth() / 2.0F, context.guiHeight() - 68.0F - 4.0F);
+            context.pose().scale(size, size);
+            context.drawCenteredString(font, ele.text, xOffset, yOffset + index * 12, opacity << 24 | 0xffffff);
+            context.pose().popMatrix();
+            //#elseif MC>=12000
+            //$$ context.pose().pushPose();
+            //$$ context.pose().translate(context.guiWidth() / 2.0F, context.guiHeight() - 68.0F - 4.0F, 0.0F);
+            //$$ context.pose().scale(size, size, 1);
+            //$$ context.drawCenteredString(font, ele.text, xOffset, yOffset + index * 12, opacity << 24 | 0xffffff);
+            //$$ context.pose().popPose();
+            //#else
+            //$$ pose.pushPose();
+            //$$ pose.translate(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2.0F, Minecraft
+            //$$         .getInstance().getWindow().getGuiScaledHeight() - 68.0F - 4.0F, 0.0F);
+            //$$ pose.scale(size, size, 1);
+            //$$ int textWidth = font.width(ele.text);
+            //$$ font.drawShadow(pose, ele.text, (-textWidth / 2.0F) + xOffset, yOffset + index * 12, opacity << 24 | 0xffffff);
+            //$$ pose.popPose();
+            //#endif
+            index++;
         }
     }
 
@@ -90,21 +94,18 @@ public class ExclusiveActionbarHandler {
      *
      * @return opacity between 0 and 255
      */
-    private static int calculateOpacity(long startTime, long lifeTime) {
-        long currentTime = System.currentTimeMillis();
-        long elapsedTime = currentTime - startTime;
-
+    private static int calculateOpacity(long elapsedTime, long lifeTime) {
         if (elapsedTime <= 0 || elapsedTime >= lifeTime) {
             // message outdated
             return 0;
         }
 
         long fadeDuration = 500;
-        if (elapsedTime <= fadeDuration) {
+        if (elapsedTime <= fadeDuration) { // fade in
             return (int) (elapsedTime * 255.0 / fadeDuration);
         } else if (elapsedTime <= lifeTime - fadeDuration) {
             return 255;
-        } else {
+        } else { // fade out
             return (int) ((lifeTime - elapsedTime) * 255.0 / fadeDuration);
         }
     }
@@ -114,18 +115,16 @@ public class ExclusiveActionbarHandler {
      *
      * @return opacity between 0 and 10
      */
-    private static int calculateOffset(long startTime, long lifeTime) {
-        long currentTime = System.currentTimeMillis();
-        long elapsedTime = currentTime - startTime;
-
+    private static int calculateOffset(long elapsedTime, long lifeTime) {
         if (elapsedTime <= 0 || elapsedTime >= lifeTime) {
             return 10;
         }
 
         long fadeDuration = 200;
         if (elapsedTime <= fadeDuration) {
-            double progress = Math.sin(((double) elapsedTime / fadeDuration * Math.PI / 2));
-            return (int) (10 - progress * 10);
+            double percentage = (double) elapsedTime / (double) fadeDuration;
+            double progress = Math.sin((percentage * Math.PI / 2.0));
+            return Mth.clamp((int) (10 * (1.0 - progress)), 0, 10);
         }
         return 0;
     }
