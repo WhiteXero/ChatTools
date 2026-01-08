@@ -31,24 +31,31 @@ public class Formatter {
                 break;
             }
         }
-        String modifiedMsg;
+
+        if ((boolean) ConfigUtils.get("formatter.PreparsePlaceholdersEnabled")){
+            PlaceholderEngine.addNewTempMapping("text", args -> parse(msg));
+        } else {
+            PlaceholderEngine.addNewTempMapping("text", args -> msg);
+        }
+
+        String processed;
         if (matched) {
             LoggerUtils.info("[ChatTools] Chat Formatted.");
-            PlaceholderEngine.addNewTempMapping("text", args -> msg);
-            modifiedMsg = formatter;
+            processed = formatter;
         } else {
-            modifiedMsg = msg;
+            processed = "{text}";
         }
-        if ((boolean) ConfigUtils.get("formatter.PreparsePlaceholdersEnabled")) {
-            modifiedMsg = PlaceholderEngine.apply(modifiedMsg);
-            modifiedMsg = GradientParser.parse(modifiedMsg);
-        }
+        processed = parse(processed);
         PlaceholderEngine.clearTempMappings();
 
-        if (modifiedMsg.length() <= ((Number) ConfigUtils.get("formatter.DisableThreshold")).intValue()) {
-            return modifiedMsg;
+        if (processed.length() <= ((Number) ConfigUtils.get("formatter.DisableThreshold")).intValue()) {
+            return processed;
         } else {
             return msg;
         }
+    }
+
+    public static String parse(String msg) {
+        return GradientParser.parse(PlaceholderEngine.apply(msg));
     }
 }
