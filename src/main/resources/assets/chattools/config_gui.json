@@ -364,6 +364,10 @@
           "key": "formatter.DisableThreshold"
         },
         {
+          "type": "boolean",
+          "key": "formatter.PreparsePlaceholdersEnabled"
+        },
+        {
           "type": "FormatterList",
           "key": "formatter.List"
         },

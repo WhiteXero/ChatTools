@@ -408,6 +408,9 @@ key:
       DisableThreshold:
         .: 自动禁用聊天注入阈值
         '@Tooltip': 如果注入后的聊天长度大于这个值，则自动禁用聊天注入。
+      PreparsePlaceholdersEnabled:
+        .: 预解析占位符
+        '@Tooltip': 如果开启，聊天注入将在应用格式化之前先解析一次占位符。
       List:
         .: '规则 §6(当前会话标识符：%s§6)§r'
         '@Tooltip': |-

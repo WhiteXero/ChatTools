@@ -59,6 +59,7 @@
   "notifier.BanList": [],
   "formatter.Enabled": false,
   "formatter.DisableThreshold": 256,
+  "formatter.PreparsePlaceholdersEnabled": false,
   "formatter.List": [],
   "formatter.DisableOnMatchList": [
     "^(\\+|-)?\\d+(\\.\\d+)?$|^[.#%$/].*|\\ball\\b",

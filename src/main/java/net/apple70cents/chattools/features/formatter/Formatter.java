@@ -39,8 +39,10 @@ public class Formatter {
         } else {
             modifiedMsg = msg;
         }
-        modifiedMsg = PlaceholderEngine.apply(modifiedMsg);
-        modifiedMsg = GradientParser.parse(modifiedMsg);
+        if ((boolean) ConfigUtils.get("formatter.PreparsePlaceholdersEnabled")) {
+            modifiedMsg = PlaceholderEngine.apply(modifiedMsg);
+            modifiedMsg = GradientParser.parse(modifiedMsg);
+        }
         PlaceholderEngine.clearTempMappings();
 
         if (modifiedMsg.length() <= ((Number) ConfigUtils.get("formatter.DisableThreshold")).intValue()) {

@@ -431,6 +431,9 @@ key:
         '@Tooltip': |-
           If the length of the formatted message exceeds this value,
           Formatter will be automatically disabled.
+      PreparsePlaceholdersEnabled:
+        .: Pre-parse Placeholders
+        '@Tooltip': If enabled, placeholders in the message will be parsed before formatting.
       List:
         .: 'Rules §6(Current Session Identifier: %s §6)§r'
         '@Tooltip': |-
