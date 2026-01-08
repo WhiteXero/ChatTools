@@ -6,6 +6,7 @@
   "mixins": [
     "BookViewScreenMixin",
     "ChatComponentMixin",
+    "ChatListenerMixin",
     "ChatScreenMixin",
     "ClientHandshakePacketListenerImplMixin",
     "ClientPacketListenerMixin",

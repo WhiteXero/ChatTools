@@ -8,6 +8,7 @@ import net.apple70cents.chattools.features.notifier.BasicNotifier;
 import net.apple70cents.chattools.features.responder.Responder;
 import net.apple70cents.chattools.utils.ConfigUtils;
 import net.apple70cents.chattools.utils.LoggerUtils;
+import net.apple70cents.chattools.utils.MessageUtils;
 import net.apple70cents.chattools.utils.TextUtils;
 import net.minecraft.client.GuiMessage;
 import net.minecraft.client.gui.components.ChatComponent;
@@ -152,7 +153,7 @@ public abstract class ChatComponentMixin {
         }
 
         TextUtils.MessageUnit messageUnit = new TextUtils.MessageUnit(msgWithoutAdditionalAffixes, message, Instant
-                .now().getEpochSecond(), occurrenceCount);
+                .now().getEpochSecond(), occurrenceCount, !MessageUtils.isProcessingServerMessage());
         TextUtils.putMessageMapWithHashcode(hashcode, messageUnit);
 
         args.set(MESSAGE_IDX, message);

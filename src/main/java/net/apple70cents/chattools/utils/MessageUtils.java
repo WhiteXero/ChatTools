@@ -16,6 +16,21 @@ public class MessageUtils {
     private static long lastSentMessageTimestamp = -1L;
     private static final long JUST_SENT_MESSAGE_AWAIT_TIME_IN_MILLISECONDS = 500L;
 
+    private static boolean processingServerMessage = false;
+
+    public static boolean isProcessingServerMessage() {
+        return processingServerMessage;
+    }
+
+    public static void setProcessingServerMessageState() {
+        MessageUtils.processingServerMessage = true;
+    }
+
+    public static void resetProcessingServerMessageState() {
+        MessageUtils.processingServerMessage = false;
+    }
+
+
     public static boolean hadJustSentMessage() {
         return System.currentTimeMillis() - lastSentMessageTimestamp < JUST_SENT_MESSAGE_AWAIT_TIME_IN_MILLISECONDS;
     }

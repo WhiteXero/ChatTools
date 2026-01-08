@@ -48,6 +48,8 @@ key:
         copyTimestamp: 复制时间戳文本
         jumpTo: 跳转
         cancel: 取消
+        additionalInfo:
+          notViaChatPipeline: '§7§o该消息未经过标准的聊天管道（可能是本地模组输出的信息等）'
       ChatHistoryNavigator:
         title: 聊天搜索
         placeholder: 输入以搜索…

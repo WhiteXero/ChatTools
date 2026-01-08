@@ -48,6 +48,8 @@ key:
         copyTimestamp: Copy Timestamp
         jumpTo: Jump To
         cancel: Cancel
+        additionalInfo:
+          notViaChatPipeline: '§7§oThe message did not undergone the standard chat pipeline (e.g., messages from local mods).'
       ChatHistoryNavigator:
         title: Chat History Navigator
         placeholder: Search...

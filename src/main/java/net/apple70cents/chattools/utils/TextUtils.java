@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 //#if MC>=12106
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.RegistryAccess;
+
 import java.net.URI;
 //#elseif MC>=12105
 //$$ import net.minecraft.data.registries.VanillaRegistries;
@@ -27,21 +28,19 @@ import java.net.URI;
  * @author 70CentsApple
  */
 public class TextUtils {
-    public static final Style WEBSITE_URL_STYLE = Style.EMPTY.withUnderlined(true)
-                                                             .withClickEvent(
-                                                                     //#if MC>=12105
-                                                                     new ClickEvent.OpenUrl(URI.create("https://70centsapple.top/blogs/#/chat-tools-faq"))
-                                                                     //#else
-                                                                     //$$ new ClickEvent(ClickEvent.Action.OPEN_URL, "https://70centsapple.top/blogs/#/chat-tools-faq")
-                                                                     //#endif
-                                                                             )
-                                                             .withHoverEvent(
-                                                                     //#if MC>=12105
-                                                                     new HoverEvent.ShowText(
-                                                                     //#else
-                                                                     //$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                                                     //#endif
-                                                                         ConfigScreenUtils.getTooltip("general.FAQ", "FAQ", null)));
+    public static final Style WEBSITE_URL_STYLE = Style.EMPTY.withUnderlined(true).withClickEvent(
+            //#if MC>=12105
+            new ClickEvent.OpenUrl(URI.create("https://70centsapple.top/blogs/#/chat-tools-faq"))
+            //#else
+            //$$ new ClickEvent(ClickEvent.Action.OPEN_URL, "https://70centsapple.top/blogs/#/chat-tools-faq")
+            //#endif
+    ).withHoverEvent(
+            //#if MC>=12105
+            new HoverEvent.ShowText(
+            //#else
+            //$$ new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+            //#endif
+                    ConfigScreenUtils.getTooltip("general.FAQ", "FAQ", null)));
     public static final String PREFIX = "key.chattools.";
     public static final Component SPACER = literal("").copy().setStyle(Style.EMPTY);
 
@@ -50,12 +49,14 @@ public class TextUtils {
         public Component visualMessage;
         public long unixTimestamp;
         public int occurrenceCount;
+        public boolean notViaChatPipeline = false;
 
-        public MessageUnit(Component message, Component visualMessage, long unixTimestamp, int occurrenceCount) {
+        public MessageUnit(Component message, Component visualMessage, long unixTimestamp, int occurrenceCount, boolean notViaChatPipeline) {
             this.message = message;
             this.visualMessage = visualMessage;
             this.unixTimestamp = unixTimestamp;
             this.occurrenceCount = occurrenceCount;
+            this.notViaChatPipeline = notViaChatPipeline;
         }
     }
 
@@ -205,10 +206,11 @@ public class TextUtils {
         return result;
     }
 
-    public static JsonElement component2JsonElement(MutableComponent text){
+    public static JsonElement component2JsonElement(MutableComponent text) {
         try {
             //#if MC>=12106
-            JsonElement jsonElement = ComponentSerialization.CODEC.encode(text, RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), null).result().orElse(null);
+            JsonElement jsonElement = ComponentSerialization.CODEC.encode(text,
+                    RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), null).result().orElse(null);
             //#elseif MC>=12005
             //$$ JsonElement jsonElement = new Component.SerializerAdapter(VanillaRegistries.createLookup()).serialize(text, null, null);
             //#else
@@ -224,9 +226,8 @@ public class TextUtils {
     public static MutableComponent jsonElement2Component(JsonElement jsonElement) {
         try {
             //#if MC>=12106
-            return ComponentSerialization.CODEC
-                    .parse(RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE), jsonElement).result()
-                    .orElse(null).copy();
+            return ComponentSerialization.CODEC.parse(RegistryAccess.EMPTY.createSerializationContext(JsonOps.INSTANCE),
+                    jsonElement).result().orElse(null).copy();
             //#elseif MC>=12005
             //$$ return new Component.SerializerAdapter(VanillaRegistries.createLookup()).deserialize(jsonElement, null, null);
             //#else

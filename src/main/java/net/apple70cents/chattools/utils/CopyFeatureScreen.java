@@ -32,6 +32,7 @@ public class CopyFeatureScreen extends Screen {
     private Map<String, Button> buttons;
     private final Map<String, ButtonData> buttonDatas;
     private MultiLineLabel previewTextSplit;
+    private MultiLineLabel additionalInfoSplit;
 
     protected static class ButtonData {
         public int row;
@@ -58,6 +59,13 @@ public class CopyFeatureScreen extends Screen {
     protected void init() {
         super.init();
         this.messageSplit = MultiLineLabel.create(this.font, unit.message, this.width - 50);
+        List<Component> additionalInfo = new ArrayList<>();
+        if (unit.notViaChatPipeline) {
+            additionalInfo.add(TextUtils.trans("texts.copy.additionalInfo.notViaChatPipeline"));
+        }
+
+        this.additionalInfoSplit = MultiLineLabel.create(this.font, TextUtils.textArray2text(additionalInfo),
+                this.width - 50);
 
         JsonElement jsonElement = TextUtils.component2JsonElement(unit.message.copy());
         String textComponent = jsonElement != null ? jsonElement.toString() : "ERROR";
@@ -169,12 +177,21 @@ public class CopyFeatureScreen extends Screen {
         }
         this.previewTextSplit = MultiLineLabel.create(this.font, previewText, this.width - 50);
         //#if MC>=12111
-        this.previewTextSplit.visitLines(net.minecraft.client.gui.TextAlignment.CENTER, this.width / 2, this.height / 2 + 50, 9,
-                context.textRenderer());
+        this.previewTextSplit.visitLines(net.minecraft.client.gui.TextAlignment.CENTER, this.width / 2,
+                this.height / 2 + 50, 9, context.textRenderer());
         //#elseif MC>=12109
         //$$ this.previewTextSplit.render(context, MultiLineLabel.Align.CENTER, this.width / 2, this.height / 2 + 50, 9, true, 0xffffffff);
         //#else
         //$$ this.previewTextSplit.renderCentered(context, this.width / 2, this.height / 2 + 50);
+        //#endif
+
+        //#if MC>=12111
+        this.additionalInfoSplit.visitLines(net.minecraft.client.gui.TextAlignment.CENTER, this.width / 2,
+                this.height - 75, 9, context.textRenderer());
+        //#elseif MC>=12109
+        //$$ this.additionalInfoSplit.render(context, MultiLineLabel.Align.CENTER, this.width / 2, this.height - 75, 9, true, 0xffffffff);
+        //#else
+        //$$ this.additionalInfoSplit.renderCentered(context, this.width / 2, this.height - 75);
         //#endif
     }
 
