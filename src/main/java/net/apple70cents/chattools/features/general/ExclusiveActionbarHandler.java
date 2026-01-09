@@ -40,7 +40,7 @@ public class ExclusiveActionbarHandler {
 
     public static void tick() {
         long currentTime = System.currentTimeMillis();
-        messageUnitList.removeIf(unit -> (currentTime - unit.startTime) > unit.lifeTimeInMillis);
+        messageUnitList.removeIf(unit -> (currentTime - unit.startTime) >= unit.lifeTimeInMillis);
     }
 
     //#if MC>=12000
@@ -50,83 +50,73 @@ public class ExclusiveActionbarHandler {
         //#endif
         Font font = Minecraft.getInstance().font;
 
-        float size = ((Number) ConfigUtils.get("general.ExclusiveActionbar.Size")).floatValue();
-        int xOffset = ((Number) ConfigUtils.get("general.ExclusiveActionbar.XOffset")).intValue();
-        int yOffset = ((Number) ConfigUtils.get("general.ExclusiveActionbar.YOffset")).intValue();
+        float baseSize = ((Number) ConfigUtils.get("general.ExclusiveActionbar.Size")).floatValue();
+        int baseXOffset = ((Number) ConfigUtils.get("general.ExclusiveActionbar.XOffset")).intValue();
+        int baseYOffset = ((Number) ConfigUtils.get("general.ExclusiveActionbar.YOffset")).intValue();
 
         long currentTime = System.currentTimeMillis();
         int index = 0;
         for (ExclusiveActionbarMessageUnit ele : messageUnitList) {
             long elapsedTime = currentTime - ele.startTime;
+            float progress = (float) elapsedTime / ele.lifeTimeInMillis;
+            if (progress < 0 || progress > 1) continue;
 
-            int opacity = Mth.clamp(calculateOpacity(elapsedTime, ele.lifeTimeInMillis), 0, 255);
+            int opacity = Mth.clamp(calculateSmoothOpacity(elapsedTime, ele.lifeTimeInMillis), 0, 255);
             if (opacity <= 2) continue;
 
-            yOffset += calculateOffset(elapsedTime, ele.lifeTimeInMillis);
+            float entryProgress = Math.min(1.0F, (float) elapsedTime / 400.0F);
+            float bounceOffset = easeOutBack(entryProgress) * 12.0F;
+
+            final float finalX = baseXOffset;
+            final float finalY = baseYOffset + index * 12.0F + 12.0F - bounceOffset;
+            final float scale = baseSize * (0.7F + 0.3F * easeOutQuart(entryProgress));
+            final int color = opacity << 24 | 0xFFFFFF;
 
             //#if MC>=12106
             context.pose().pushMatrix();
             context.pose().translate(context.guiWidth() / 2.0F, context.guiHeight() - 68.0F - 4.0F);
-            context.pose().scale(size, size);
-            context.drawCenteredString(font, ele.text, xOffset, yOffset + index * 12, opacity << 24 | 0xffffff);
+            // we translate the whole stack instead of drawing at specific position, so we can use floats for better precision.
+            context.pose().translate(finalX, finalY);
+            context.pose().scale(scale, scale);
+            context.drawCenteredString(font, ele.text, 0, 0, color);
             context.pose().popMatrix();
             //#elseif MC>=12000
             //$$ context.pose().pushPose();
             //$$ context.pose().translate(context.guiWidth() / 2.0F, context.guiHeight() - 68.0F - 4.0F, 0.0F);
-            //$$ context.pose().scale(size, size, 1);
-            //$$ context.drawCenteredString(font, ele.text, xOffset, yOffset + index * 12, opacity << 24 | 0xffffff);
+            //$$ context.pose().translate(finalX, finalY, 0.0F);
+            //$$ context.pose().scale(scale, scale, 1);
+            //$$ context.drawCenteredString(font, ele.text, 0, 0, color);
             //$$ context.pose().popPose();
             //#else
             //$$ pose.pushPose();
             //$$ pose.translate(Minecraft.getInstance().getWindow().getGuiScaledWidth() / 2.0F, Minecraft
             //$$         .getInstance().getWindow().getGuiScaledHeight() - 68.0F - 4.0F, 0.0F);
-            //$$ pose.scale(size, size, 1);
+            //$$ pose.translate(finalX, finalY, 0.0F);
+            //$$ pose.scale(scale, scale, 1);
             //$$ int textWidth = font.width(ele.text);
-            //$$ font.drawShadow(pose, ele.text, (-textWidth / 2.0F) + xOffset, yOffset + index * 12, opacity << 24 | 0xffffff);
+            //$$ font.drawShadow(pose, ele.text, (-textWidth / 2.0F), 0, color);
             //$$ pose.popPose();
             //#endif
             index++;
         }
     }
 
-    /**
-     * Calculate opacity for fade in & fade outs.
-     *
-     * @return opacity between 0 and 255
-     */
-    private static int calculateOpacity(long elapsedTime, long lifeTime) {
-        if (elapsedTime <= 0 || elapsedTime >= lifeTime) {
-            // message outdated
-            return 0;
+    private static int calculateSmoothOpacity(long elapsedTime, long lifeTime) {
+        if (elapsedTime < 300) { // fade in
+            return (int) (easeOutQuart(elapsedTime / 300.0F) * 255);
+        } else if (elapsedTime > lifeTime - 500) { // fade out
+            return (int) ((1.0F - (elapsedTime - (lifeTime - 500)) / 500.0F) * 255);
         }
-
-        long fadeDuration = 500;
-        if (elapsedTime <= fadeDuration) { // fade in
-            return (int) (elapsedTime * 255.0 / fadeDuration);
-        } else if (elapsedTime <= lifeTime - fadeDuration) {
-            return 255;
-        } else { // fade out
-            return (int) ((lifeTime - elapsedTime) * 255.0 / fadeDuration);
-        }
+        return 255;
     }
 
-    /**
-     * Calculate offset for fade in.
-     *
-     * @return opacity between 0 and 10
-     */
-    private static int calculateOffset(long elapsedTime, long lifeTime) {
-        if (elapsedTime <= 0 || elapsedTime >= lifeTime) {
-            return 10;
-        }
-
-        long fadeDuration = 200;
-        if (elapsedTime <= fadeDuration) {
-            double percentage = (double) elapsedTime / (double) fadeDuration;
-            double progress = Math.sin((percentage * Math.PI / 2.0));
-            return Mth.clamp((int) (10 * (1.0 - progress)), 0, 10);
-        }
-        return 0;
+    private static float easeOutBack(float x) {
+        float c1 = 2.7F;
+        float c3 = c1 + 1;
+        return (float) (1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2));
     }
 
+    private static float easeOutQuart(float x) {
+        return (float) (1 - Math.pow(1 - x, 4));
+    }
 }
