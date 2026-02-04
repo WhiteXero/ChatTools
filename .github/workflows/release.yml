@@ -199,7 +199,8 @@ jobs:
           project_id: "1453568"
           game_endpoint: "minecraft"
           file_path: ${{ env.file_path }}
-          game_versions: ${{ matrix.target_game_versions_cf_ids }}
+          # 7499: Modloader - Fabric, 9638: Environment - Client
+          game_versions: "${{ matrix.target_game_versions_cf_ids }},7499,9638"
           release_type: "release"
           display_name: "v${{ env.tag_name }}+${{ matrix.formatted_version_name }}"
           changelog: ${{ env.changelog }}
