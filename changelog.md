@@ -1,11 +1,11 @@
 ## Chinese (Simplified)
-### v2.3.15
-- 新增 非常非常多的可用于自动响应或者聊天注入的函数（占位符）和好用的解析引擎
-- 更改 判断接收到的消息是否为自己发出的方式
-- 更新 1.21.11
+### v2.3.16
+- 新增 未经过标准聊天通道的消息在复制页会有额外信息提示
+- 新增 预解析占位符功能
+- 优化 独占动作栏动画效果
 
 ## English
-### v2.3.15
-- Added: A lot more functional placeholders for Responder and Formatter, and a powerful parsing engine.
-- Changed: The way to determine whether the received message is sent by the user themselves.
-- Update: Bumped to 1.21.11.
+### v2.3.16
+- Added: Extra information for messages not sent via standard chat pipelines on the copy screen.
+- Added: Preparsing placeholder feature.
+- Optimized: Exclusive actionbar animation.
