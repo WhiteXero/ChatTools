@@ -23,7 +23,7 @@
     "es_es translation: pilahito"
   ],
   "contact": {
-    "homepage": "https://modrinth.com/mod/chat-tools",
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/chat-tools",
     "sources": "https://github.com/70CentsApple/ChatTools",
     "issues": "https://github.com/70CentsApple/ChatTools/issues",
     "bilibili": "https://space.bilibili.com/442361724"
@@ -56,6 +56,7 @@
   "custom": {
     "modmenu": {
       "links": {
+        "modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/chat-tools",
         "modmenu.modrinth": "https://modrinth.com/mod/chat-tools",
         "modmenu.github_releases": "https://github.com/70CentsApple/ChatTools/releases"
       }
