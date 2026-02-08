@@ -1,0 +1,536 @@
+modmenu.nameTranslation.chattools: "Herramientas de Chat"
+modmenu.descriptionTranslation.chattools: "Un conjunto de herramientas que proporciona excelentes funciones relacionadas con el chat."
+key:
+  chattools:
+    texts:
+      config:
+        get: "§6[Herramientas de Chat] Se obtuvo el valor de \"%s§6\" como %s"
+        set:
+          .: "§a[Herramientas de Chat] Se estableció el valor de \"%s§a\" a %s"
+          warning: "§6[Herramientas de Chat] Advertencia: La clave \"%s§6\" no ha sido definida por Herramientas de Chat."
+          unsupported: "§c[Herramientas de Chat] Error: La modificación de la clave \"%s§c\" no es compatible."
+          saved: "§a[Herramientas de Chat] Configuración guardada."
+        toggle:
+          error: "§c[Herramientas de Chat] Error: La clave \"%s§c\" no ha sido definida por Herramientas de Chat."
+      RestoreMessagesSplitLine: "§7==== Mensajes Restaurados ====§r"
+      filterPlaceholder:
+        .: "§7==== [Filtrado] ====§r"
+        '@Tooltip': "Este mensaje fue filtrado por el Filtro de Herramientas de Chat."
+      welcomeMessage: "¿Nuevo en Herramientas de Chat? ¡Consulta las preguntas frecuentes aquí!"
+      toast.title: "Desde Minecraft:"
+      actionbar.title: "§a§l¡Mensajes recibidos!"
+      repeat:
+        failure:
+          empty: "§6§l¡No hay mensajes!"
+      download.process: "[Herramientas de Chat] Descargando %s: %s%% - (%sKB/%sKB)"
+      download.success: "§6[Herramientas de Chat] ¡Todos los archivos de complementos se descargaron correctamente!"
+      toast.failure: "§6Error al mostrar notificación: Los archivos no están listos o estás en una plataforma no compatible.§r"
+      respond.failure: "§6[Herramientas de Chat] Error del respondedor: %s"
+      translator:
+        requireApi: "[Por favor, configura primero la API de traducción.]"
+        await: "[esperando...]"
+        error: "[Error ocurrió: %s]"
+      copy:
+        launch: "Haz clic para abrir el Menú de Copia."
+        title: "Menú de Copia"
+        copyObjectData: "Copiar Datos del Objeto"
+        copyRaw: "Copiar Sin Formato"
+        copyWithColorCodeEscaped: "Copiar Con Códigos de Color Escapados"
+        copyWithNoColorCode: "Copiar Sin Códigos de Color"
+        copyUnixTimestamp: "Copiar Marca de Tiempo Unix"
+        copyTimestamp: "Copiar Marca de Tiempo"
+        cancel: "Cancelar"
+      ChatHistoryNavigator:
+        title: "Navegador del Historial de Chat"
+        placeholder: "Buscar..."
+        modes:
+          CASE_INSENSITIVE:
+            .: "No Distingue Mayúsculas y Minúsculas"
+            '@Tooltip': "p. ej. 'A' coincidirá con 'A' o 'a'"
+          CASE_SENSITIVE:
+            .: "Distingue Mayúsculas y Minúsculas"
+            '@Tooltip': "p. ej. 'A' solo coincidirá con 'A'"
+          REGEX:
+            .: "Expresión Regular"
+            '@Tooltip': |-
+              Usando RegEx (Expresiones Regulares) para buscar coincidencias.
+              p. ej. '\d' coincidirá con cualquier carácter dígito (0-9)
+      PreviewClickEvents:
+        overall: "§6Eventos:"
+        insertion: "§c- §rInsertar con Shift + Clic: %s"
+        clickEvent:
+          .: "§c- §rEvento de Clic:"
+          openUrl: "§c - §rAbrir URL: %s"
+          openFile: "§c - §rAbrir Archivo: %s"
+          runCommand: "§c - §rEjecutar Comando: %s"
+          suggestCommand: "§c - §rSugerir Comando: %s"
+          changePage: "§c - §rCambiar Página: %s"
+          copyToClipboard: "§c - §rCopiar al Portapapeles: %s"
+      'on': "Activar Herramientas de Chat"
+      'off': "Desactivar Herramientas de Chat"
+      requireReload: "¡Reinicia Minecraft para aplicar los cambios!"
+      defaultValue: "Predeterminado: %s"
+      variableType: "Tipo de Variable: %s"
+    gui:
+      title: "Configuración de Herramientas de Chat"
+    category:
+      general: "General"
+      notifier: "Notificador"
+      formatter: "Formateador"
+      chatkeybindings: "Atajos de Teclado del Chat"
+      bubble: "Burbuja"
+      responder: "Respondedor"
+      filter: "Filtro de Chat"
+      customJoinMessage: "Mensaje de Unión Personalizado"
+      translator: "Traductor"
+    general:
+      FAQ:
+        .: "[Preguntas Frecuentes]"
+        '@Tooltip': "Haz clic para visitar las Preguntas Frecuentes."
+      ChatTools:
+        Enabled:
+          .: "Activar Herramientas de Chat"
+          '@Tooltip': "Activa/desactiva todo el mod."
+      Timestamp:
+        .: "Marca de Tiempo"
+        '@Tooltip': "Inserta una marca de tiempo antes de los mensajes."
+        Enabled:
+          .: "Activar Marca de Tiempo"
+          '@Tooltip': "Activa/desactiva si se debe insertar una marca de tiempo."
+        Pattern:
+          .: "Patrón"
+          '@Tooltip': |-
+            El patrón para las marcas de tiempo.
+            & -> Prefijo de Código de Color
+            \& -> &
+            {hour} -> Hora
+            {minute} -> Minuto
+            {second} -> Segundo
+        CopyToChatBar:
+          Enabled:
+            .: "Activar Menú de Copia"
+            '@Tooltip': "Si está activado, puedes abrir un menú de copia haciendo clic en la marca de tiempo de un mensaje."
+      RestoreMessages:
+        .: "Restaurar Mensajes"
+        '@Tooltip': "Restaura los mensajes de la sesión anterior."
+        Enabled:
+          .: "Activar Restaurar Mensajes"
+          '@Tooltip': "Activa/desactiva si se deben restaurar los mensajes."
+        SplitLineEnabled:
+          .: "Activar Línea Divisoria"
+          '@Tooltip': "Si está activado, se añadirá una línea divisoria al chat al cambiar de sesión."
+      ExclusiveActionbar:
+        .: "Barra de Acción Exclusiva"
+        '@Tooltip': "Para renderizar los textos informativos de Herramientas de Chat exclusivamente."
+        Enabled:
+          .: "Activar Barra de Acción Exclusiva"
+          '@Tooltip': "Activa/desactiva si Herramientas de Chat debe renderizar sus textos informativos exclusivamente."
+        XOffset:
+          .: "Desplazamiento X"
+          '@Tooltip': "Desplaza la barra de acción exclusiva por un valor X particular."
+        YOffset:
+          .: "Desplazamiento Y"
+          '@Tooltip': "Desplaza la barra de acción exclusiva por un valor Y particular."
+        Size:
+          .: "Tamaño"
+          '@Tooltip': "El tamaño del texto."
+      NickHider:
+        .: "Ocultador de Nombres §6(Experimental)"
+        '@Tooltip': |-
+          Reemplaza tu nombre, pero solo en tu lado del cliente.
+          
+          §6Experimental: Ten en cuenta que si el mensaje no puede
+          procesarse correctamente, se mostrará el texto original.
+        Enabled:
+          .: "Activar Ocultador de Nombres"
+          '@Tooltip': "Activa/desactiva si se debe reemplazar tu nombre."
+        Nickname:
+          .: "Nuevo Nombre"
+          '@Tooltip': |-
+            Tu nuevo nombre:
+            & -> Prefijo de Código de Color
+            \& -> &
+        CacheSize:
+          .: "Tamaño de la Caché"
+          '@Tooltip': "El tamaño máximo para la caché de los resultados."
+      ChatCompactor:
+        .: "Compresor de Chat"
+        '@Tooltip': "Comprime el chat para que sea más legible."
+        Enabled:
+          .: "Activar Compresor de Chat"
+          '@Tooltip': "Activa/desactiva si debemos intentar comprimir tu chat."
+        UseStrict:
+          .: "Usar Modo Estricto"
+          '@Tooltip': |-
+            Activa/desactiva si dos chats se comprimen solo cuando
+            sus datos de objeto son estrictamente los mismos.
+        MaxOccurrence:
+          .: "Máximo de Ocurrencias"
+          '@Tooltip': |-
+            Cada vez que se comprime un chat, su contador aumentará en 1.
+            Esto controla el número máximo del contador.
+      ChatHistoryNavigator:
+        Enabled:
+          .: "Activar Navegador del Historial de Chat"
+          '@Tooltip': "¡Usa Ctrl + F para comenzar a navegar en el chat!"
+      PreviewClickEvents:
+        Enabled:
+          .: "Activar Vista Previa de Eventos de Clic"
+          '@Tooltip': "Previsualiza los eventos del texto sobre el que estás pasando el ratón."
+      MaxHistoryLength:
+        .: "Longitud Máxima del Historial"
+        '@Tooltip': |-
+          Cambia la longitud máxima de tu historial de chat.
+          (Predeterminado de Minecraft: 100)
+      IncreaseChatFieldMaxLength:
+        .: "Aumentar la Longitud Máxima del Campo de Chat"
+        '@Tooltip': |-
+          Cambia la longitud máxima del campo de chat.
+          (Predeterminado de Minecraft: 256)
+          
+          Ten en cuenta que si el mensaje es demasiado largo, puede provocar resultados inesperados.
+          Úsalo bajo tu propio riesgo.
+      HideChatHistoryInF1Mode:
+        .: "Ocultar Historial de Chat en Modo F1"
+        '@Tooltip': |-
+          Corrige MC-130244.
+          §6(Requiere Minecraft ≥ 1.20.5)§r
+      OverrideChatColor:
+        .: "Sobrescribir Color del Chat §6(Experimental)"
+        '@Tooltip': |-
+          Cambia los colores de los mensajes del chat a blanco.
+          
+          §6Experimental: Ten en cuenta que si el mensaje no puede
+          procesarse correctamente, se mostrará el texto original.
+          
+          ¡Una gran cantidad de mensajes puede ser demasiado costosa
+          de procesar, lo que resultará en un gran lag!
+        Enabled:
+          .: "Activar Sobrescritura de Color del Chat"
+          '@Tooltip': "Activa/desactiva si debemos sobrescribir los colores de tu chat."
+    translator:
+      .: "Traductor"
+      Enabled:
+        .: "Activar Traductor"
+        '@Tooltip': |-
+          ¡Usa Shift + Tab para traducir un texto en el chat!
+          Activa/desactiva si el traductor está activado.
+      Mode:
+        .: "Modo"
+        '@Tooltip': |-
+          §6BUILTIN§r: Usar API personalizada para traducción
+          
+          §6BAIDU§r: Usar API de Traductor Baidu para traducción
+      Builtin:
+        .: "Traducción Personalizada"
+        '@Tooltip': |-
+          Usar el enlace de API proporcionado para solicitar traducciones.
+          Requiere configuración manual de la API de traducción.
+        API:
+          .: "API de Traducción"
+          '@Tooltip': |-
+            Introduce una URL aquí y reemplaza el texto a traducir con {text}.
+            Si no hay {text}, el texto a traducir se añadirá al final.
+        PostInstead:
+          .: "Enviar solicitud como POST"
+          '@Tooltip': |-
+            Si está activado, la solicitud se enviará como POST, de lo contrario se usará GET.
+            Ten en cuenta que en la versión actual, incluso si la solicitud se envía como POST,
+            los parámetros de la solicitud todavía se adjuntan a la cadena de la URL, lo cual es un poco extraño.
+      Baidu:
+        .: "Traductor Baidu"
+        '@Tooltip': |-
+          Usar API de Traductor Baidu para traducción.
+          Requiere registro previo en la Plataforma Abierta de Traductor Baidu.
+        Appid:
+          .: "ID de la aplicación"
+          '@Tooltip': "Tu ID de aplicación"
+        Appkey:
+          .: "Clave de la aplicación"
+          '@Tooltip': "Tu clave de aplicación"
+        from:
+          .: "Idioma de origen"
+          '@Tooltip': |-
+            Idioma de origen; se recomienda 'auto' para detección automática.
+            Consulta la lista de idiomas de Traductor Baidu.
+        to:
+          .: "Idioma de destino"
+          '@Tooltip': |-
+            Idioma de destino (ej: 'es' para español).
+            Consulta la lista de idiomas de Traductor Baidu.
+    notifier:
+      Toast:
+        .: "Notificación del Sistema"
+        '@Tooltip': |-
+          Envía una notificación emergente cuando Minecraft se ejecuta en segundo plano.
+          Solo cuentan los mensajes coincidentes.
+        Enabled:
+          .: "Activar Notificación"
+          '@Tooltip': "Activa/desactiva si se deben enviar notificaciones emergentes."
+        Mode:
+          .: "Modo"
+          '@Tooltip': |-
+            §6ADDON§r: Notificación activada por complementos.
+                Se requerirán archivos adicionales. Descárgalos manualmente con §o/chattools download§r.
+            
+            §6POWERSHELL§r: Notificación mediante comandos de PowerShell.
+            
+            §6AWT§r: Notificación usando Java AWT (¡Normalmente no funciona. No recomendado!)
+            
+            §6TWO_SLICES§r: Notificación usando two-slices. (Probablemente funciona en Linux y Mac OS X)
+      Sound:
+        .: "Sonido"
+        '@Tooltip': |-
+          Reproduce un efecto de sonido.
+          El efecto de sonido se clasificará en la sección "Jugadores".
+          Solo cuentan los mensajes coincidentes.
+        Enabled:
+          .: "Activar Sonido"
+          '@Tooltip': "Activa/desactiva si se debe reproducir el efecto de sonido."
+        Type:
+          .: "Tipo"
+          '@Tooltip': "El tipo de efecto de sonido que se va a reproducir."
+        Volume:
+          .: "Volumen"
+          '@Tooltip': "Cambia el volumen del sonido."
+        Pitch:
+          .: "Tono"
+          '@Tooltip': "Cambia el tono del sonido."
+        PlaySoundFromCameraPositionEnabled:
+          .: "Reproducir Sonido Desde la Posición de la Cámara"
+          '@Tooltip': |-
+            Si está desactivado, el efecto de sonido reproducido se ubicará en la posición del jugador,
+            es decir, si la cámara no está en la posición del jugador, el volumen se atenuará según la distancia.
+            
+            Si está activado, el efecto de sonido reproducido se ubicará en la posición de la cámara.
+      Actionbar:
+        .: "Barra de Acción"
+        '@Tooltip': |-
+          Muestra un mensaje en la barra de acción.
+          Solo cuentan los mensajes coincidentes.
+        Enabled:
+          .: "Activar Barra de Acción"
+          '@Tooltip': "Activa/desactiva las notificaciones en la barra de acción."
+      Highlight:
+        .: "Resaltar"
+        '@Tooltip': |-
+          Inserta prefijos delante de los mensajes.
+          Solo cuentan los mensajes coincidentes.
+        Enabled:
+          .: "Activar Resaltado"
+          '@Tooltip': "Activa/desactiva si debemos insertar prefijos delante de los mensajes."
+        Prefix:
+          .: "Prefijo"
+          '@Tooltip': "El prefijo que se va a insertar."
+        OverwriteEnabled:
+          .: "Activar Sobrescritura"
+          '@Tooltip': |-
+            Activa/desactiva si se debe sobrescribir el mensaje.
+            Los atributos de propiedad del texto se borrarán y sobrescribirán.
+        InsertBeforeTimestamps:
+          .: "Insertar Antes de las Marcas de Tiempo"
+          '@Tooltip': "Activa/desactiva si el prefijo debe insertarse antes o después de la marca de tiempo."
+      IgnoreMyMessageEnabled:
+        .: "Ignorar Mis Propios Mensajes"
+        '@Tooltip': "Activa/desactiva si mis propios mensajes deben excluirse de la coincidencia."
+      MatchMyNameEnabled:
+        .: "Coincidir Con Mi Nombre"
+        '@Tooltip': |-
+          Activa/desactiva si se debe coincidir con mi nombre.
+          También puedes hacerlo añadiendo tu nombre a continuación en la Lista de Permisos.
+      AllowList:
+        .: "Lista de Permisos"
+        '@Tooltip': |-
+          Los patrones de esta lista se utilizarán para la coincidencia.
+          Se recomienda RegEx.
+      BanList:
+        .: "Lista de Bloqueo"
+        '@Tooltip': |-
+          Los patrones de esta lista se excluirán de la coincidencia.
+          Se recomienda RegEx.
+    formatter:
+      Enabled:
+        .: "Activar Formateador"
+        '@Tooltip': |-
+          El formateador te permite dar formato a tus mensajes según tus reglas.
+          Activa/desactiva si el formateador debe funcionar.
+      List:
+        .: "Reglas §6(Identificador de Sesión Actual: %s §6)§r"
+        '@Tooltip': |-
+          Define las reglas para el formateador.
+          El contenido superior tiene mayor prioridad.
+        '@New': "Nueva Regla"
+        '@Display': "§e[ %s§e ]§r %s"
+        Address:
+          .: "Identificador de Sesión"
+          '@Tooltip': |-
+            El identificador de sesión para esta regla.
+            Se recomienda RegEx.
+        Formatter:
+          .: "Formateador"
+          '@Tooltip': |-
+            El patrón para el formateo.
+            {text} -> Texto Original
+            {pos} -> (X,Y,Z)
+            <gradient> -> Degradados, consulta las preguntas frecuentes.
+      DisableOnMatchList:
+        .: "Lista de Desactivación por Coincidencia"
+        '@Tooltip': |-
+          Si alguno de los patrones de esta lista coincide con tu texto,
+          desactivaremos automáticamente el formateador para ese texto.
+          Se recomienda RegEx.
+    chatkeybindings:
+      RepeatKey:
+        .: "Tecla de Repetición"
+        '@Tooltip': "Al activar esta tecla, se repetirá tu último mensaje."
+      RepeatKeyModifier:
+        .: "Modificador de la Tecla de Repetición"
+        '@Tooltip': "También necesitarás activar esta tecla modificadora para poder repetir."
+      Macro:
+        Enabled:
+          .: "Activar Atajos de Teclado de Comandos"
+          '@Tooltip': "Activa/desactiva si las macros siguientes deben funcionar."
+        List:
+          .: "Atajos de Teclado de Comandos"
+          '@Tooltip': "Define atajos de teclado para diferentes comandos."
+          '@New': "Nueva Regla"
+          '@Display': "§e[ %s§e ]§r %s"
+          Key:
+            .: "Tecla"
+            '@Tooltip': "La tecla para activar esta macro."
+          Modifier:
+            .: "Modificador"
+            '@Tooltip': "También necesitarás activar esta tecla modificadora para poder activar la macro."
+          Mode:
+            .: "Modo"
+            '@Tooltip': |-
+              Tomemos como ejemplo la tecla 'D' sin modificador:
+              §6LAZY§r: F3+D -> No se activa
+                Ctrl+D -> No se activa
+              
+              §6GREEDY§r: F3+D -> Se activa
+                Ctrl+D -> Se activa
+          Command:
+            .: "Comando"
+            '@Tooltip': "El comando se enviará cuando se active esta macro."
+    bubble:
+      Enabled:
+        .: "Activar Burbujas"
+        '@Tooltip': "Activa/desactiva si se debe renderizar una burbuja sobre la cabeza del hablante."
+      Lifetime:
+        .: "Duración"
+        '@Tooltip': "Duración (en segundos) de cada burbuja."
+      YOffset:
+        .: "Desplazamiento Y"
+        '@Tooltip': "Desplazamiento Y de la burbuja."
+      MaxLineWidth:
+        .: "Ancho Máximo de Línea"
+        '@Tooltip': |-
+          Ancho máximo de una línea.
+          ¿2px como unidad (quizás)?
+      List:
+        .: "Reglas §6(Identificador de Sesión Actual: %s §6)§r"
+        '@Tooltip': |-
+          Define las reglas para las burbujas.
+          El contenido superior tiene mayor prioridad.
+        '@New': "Nueva Regla"
+        '@Display': "§e[ %s§e ] [ Fallback: %s§e ]§r %s"
+        Address:
+          .: "Identificador de Sesión"
+          '@Tooltip': |-
+            El identificador de sesión para esta regla.
+            Se recomienda RegEx.
+        Pattern:
+          .: "Patrón"
+          '@Tooltip': |-
+            Captura el nombre del remitente y el chat separado de los mensajes.
+            Se recomienda RegEx.
+            Debe incluir dos grupos RegEx:
+              §6<name>§r: El Nombre
+              §6<message>§r: El Contenido del Mensaje Separado
+        Fallback:
+          .: "Alternativa"
+          '@Tooltip': |-
+            Si esta opción está activada, cuando se encuentre un nombre en el mensaje,
+            se renderizará una burbuja sobre la cabeza de un jugador de todos modos,
+            incluso si el mensaje no coincide con la regla en absoluto.
+            
+            Ten en cuenta que en esta situación, el mensaje mostrado en la
+            burbuja no se modificará.
+    responder:
+      Enabled:
+        .: "Activar Respondedor"
+        '@Tooltip': |-
+          El respondedor te permite responder automáticamente a mensajes específicos, basándose en reglas personalizadas.
+          Activa/desactiva si el respondedor debe funcionar.
+      RespondToFilteredMessages:
+        .: "Responder a Mensajes Filtrados"
+        '@Tooltip': "Intentar responder siempre, incluso si van a ser filtrados."
+      List:
+        .: "Reglas §6(Identificador de Sesión Actual: %s §6)§r"
+        '@Tooltip': |-
+          Define las reglas para el respondedor.
+          El contenido superior tiene mayor prioridad.
+          Solo responderá una vez.
+        '@New': "Nueva Regla"
+        '@Display': "§e[ %s§e ] [ Override: %s§e ] [%s§rms§e]§r %s §e→§r %s"
+        Address:
+          .: "Identificador de Sesión"
+          '@Tooltip': |-
+            El identificador de sesión para esta regla.
+            Se recomienda RegEx.
+        Pattern:
+          .: "Patrón"
+          '@Tooltip': |-
+            El patrón para la coincidencia.
+            Se recomienda RegEx.
+            Se recomienda usar grupos RegEx.
+        Message:
+          .: "Mensaje de Respuesta"
+          '@Tooltip': |-
+            Una respuesta automática a un mensaje.
+            {pos} -> (X,Y,Z)
+            <gradient> -> Degradados, consulta las preguntas frecuentes.
+            {$GROUP} -> El contenido del grupo coincidente `$GROUP`
+        DelayInMilliseconds:
+          .: "Retraso (en milisegundos)"
+          '@Tooltip': "Tiempo de espera (en milisegundos) antes de responder."
+        ForceDisableFormatter:
+          .: "Desactivar Formateador (Sobrescribir)"
+          '@Tooltip': "Activa/desactiva si el formateador debe estar desactivado al responder."
+    filter:
+      Enabled:
+        .: "Activar Filtro de Chat"
+        '@Tooltip': "Filtrar mensajes del chat según reglas específicas."
+      FilteredPlaceholderEnabled:
+        .: "Activar Marcador de Posición"
+        '@Tooltip': "Reemplaza el mensaje filtrado con un marcador de posición."
+      List:
+        .: "Reglas"
+        '@Tooltip': |-
+          Si alguno de los patrones de esta lista coincide con un mensaje entrante,
+          el mensaje se filtrará.
+          Se recomienda RegEx.
+    customJoinMessage:
+      Enabled:
+        .: "Activar Mensaje de Unión Personalizado"
+        '@Tooltip': "Enviar mensajes de unión personalizados basados en las reglas dadas."
+      List:
+        .: "Reglas §6(Identificador de Sesión Actual: %s §6)§r"
+        '@Tooltip': "Reglas para enviar mensajes de unión personalizados."
+        '@New': "Nueva Regla"
+        '@Display': "§e[ %s§e ] [ Override: %s§e ] [%s§rms§e]§r %s"
+        Address:
+          .: "Identificador de Sesión"
+          '@Tooltip': |-
+            El identificador de sesión para esta regla.
+            Se recomienda RegEx.
+        Message:
+          .: "Mensaje"
+          '@Tooltip': "Este mensaje se enviará cuando se cumpla esta regla."
+        DelayInMilliseconds:
+          .: "Retraso (en milisegundos)"
+          '@Tooltip': "Tiempo de espera (en milisegundos) antes de enviar realmente el mensaje."
+        ForceDisableFormatter:
+          .: "Desactivar Formateador (Sobrescribir)"
+          '@Tooltip': "Activa/desactiva si el formateador debe estar desactivado al enviar este mensaje."
