@@ -318,12 +318,12 @@ key:
         '@Tooltip': |-
           Use Google translator website for translation.
           This is very unstable.
-        from:
+        sl:
           .: Source Language (sl)
           '@Tooltip': |-
             Source language; recommended to set to 'auto' for auto-detection.
             Refer to Google Translate language list.
-        to:
+        tl:
           .: Target Language (tl)
           '@Tooltip': |-
             Target language (e.g., 'en' for English).
